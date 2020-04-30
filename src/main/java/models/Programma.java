@@ -21,7 +21,7 @@ public interface Programma {
     public void setDescrizione(String descrizione);
 
     public Genere getGenere();
-    public void setgenere(Genere genere);
+    public void setGenere(Genere genere);
 
     public Boolean getIsSerie();
     public void setIsSerie(Boolean isSerie);

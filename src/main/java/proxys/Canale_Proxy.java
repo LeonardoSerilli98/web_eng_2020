@@ -13,4 +13,5 @@ import models.Canale_Imp;
  */
 public class Canale_Proxy extends Canale_Imp{
     
+    
 }

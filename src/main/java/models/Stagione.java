@@ -5,6 +5,9 @@
  */
 package models;
 
+import java.util.List;
+
+
 /**
  *
  * @author leonardo

@@ -5,11 +5,14 @@
  */
 package models;
 
+import java.util.List;
+
 /**
  *
  * @author leonardo
  */
 public class Stagione_Imp implements Stagione {
+    
     private int key;
     private int numero;
     private Immagine immagine;
@@ -42,5 +45,7 @@ public class Stagione_Imp implements Stagione {
     public void setEpisodi(List<Episodio> episodi){
         this.episodi = episodi;
     }
+
+   
 
 }

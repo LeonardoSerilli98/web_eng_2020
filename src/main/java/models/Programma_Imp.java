@@ -67,4 +67,6 @@ public class Programma_Imp implements Programma{
     public void setImmagine(Immagine immagine){
         this.immagine = immagine;
     }
+
+
 }

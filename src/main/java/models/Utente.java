@@ -9,7 +9,7 @@ package models;
  *
  * @author leonardo
  */
-public interface Utente {7
+public interface Utente {
     
     public int getKey();
     public void setKey(int key);
