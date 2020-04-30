@@ -5,10 +5,99 @@
  */
 package models;
 
+import java.sql.Time;
+import java.util.Date;
+
 /**
  *
  * @author leonardo
  */
 public class Palinsesto_Imp implements Palinsesto {
+    
+    private int key;
+    private Programma programma;
+    private Canale canale;
+    private Time inizio;
+    private Time fine;
+    private Orario fascia;
+    private Date data;
+    private Episodio episodio;
+
+    public Palinsesto_Imp() {
+        key = 0;
+        programma = null;
+        canale = null;
+        inizio = null;
+        fine = null;
+        fascia = null;
+        data = null;
+        episodio = null;
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
+
+    public Programma getProgramma() {
+        return programma;
+    }
+
+    public void setProgramma(Programma programma) {
+        this.programma = programma;
+    }
+
+    public Canale getCanale() {
+        return canale;
+    }
+
+    public void setCanale(Canale canale) {
+        this.canale = canale;
+    }
+
+    public Time getInizio() {
+        return inizio;
+    }
+
+    public void setInizio(Time inizio) {
+        this.inizio = inizio;
+    }
+
+    public Time getFine() {
+        return fine;
+    }
+
+    public void setFine(Time fine) {
+        this.fine = fine;
+    }
+
+    public Orario getFascia() {
+        return fascia;
+    }
+
+    public void setFascia(Orario fascia) {
+        this.fascia = fascia;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public Episodio getEpisodio() {
+        return episodio;
+    }
+
+    public void setEpisodio(Episodio episodio) {
+        this.episodio = episodio;
+    }
+    
+    
     
 }

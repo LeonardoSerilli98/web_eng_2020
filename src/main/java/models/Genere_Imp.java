@@ -11,4 +11,24 @@ package models;
  */
 public class Genere_Imp implements Genere {
     
+    private int key;
+    private String nome;
+
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    
+    
 }

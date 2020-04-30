@@ -5,10 +5,22 @@
  */
 package models;
 
+import java.util.List;
+
 /**
  *
  * @author leonardo
  */
 public interface Preferenza {
+    
+    public int getKey();
+    public void setKey(int key);
+
+    public List<Canale> getCanali();
+    public void setCanali(List<Canale> canali);
+
+    public Orario getFascia();
+    public void setFascia(Orario fascia);
+    
     
 }

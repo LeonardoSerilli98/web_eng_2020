@@ -14,7 +14,7 @@ public class Canale_Imp implements Canale {
     private int key;
     private String nome;
     private Immagine immagine;
-    
+        
     public Canale_Imp(){
         key = 0;
         nome = "";

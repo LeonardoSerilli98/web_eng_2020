@@ -5,10 +5,39 @@
  */
 package models;
 
+import java.sql.Time;
+import java.util.Date;
+
 /**
  *
  * @author leonardo
  */
 public interface Palinsesto {
+    
+    public int getKey();
+    public void setKey(int key);
+
+    public Programma getProgramma();
+    public void setProgramma(Programma programma);
+
+    public Canale getCanale();
+    public void setCanale(Canale canale);
+
+    public Time getInizio();
+    public void setInizio(Time inizio);
+
+    public Time getFine();
+    public void setFine(Time fine);
+
+    public Orario getFascia();
+    public void setFascia(Orario fascia);
+
+    public Date getData();
+    public void setData(Date data);
+
+    public Episodio getEpisodio();
+    public void setEpisodio(Episodio episodio);
+    
+    
     
 }

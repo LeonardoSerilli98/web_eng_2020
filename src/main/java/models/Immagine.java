@@ -11,4 +11,16 @@ package models;
  */
 public interface Immagine {
     
+    public int getKey();
+    public void setKey(int key);
+
+    public String getNome();
+    public void setNome(String nome);
+
+    public String getTipo();
+    public void setTipo(String tipo);
+
+    public long getTaglia();
+    public void setTaglia(long taglia);
+    
 }

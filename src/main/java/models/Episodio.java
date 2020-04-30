@@ -11,4 +11,16 @@ package models;
  */
 public interface Episodio {
     
+    public int getKey();
+    public void setKey(int key);
+
+    public int getNumero();
+    public void setNumero(int numero);
+
+    public Stagione getStagione();
+    public void setStagione(Stagione stagione);
+
+    public Programma getSerie();
+    public void setSerie(Programma serie);
+    
 }

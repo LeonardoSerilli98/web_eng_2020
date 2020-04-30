@@ -10,5 +10,11 @@ package models;
  * @author leonardo
  */
 public interface Genere {
+    public int getKey();
+    public void setKey(int key);
+     
+    public String getNome();
+    public void setNome(String nome);
+    
     
 }
