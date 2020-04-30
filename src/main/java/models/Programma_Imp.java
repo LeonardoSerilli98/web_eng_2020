@@ -10,5 +10,61 @@ package models;
  * @author leonardo
  */
 public class Programma_Imp implements Programma{
+    private int key;
+    private String nome;
+    private String descrizione;
+    private Genere genere;
+    private Boolean isSerie;
+    private String approfondimento;
+    private Immagine immagine;
     
+    public int getKey(){
+        return this.key;
+    }
+    public void setKey(int key){
+        this.key = key;
+    }
+
+    public String getNome(){
+        return this.nome;
+    }
+    public void setNome(String nome){
+        this.nome = nome;
+    }
+
+    public String getDescrizione(){
+        return this.descrizione;
+    }
+    public void setDescrizione(String descrizione){
+        this.descrizione = descrizione;
+    }
+
+    public Genere getGenere(){
+        return this.genere;
+    }
+    public void setGenere(Genere genere){
+        this.genere = genere;
+    }
+
+    public Boolean getIsSerie(){
+        return this.isSerie;
+    }
+    public void setIsSerie(Boolean isSerie){
+        this.isSerie = isSerie;
+    }
+
+    public String getApprofondimento(){
+        return this.approfondimento;
+    }
+    public void setApprofondimento(String approfondimento){
+        this.approfondimento = approfondimento;
+    }
+
+
+    public Immagine getImmagine(){
+        return this.immagine;
+    }
+    public void setImmagine(Immagine immagine){
+        this.immagine = immagine;
+    }
 }

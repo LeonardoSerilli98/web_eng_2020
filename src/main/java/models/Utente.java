@@ -9,6 +9,17 @@ package models;
  *
  * @author leonardo
  */
-public interface Utente {
+public interface Utente {7
     
+    public int getKey();
+    public void setKey(int key);
+
+    public String getEmail();
+    public void setEmail(String email);
+
+    public Ricerca getRicerca();
+    public void setRicerca(Ricerca ricerca);
+
+    public Preferenza getPreferenza();
+    public void setPreferenza(Preferenza preferenza);
 }
