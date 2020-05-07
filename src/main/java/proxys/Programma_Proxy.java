@@ -6,6 +6,7 @@
 package proxys;
 
 import daos.Episodio_DAO;
+import daos.Genere_DAO_Imp;
 import daos.Immagine_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
@@ -103,7 +104,15 @@ public class Programma_Proxy extends Programma_Imp{
 
     @Override
     public Genere getGenere() {
-        return super.getGenere(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getGenere() == null && genere_key > 0){
+            try{
+                super.setGenere(((Genere_DAO_Imp) dataLayer.getDAO(Genere.class)).read(genere_key));
+            }catch (DataException ex){
+                Logger.getLogger(Programma_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return super.getGenere(); 
     }
 
     //METODI SET/GET DEI CAMPI DI TIPO LIST
