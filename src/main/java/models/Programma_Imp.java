@@ -5,6 +5,8 @@
  */
 package models;
 
+import java.util.List;
+
 /**
  *
  * @author leonardo
@@ -66,6 +68,16 @@ public class Programma_Imp implements Programma{
     }
     public void setImmagine(Immagine immagine){
         this.immagine = immagine;
+    }
+
+    @Override
+    public List<Episodio> getEpisodi() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setEpisodi(List<Episodio> episodi) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 

@@ -5,12 +5,10 @@
  */
 package daos;
 
-import data.DAO;
-
 /**
  *
  * @author leonardo
  */
-public class Orario_DAO_Imp extends DAO implements Orario_DAO{
+public interface Fascia_DAO {
     
 }

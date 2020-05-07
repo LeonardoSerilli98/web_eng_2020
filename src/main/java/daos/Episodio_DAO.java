@@ -5,10 +5,19 @@
  */
 package daos;
 
+import data.DataException;
+import java.util.List;
+import models.Episodio;
+import models.Programma;
+import models.Stagione;
+
 /**
  *
  * @author leonardo
  */
 public interface Episodio_DAO {
+    
+    List<Episodio> getEpisodiByProgramma(Programma programma) throws DataException;
+    List<Episodio> getEpisodiByStagione(Stagione stagione) throws DataException;
     
 }

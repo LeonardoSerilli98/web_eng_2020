@@ -23,7 +23,7 @@ public interface Ricerca {
     public Genere getGenere();
     public void setGenere(Genere genere);
 
-    public Orario getOrario();
-    public void setOrario(Orario orario);
+    public Fascia getFascia();
+    public void setFascia(Fascia fascia);
     
 }

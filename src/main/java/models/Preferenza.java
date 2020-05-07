@@ -13,14 +13,14 @@ import java.util.List;
  */
 public interface Preferenza {
     
-    public int getKey();
-    public void setKey(int key);
+    int getKey();
+    void setKey(int key);
 
-    public List<Canale> getCanali();
-    public void setCanali(List<Canale> canali);
+    List<Canale> getCanali();
+    void setCanali(List<Canale> canali);
 
-    public Orario getFascia();
-    public void setFascia(Orario fascia);
+    Fascia getFascia();
+    void setFascia(Fascia fascia);
     
     
 }

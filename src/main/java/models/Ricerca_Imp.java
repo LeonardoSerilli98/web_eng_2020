@@ -14,7 +14,7 @@ public class Ricerca_Imp implements Ricerca{
     private Canale canale;
     private Programma programma;
     private Genere genere;
-    private Orario orario;
+    private Fascia fascia;
 
     public int getKey(){
         return this.key;
@@ -44,10 +44,10 @@ public class Ricerca_Imp implements Ricerca{
         this.genere = genere;
     }
 
-    public Orario getOrario(){
-        return this.orario;
+    public Fascia getFascia(){
+        return this.fascia;
     }
-    public void setOrario(Orario orario){
-        this.orario = orario;
+    public void setFascia(Fascia fascia){
+        this.fascia = fascia;
     }
 }

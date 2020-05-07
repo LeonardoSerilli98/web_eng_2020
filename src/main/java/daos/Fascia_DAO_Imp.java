@@ -12,15 +12,15 @@ import data.DataLayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import proxys.Palinsesto_Proxy;
+import proxys.Fascia_Proxy;
 
 /**
  *
  * @author leonardo
  */
-public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO, DAO_Interface{
+public class Fascia_DAO_Imp extends DAO implements Fascia_DAO, DAO_Interface{
 
-    public Palinsesto_DAO_Imp(DataLayer d) {
+    public Fascia_DAO_Imp(DataLayer d) {
         super(d);
     }
     
@@ -36,25 +36,20 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO, DAO_Inter
 
 
     @Override
-    public Palinsesto_Proxy makeObj() {
-        return new Palinsesto_Proxy(getDataLayer());
+    public Fascia_Proxy makeObj() {
+        return new Fascia_Proxy(getDataLayer());
     }
 
     @Override
-    public Palinsesto_Proxy makeObj(ResultSet rs) throws DataException {
-        Palinsesto_Proxy a = makeObj();
+    public Fascia_Proxy makeObj(ResultSet rs) throws DataException {
+        Fascia_Proxy a = makeObj();
         try {
             
             a.setKey(rs.getInt("ID"));
-            a.setData(rs.getDate("data"));
-            a.setInizio(rs.getTime("inizio"));
+            a.setFascia(rs.getString("fascia"));
+            a.setFine(rs.getTime("inizio"));
             a.setFine(rs.getTime("fine"));
             
-            a.setProgramma_key(rs.getInt("programmaID"));
-            a.setEpisodio_key(rs.getInt("episodioID"));
-            a.setCanale_key(rs.getInt("canaleID"));
-            a.setFascia_key(rs.getInt("fasciaID"));
-    
         } catch (SQLException ex) {
             throw new DataException("Unable to create article object form ResultSet", ex);
         }

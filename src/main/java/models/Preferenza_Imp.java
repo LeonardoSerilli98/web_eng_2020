@@ -15,7 +15,7 @@ public class Preferenza_Imp implements Preferenza{
     
     private int key;
     private List<Canale> canali;
-    private Orario fascia;
+    private Fascia fascia;
     
     public Preferenza_Imp(){
         
@@ -41,11 +41,11 @@ public class Preferenza_Imp implements Preferenza{
         this.canali = canali;
     }
 
-    public Orario getFascia() {
+    public Fascia getFascia() {
         return fascia;
     }
 
-    public void setFascia(Orario fascia) {
+    public void setFascia(Fascia fascia) {
         this.fascia = fascia;
     }
     

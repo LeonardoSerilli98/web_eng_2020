@@ -29,8 +29,8 @@ public interface Palinsesto {
     public Time getFine();
     public void setFine(Time fine);
 
-    public Orario getFascia();
-    public void setFascia(Orario fascia);
+    public Fascia getFascia();
+    public void setFascia(Fascia fascia);
 
     public Date getData();
     public void setData(Date data);

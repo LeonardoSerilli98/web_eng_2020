@@ -5,31 +5,36 @@
  */
 package models;
 
+import java.util.List;
+
 /**
  *
  * @author leonardo
  */
 public interface Programma {
     
-    public int getKey();
-    public void setKey(int key);
+    int getKey();
+    void setKey(int key);
 
-    public String getNome();
-    public void setNome(String nome);
+    String getNome();
+    void setNome(String nome);
 
-    public String getDescrizione();
-    public void setDescrizione(String descrizione);
+    String getDescrizione();
+    void setDescrizione(String descrizione);
 
-    public Genere getGenere();
-    public void setGenere(Genere genere);
+    Genere getGenere();
+    void setGenere(Genere genere);
 
-    public Boolean getIsSerie();
-    public void setIsSerie(Boolean isSerie);
+    Boolean getIsSerie();
+    void setIsSerie(Boolean isSerie);
+    
+    List<Episodio> getEpisodi();
+    void setEpisodi(List<Episodio> episodi);
 
-    public String getApprofondimento();
-    public void setApprofondimento(String approfondimento);
+    String getApprofondimento();
+    void setApprofondimento(String approfondimento);
 
-    public Immagine getImmagine();
-    public void setImmagine(Immagine immagine);
+    Immagine getImmagine();
+    void setImmagine(Immagine immagine);
     
 }

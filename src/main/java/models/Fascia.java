@@ -11,7 +11,7 @@ import java.sql.Time;
  *
  * @author leonardo
  */
-public interface Orario {
+public interface Fascia {
     
     public int getKey();
     public void setKey(int key);

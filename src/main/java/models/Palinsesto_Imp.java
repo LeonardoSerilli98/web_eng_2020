@@ -19,7 +19,7 @@ public class Palinsesto_Imp implements Palinsesto {
     private Canale canale;
     private Time inizio;
     private Time fine;
-    private Orario fascia;
+    private Fascia fascia;
     private Date data;
     private Episodio episodio;
 
@@ -74,11 +74,11 @@ public class Palinsesto_Imp implements Palinsesto {
         this.fine = fine;
     }
 
-    public Orario getFascia() {
+    public Fascia getFascia() {
         return fascia;
     }
 
-    public void setFascia(Orario fascia) {
+    public void setFascia(Fascia fascia) {
         this.fascia = fascia;
     }
 

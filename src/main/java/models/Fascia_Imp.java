@@ -11,7 +11,7 @@ import java.sql.Time;
  *
  * @author leonardo
  */
-public class Orario_Imp implements Orario{
+public class Fascia_Imp implements Fascia{
     
     private int key;
     private Time inizio;

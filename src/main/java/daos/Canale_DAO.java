@@ -5,11 +5,19 @@
  */
 package daos;
 
+import data.DataException;
+import java.util.List;
+import models.Canale;
+import models.Preferenza;
+
 
 /**
  *
  * @author leonardo
  */
 public interface Canale_DAO{
+    
+    List<Canale> getCanaliByPreferenza(Preferenza preferenza) throws DataException;
+    
     
 }

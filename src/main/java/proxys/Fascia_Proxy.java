@@ -6,26 +6,26 @@
 package proxys;
 
 import data.DataLayer;
-import models.Canale_Imp;
-import models.Immagine;
+import java.sql.Time;
+import models.Fascia_Imp;
 
 /**
  *
  * @author leonardo
  */
-public class Canale_Proxy extends Canale_Imp{
+public class Fascia_Proxy extends Fascia_Imp{
         
     protected DataLayer dataLayer;
     protected boolean dirty;
-    protected int immagine_key;
-        
-    public Canale_Proxy(DataLayer d) {
+   
+    public Fascia_Proxy(DataLayer d) {
         super();
         
         this.dataLayer = d;
         this.dirty = false;
-        this.immagine_key = 0;
+
     }
+    
     
     //METODI SET DELL'IMPLEMENTAZIONE DEL MODELLO (tolti campi di tipo LIST o dotati di PROXY_KEY)
     
@@ -36,31 +36,30 @@ public class Canale_Proxy extends Canale_Imp{
     }
     
     @Override
-    public void setNome(String nome) {
-        super.setNome(nome); 
+    public void setFascia(String fascia) {
+        super.setFascia(fascia);
         this.dirty = true;
     }
 
-  
+    @Override
+    public void setFine(Time fine) {
+        super.setFine(fine);
+        this.dirty = true;
+    }
+    
+    @Override
+    public void setInizio(Time inizio) {
+        super.setInizio(inizio); 
+        this.dirty = true;
+    }
+
+    
+    
     //METODI SET/GET DEI CAMPI DOTATI DI PROXY_KEY
-    
-    @Override
-    public void setImmagine(Immagine immagine) {
-        super.setImmagine(immagine);
-        this.immagine_key = immagine.getKey();
-        this.dirty = true;
-    }
-
-    @Override
-    public Immagine getImmagine() {
-        return super.getImmagine(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-     //METODI SET/GET DEI CAMPI DI TIPO LIST
-    
-        
+    //METODI SET/GET DEI CAMPI DI TIPO LIST
+   
     //METODI DEL PROXY
+    
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
@@ -68,16 +67,7 @@ public class Canale_Proxy extends Canale_Imp{
     public boolean isDirty() {
         return dirty;
     }
-        
+    
     //SETTER PROXY_KEYS
-
-    public void setImmagine_key(int immagine_key) {
-        this.immagine_key = immagine_key;
-        super.setImmagine(null);
-    }
-    
-    
-        
-        
     
 }

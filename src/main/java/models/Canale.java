@@ -5,19 +5,22 @@
  */
 package models;
 
+
 /**
  *
  * @author leonardo
  */
 public interface Canale {
     
-    public int getKey(); 
-    public void setKey(int key);
+    int getKey(); 
+    void setKey(int key);
 
-    public String getNome();
-    public void setNome(String nome);
+    String getNome();
+    void setNome(String nome);
     
-    public Immagine getImmagine();
-    public void setImmagine(Immagine immagine);
+    Immagine getImmagine();
+    void setImmagine(Immagine immagine);
+    
+
     
 }
