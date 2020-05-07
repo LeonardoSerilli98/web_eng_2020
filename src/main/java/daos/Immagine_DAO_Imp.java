@@ -12,6 +12,9 @@ import data.DataLayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import models.Canale;
+import models.Immagine;
+import models.Immagine_Imp;
 import proxys.Immagine_Proxy;
 
 /**
@@ -67,7 +70,7 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO, DAO_Interface
     }
 
     @Override
-    public Object read(int key) throws DataException {
+    public Immagine read(int key) throws DataException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -80,5 +83,6 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO, DAO_Interface
     public void delete(Object t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+       
 }

@@ -5,9 +5,13 @@
  */
 package proxys;
 
+import daos.Episodio_DAO_Imp;
+import data.DataException;
 import data.DataLayer;
 import java.sql.Time;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Canale;
 import models.Episodio;
 import models.Fascia;
@@ -74,7 +78,15 @@ public class Palinsesto_Proxy extends Palinsesto_Imp{
 
     @Override
     public Episodio getEpisodio() {
-        return super.getEpisodio(); //To change body of generated methods, choose Tools | Templates.
+        
+        if (super.getEpisodio() == null && episodio_key > 0) {           
+            try {               
+                super.setEpisodio(((Episodio_DAO_Imp) dataLayer.getDAO(Episodio.class)).read(episodio_key));               
+            } catch (DataException ex) {        
+                Logger.getLogger(Palinsesto_Proxy.class.getName()).log(Level.SEVERE, null, ex);  
+            }
+        }
+        return super.getEpisodio(); 
     }
 
     @Override

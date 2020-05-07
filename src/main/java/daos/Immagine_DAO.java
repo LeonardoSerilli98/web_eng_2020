@@ -5,11 +5,16 @@
  */
 package daos;
 
+import data.DataException;
+import models.Canale;
+import models.Immagine;
+
 
 /**
  *
  * @author leonardo
  */
 public interface Immagine_DAO{
+    
     
 }

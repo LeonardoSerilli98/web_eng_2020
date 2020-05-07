@@ -5,9 +5,14 @@
  */
 package proxys;
 
+import daos.Immagine_DAO_Imp;
+import data.DataException;
 import data.DataLayer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Canale_Imp;
 import models.Immagine;
+
 
 /**
  *
@@ -53,7 +58,20 @@ public class Canale_Proxy extends Canale_Imp{
 
     @Override
     public Immagine getImmagine() {
-        return super.getImmagine(); //To change body of generated methods, choose Tools | Templates.
+        
+        if (super.getImmagine() == null && immagine_key > 0) {
+            
+            try {               
+                super.setImmagine(((Immagine_DAO_Imp) dataLayer.getDAO(Immagine.class)).read(immagine_key));
+                
+            } catch (DataException ex) {
+                
+                Logger.getLogger(Canale_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+                
+            }
+        }
+      
+        return super.getImmagine();
     }
 
     

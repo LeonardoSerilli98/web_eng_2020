@@ -5,7 +5,11 @@
  */
 package proxys;
 
+import daos.Programma_DAO_Imp;
+import data.DataException;
 import data.DataLayer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Episodio_Imp;
 import models.Programma;
 import models.Stagione;
@@ -19,7 +23,7 @@ public class Episodio_Proxy extends Episodio_Imp{
     protected DataLayer dataLayer;
     protected boolean dirty;
     protected int stagione_key;
-    protected int serie_key;
+    protected int serie_key; //nota bene che Serie=Programma con isSerie settato a 1
         
     public Episodio_Proxy(DataLayer d) {
         super();
@@ -56,6 +60,15 @@ public class Episodio_Proxy extends Episodio_Imp{
 
     @Override
     public Programma getSerie() {
+                
+        if (super.getSerie() == null && serie_key > 0) {            
+            try {               
+                super.setSerie(((Programma_DAO_Imp) dataLayer.getDAO(Programma.class)).read(serie_key));                
+            } catch (DataException ex) {                
+                Logger.getLogger(Episodio_Proxy.class.getName()).log(Level.SEVERE, null, ex);                
+            }
+        }
+      
         return super.getSerie(); //To change body of generated methods, choose Tools | Templates.
     }
 

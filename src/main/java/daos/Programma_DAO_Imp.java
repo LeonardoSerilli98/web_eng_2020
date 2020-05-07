@@ -12,6 +12,7 @@ import data.DataLayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import models.Programma;
 import proxys.Programma_Proxy;
 
 /**
@@ -71,7 +72,7 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO, DAO_Interfa
     }
 
     @Override
-    public Object read(int key) throws DataException {
+    public Programma read(int key) throws DataException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

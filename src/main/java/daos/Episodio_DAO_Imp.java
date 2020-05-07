@@ -94,7 +94,7 @@ public class Episodio_DAO_Imp extends DAO implements DAO_Interface, Episodio_DAO
     }
 
     @Override
-    public Object read(int key) throws DataException {
+    public Episodio read(int key) throws DataException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
