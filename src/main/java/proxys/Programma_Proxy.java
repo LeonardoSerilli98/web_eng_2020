@@ -6,6 +6,7 @@
 package proxys;
 
 import daos.Episodio_DAO;
+import daos.Immagine_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
 import java.util.List;
@@ -15,6 +16,8 @@ import models.Episodio;
 import models.Genere;
 import models.Immagine;
 import models.Programma_Imp;
+
+import javax.xml.crypto.Data;
 
 /**
  *
@@ -80,7 +83,14 @@ public class Programma_Proxy extends Programma_Imp{
 
     @Override
     public Immagine getImmagine() {
-        return super.getImmagine(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getImmagine() == null && immagine_key > 0){
+            try{
+                super.setImmagine(((Immagine_DAO_Imp) dataLayer.getDAO(Immagine.class)).read(immagine_key));
+            }catch (DataException ex){
+                Logger.getLogger(Programma_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getImmagine();
     }
     
     

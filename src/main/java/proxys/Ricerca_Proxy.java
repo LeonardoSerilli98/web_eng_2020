@@ -5,12 +5,16 @@
  */
 package proxys;
 
+import daos.Canale_DAO_Imp;
+import daos.Fascia_DAO_Imp;
+import daos.Genere_DAO_Imp;
+import daos.Programma_DAO_Imp;
+import data.DataException;
 import data.DataLayer;
-import models.Canale;
-import models.Fascia;
-import models.Genere;
-import models.Programma;
-import models.Ricerca_Imp;
+import models.*;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -56,7 +60,14 @@ public class Ricerca_Proxy extends Ricerca_Imp{
     
     @Override
     public Fascia getFascia() {
-        return super.getFascia(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getFascia() == null && fascia_key > 0){
+            try{
+                super.setFascia(((Fascia_DAO_Imp) dataLayer.getDAO(Fascia.class)).read(fascia_key));
+            } catch (DataException ex) {
+                Logger.getLogger(Ricerca_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getFascia();
     }
     
     @Override
@@ -68,9 +79,16 @@ public class Ricerca_Proxy extends Ricerca_Imp{
 
     @Override
     public Genere getGenere() {
-        return super.getGenere(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getGenere() == null && genere_key > 0){
+            try {
+                super.setGenere(((Genere_DAO_Imp) dataLayer.getDAO(Genere.class)).read(genere_key));
+            } catch (DataException ex) {
+                Logger.getLogger(Ricerca_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getGenere();
     }
-    
+
     @Override
     public void setProgramma(Programma programma) {
         super.setProgramma(programma); 
@@ -80,7 +98,14 @@ public class Ricerca_Proxy extends Ricerca_Imp{
 
     @Override
     public Programma getProgramma() {
-        return super.getProgramma(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getProgramma() == null && programma_key > 0){
+            try{
+                super.setProgramma(((Programma_DAO_Imp) dataLayer.getDAO(Programma.class)).read(programma_key));
+            } catch(DataException ex){
+                Logger.getLogger(Ricerca_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getProgramma();
     }
 
     @Override
@@ -92,7 +117,14 @@ public class Ricerca_Proxy extends Ricerca_Imp{
 
     @Override
     public Canale getCanale() {
-        return super.getCanale(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getCanale() == null && canale_key > 0) {
+            try{
+                super.setCanale(((Canale_DAO_Imp) dataLayer.getDAO(Canale.class)).read(canale_key));
+            } catch (DataException ex){
+                Logger.getLogger(Ricerca_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getCanale();
     }
     
     //METODI SET/GET DEI CAMPI DI TIPO LIST
