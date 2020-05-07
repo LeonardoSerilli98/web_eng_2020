@@ -12,6 +12,7 @@ import data.DataLayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import models.Fascia;
 import proxys.Fascia_Proxy;
 
 /**
@@ -67,7 +68,7 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO, DAO_Interface{
     }
 
     @Override
-    public Object read(int key) throws DataException {
+    public Fascia read(int key) throws DataException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

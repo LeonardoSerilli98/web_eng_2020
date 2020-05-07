@@ -6,6 +6,7 @@
 package proxys;
 
 import daos.Programma_DAO_Imp;
+import daos.Stagione_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
 import java.util.logging.Level;
@@ -69,7 +70,7 @@ public class Episodio_Proxy extends Episodio_Imp{
             }
         }
       
-        return super.getSerie(); //To change body of generated methods, choose Tools | Templates.
+        return super.getSerie();
     }
 
     @Override
@@ -80,8 +81,16 @@ public class Episodio_Proxy extends Episodio_Imp{
     }
 
     @Override
-    public Stagione getStagione() {
-        return super.getStagione(); //To change body of generated methods, choose Tools | Templates.
+    public Stagione getStagione() {       
+        
+        if (super.getStagione() == null && stagione_key > 0) {           
+            try {               
+                super.setStagione(((Stagione_DAO_Imp) dataLayer.getDAO(Stagione.class)).read(stagione_key));               
+            } catch (DataException ex) {        
+                Logger.getLogger(Episodio_Proxy.class.getName()).log(Level.SEVERE, null, ex);  
+            }
+        }
+        return super.getStagione(); 
     }
     
     //METODI SET/GET DEI CAMPI DI TIPO LIST

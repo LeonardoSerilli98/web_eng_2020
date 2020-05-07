@@ -68,6 +68,7 @@ public class Stagione_Proxy extends Stagione_Imp{
                 Logger.getLogger(Stagione_Proxy.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        return super.getImmagine();
     }
     
     //METODI SET/GET DEI CAMPI DI TIPO LIST

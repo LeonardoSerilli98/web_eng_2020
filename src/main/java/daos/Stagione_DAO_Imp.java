@@ -12,6 +12,7 @@ import data.DataLayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import models.Stagione;
 import proxys.Stagione_Proxy;
 
 /**
@@ -67,7 +68,7 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO, DAO_Interface
     }
 
     @Override
-    public Object read(int key) throws DataException {
+    public Stagione read(int key) throws DataException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

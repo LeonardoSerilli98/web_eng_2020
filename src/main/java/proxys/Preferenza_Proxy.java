@@ -6,6 +6,7 @@
 package proxys;
 
 import daos.Canale_DAO;
+import daos.Fascia_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
 import java.util.List;
@@ -52,7 +53,16 @@ public class Preferenza_Proxy extends Preferenza_Imp{
 
     @Override
     public Fascia getFascia() {
-        return super.getFascia(); //To change body of generated methods, choose Tools | Templates.
+        
+        
+        if (super.getFascia() == null && fascia_key > 0) {           
+            try {               
+                super.setFascia(((Fascia_DAO_Imp) dataLayer.getDAO(Fascia.class)).read(fascia_key));               
+            } catch (DataException ex) {        
+                Logger.getLogger(Preferenza_Proxy.class.getName()).log(Level.SEVERE, null, ex);  
+            }
+        }
+        return super.getFascia();
     }
     
      //METODI SET/GET DEI CAMPI DI TIPO LIST
