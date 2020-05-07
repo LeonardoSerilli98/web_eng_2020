@@ -12,6 +12,9 @@ import data.DataLayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import models.Preferenza;
+import models.Preferenza_Imp;
 import proxys.Preferenza_Proxy;
 
 /**
@@ -65,8 +68,8 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO, DAO_Inter
     }
 
     @Override
-    public Object read(int key) throws DataException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Preferenza read(int key) throws DataException {
+        return new Preferenza_Imp();
     }
 
     @Override

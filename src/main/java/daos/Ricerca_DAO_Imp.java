@@ -12,6 +12,8 @@ import data.DataLayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import models.Ricerca;
 import proxys.Ricerca_Proxy;
 
 /**
@@ -69,7 +71,7 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO, DAO_Interface{
     }
 
     @Override
-    public Object read(int key) throws DataException {
+    public Ricerca read(int key) throws DataException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

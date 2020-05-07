@@ -5,10 +5,19 @@
  */
 package proxys;
 
+import daos.Preferenza_DAO_Imp;
+import daos.Ricerca_DAO_Imp;
+import data.DataException;
 import data.DataLayer;
 import models.Preferenza;
+import models.Preferenza_Imp;
 import models.Ricerca;
 import models.Utente_Imp;
+import java.util.logging.Level;
+
+
+import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  *
@@ -55,7 +64,14 @@ public class Utente_Proxy extends Utente_Imp{
 
     @Override
     public Preferenza getPreferenza() {
-        return super.getPreferenza(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getPreferenza() == null && preferenza_key > 0){
+            try {
+                super.setPreferenza(((Preferenza_DAO_Imp) dataLayer.getDAO(Preferenza.class)).read(preferenza_key));
+            } catch (DataException ex) {
+                Logger.getLogger(Utente_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getPreferenza();
     }
 
     @Override
@@ -67,7 +83,14 @@ public class Utente_Proxy extends Utente_Imp{
 
     @Override
     public Ricerca getRicerca() {
-        return super.getRicerca(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getRicerca() == null && ricerca_key > 0){
+            try{
+                super.setRicerca(((Ricerca_DAO_Imp) dataLayer.getDAO(Ricerca.class)).read(ricerca_key));
+            } catch (DataException ex) {
+                Logger.getLogger(Utente_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getRicerca();
     }
 
     //METODI SET/GET DEI CAMPI DI TIPO LIST
@@ -93,7 +116,6 @@ public class Utente_Proxy extends Utente_Imp{
         this.preferenza_key = preferenza_key;
         super.setPreferenza(null);
     }
-
     
         
    

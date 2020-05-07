@@ -6,6 +6,7 @@
 package proxys;
 
 import daos.Episodio_DAO;
+import daos.Immagine_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
 import java.util.List;
@@ -60,7 +61,13 @@ public class Stagione_Proxy extends Stagione_Imp{
 
     @Override
     public Immagine getImmagine() {
-        return super.getImmagine(); //To change body of generated methods, choose Tools | Templates.
+        if(super.getImmagine() == null && immagine_key > 0){
+            try{
+                super.setImmagine(((Immagine_DAO_Imp) dataLayer.getDAO(Immagine.class)).read(immagine_key));
+            } catch (DataException ex) {
+                Logger.getLogger(Stagione_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     //METODI SET/GET DEI CAMPI DI TIPO LIST
