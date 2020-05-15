@@ -12,16 +12,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Canale_Imp;
 import models.Immagine;
+import data.Data_ItemProxy;
 
 
 /**
  *
  * @author leonardo
  */
-public class Canale_Proxy extends Canale_Imp{
+public class Canale_Proxy extends Canale_Imp implements Data_ItemProxy {
         
     protected DataLayer dataLayer;
     protected boolean dirty;
+    
     protected int immagine_key;
         
     public Canale_Proxy(DataLayer d) {
@@ -35,7 +37,7 @@ public class Canale_Proxy extends Canale_Imp{
     //METODI SET DELL'IMPLEMENTAZIONE DEL MODELLO (tolti campi di tipo LIST o dotati di PROXY_KEY)
     
     @Override
-    public void setKey(int key) {
+    public void setKey(Integer key) {
         super.setKey(key); 
         this.dirty = true;
     }
@@ -87,6 +89,8 @@ public class Canale_Proxy extends Canale_Imp{
 
     public void setImmagine_key(int immagine_key) {
         this.immagine_key = immagine_key;
+        
+        //qui resettiamo la cache
         super.setImmagine(null);
     }
     

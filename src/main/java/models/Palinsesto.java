@@ -5,6 +5,7 @@
  */
 package models;
 
+import data.DataItem;
 import java.sql.Time;
 import java.util.Date;
 
@@ -12,10 +13,7 @@ import java.util.Date;
  *
  * @author leonardo
  */
-public interface Palinsesto {
-    
-    public int getKey();
-    public void setKey(int key);
+public interface Palinsesto extends DataItem<Integer>{
 
     public Programma getProgramma();
     public void setProgramma(Programma programma);

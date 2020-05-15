@@ -8,10 +8,10 @@
     name="jdbc/we_database_2020"
     auth="Container"
     type="javax.sql.DataSource"
-    username="leonardo"
+    username="root"
     password="Rorschach69"
-    driverClassName="com.mysql.jdbc.Driver"
-    url="jdbc:mysql:/localhost:3306/we_database_2020"
+    driverClassName="com.mysql.cj.jdbc.Driver"
+    url="jdbc:mysql://localhost:3306/we_database_2020?serverTimezone=UTC"
     maxActive="15"
     maxIdle="3"/>
 

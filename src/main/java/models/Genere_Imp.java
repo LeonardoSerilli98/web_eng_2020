@@ -5,21 +5,21 @@
  */
 package models;
 
+import data.DataItemImpl;
+
 /**
  *
  * @author leonardo
  */
-public class Genere_Imp implements Genere {
-    
-    private int key;
+public class Genere_Imp extends DataItemImpl<Integer> implements Genere {
+
     private String nome;
 
-    public int getKey() {
-        return key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
+    public Genere_Imp(){
+        super();
+        
+        nome = "";
+        
     }
 
     public String getNome() {

@@ -25,10 +25,12 @@ import proxys.Episodio_Proxy;
  *
  * @author leonardo
  */
-public class Episodio_DAO_Imp extends DAO implements DAO_Interface, Episodio_DAO {
+public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
     
+    private PreparedStatement create, read, update, delete, readAll;
     private PreparedStatement episodioByProgramma;
     private PreparedStatement episodioByStagione;
+    
     
     public Episodio_DAO_Imp(DataLayer d) {
         super(d);
@@ -39,6 +41,14 @@ public class Episodio_DAO_Imp extends DAO implements DAO_Interface, Episodio_DAO
         super.init(); 
         
         try {
+            
+            create = connection.prepareStatement("INSERT INTO Episodio (numero, programmaID, stagioneID) VALUES(?,?,?)");
+            read = connection.prepareStatement("SELECT * FROM Episodio WHERE idEpisodio=?");
+            update = connection.prepareStatement("");
+            delete = connection.prepareStatement("");
+            
+            readAll = connection.prepareStatement("");              
+
             episodioByProgramma = connection.prepareStatement("SELECT * FROM Episodio WHERE programmaID=?");
             episodioByStagione = connection.prepareStatement("SELECT * FROM Episodio WHERE stagioneID=?");
             
@@ -51,6 +61,12 @@ public class Episodio_DAO_Imp extends DAO implements DAO_Interface, Episodio_DAO
     public void destroy() throws DataException {
         
         try {
+            
+            create.close();
+            read.close();
+            update.close();
+            delete.close();
+            readAll.close();
             
             episodioByProgramma.close();
             episodioByStagione.close();
@@ -71,7 +87,7 @@ public class Episodio_DAO_Imp extends DAO implements DAO_Interface, Episodio_DAO
         Episodio_Proxy a = makeObj();
         try {
             
-            a.setKey(rs.getInt("ID"));
+            a.setKey(rs.getInt("idEpisodio"));
             a.setNumero(rs.getInt("numero"));
             
             a.setStagione_key(rs.getInt("stagioneID"));
@@ -84,27 +100,46 @@ public class Episodio_DAO_Imp extends DAO implements DAO_Interface, Episodio_DAO
     }
 
     @Override
-    public List getAll(ResultSet rs) {
+    public List getAll() throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void create(Object t) {
+    public void create(Episodio item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Episodio read(int key) throws DataException {
+        Episodio item = null;
+        // Controllo se l'oggetto è nella cache, in caso prendo quello
+        if(dataLayer.getCache().has(Episodio.class, key)){
+            item = dataLayer.getCache().get(Episodio.class, key);
+        }else{
+            try{
+                read.setInt(1, key);
+                try (ResultSet rs = read.executeQuery()){
+                    if(rs.next()){                      
+                        item = makeObj(rs);
+                        // ricorda di aggiungere l'oggetto appena creato nella cache
+                        dataLayer.getCache().add(Episodio.class, item);  
+                    }
+                }  
+            } catch (SQLException ex) {
+                Logger.getLogger(Episodio_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return item;
+    }
+
+    @Override
+    public void update(Episodio item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void update(Object t, String[] params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void delete(Object t) {
+    public void delete(Episodio item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

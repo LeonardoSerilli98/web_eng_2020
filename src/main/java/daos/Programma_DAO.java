@@ -5,10 +5,13 @@
  */
 package daos;
 
+import data.DAO_Interface;
+import models.Programma;
+
 /**
  *
  * @author leonardo
  */
-public interface Programma_DAO {
+public interface Programma_DAO  extends DAO_Interface<Programma>{
     
 }

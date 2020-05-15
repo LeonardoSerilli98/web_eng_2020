@@ -10,20 +10,18 @@ import daos.Ricerca_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
 import models.Preferenza;
-import models.Preferenza_Imp;
 import models.Ricerca;
 import models.Utente_Imp;
 import java.util.logging.Level;
 
-
-import java.sql.SQLException;
 import java.util.logging.Logger;
+import data.Data_ItemProxy;
 
 /**
  *
  * @author leonardo
  */
-public class Utente_Proxy extends Utente_Imp{
+public class Utente_Proxy extends Utente_Imp implements Data_ItemProxy{
         
     protected DataLayer dataLayer;
     protected boolean dirty;
@@ -42,17 +40,24 @@ public class Utente_Proxy extends Utente_Imp{
     //METODI SET DELL'IMPLEMENTAZIONE DEL MODELLO (tolti campi di tipo LIST o dotati di PROXY_KEY)
      
     @Override
+    public void setKey(Integer key) {
+        super.setKey(key); 
+        this.dirty = true;
+    }
+       
+    @Override
     public void setEmail(String email) {
         super.setEmail(email); 
         this.dirty = true;
     }
     
-    @Override
-    public void setKey(int key) {
-        super.setKey(key); 
+     @Override
+    public void setPassword(String password) {
+        super.setPassword(password); 
         this.dirty = true;
     }
-         
+    
+      
     //METODI SET/GET DEI CAMPI DOTATI DI PROXY_KEY
     
     @Override

@@ -5,6 +5,7 @@
  */
 package models;
 
+import data.DataItemImpl;
 import java.sql.Time;
 import java.util.Date;
 
@@ -12,9 +13,8 @@ import java.util.Date;
  *
  * @author leonardo
  */
-public class Palinsesto_Imp implements Palinsesto {
+public class Palinsesto_Imp extends DataItemImpl<Integer>implements Palinsesto {
     
-    private int key;
     private Programma programma;
     private Canale canale;
     private Time inizio;
@@ -24,7 +24,7 @@ public class Palinsesto_Imp implements Palinsesto {
     private Episodio episodio;
 
     public Palinsesto_Imp() {
-        key = 0;
+        super();
         programma = null;
         canale = null;
         inizio = null;
@@ -34,13 +34,6 @@ public class Palinsesto_Imp implements Palinsesto {
         episodio = null;
     }
 
-    public int getKey() {
-        return key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
-    }
 
     public Programma getProgramma() {
         return programma;

@@ -9,9 +9,12 @@ import data.DAO;
 import data.DAO_Interface;
 import data.DataException;
 import data.DataLayer;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Stagione;
 import proxys.Stagione_Proxy;
 
@@ -19,7 +22,9 @@ import proxys.Stagione_Proxy;
  *
  * @author leonardo
  */
-public class Stagione_DAO_Imp extends DAO implements Stagione_DAO, DAO_Interface{
+public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
+    
+    private PreparedStatement create, read, update, delete, readAll;
 
     public Stagione_DAO_Imp(DataLayer d) {
         super(d);
@@ -27,14 +32,36 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO, DAO_Interface
     
     @Override
     public void init() throws DataException {
-        super.init(); //To change body of generated methods, choose Tools | Templates.
+        try {
+            super.init();
+            
+            create = connection.prepareStatement("INSERT INTO Stagione(numero, programmaID) VALUES(?,?)");
+            read = connection.prepareStatement("SELECT * FROM Stagione WHERE idStagione=?");
+            update = connection.prepareStatement("");
+            delete = connection.prepareStatement("");
+            
+            readAll = connection.prepareStatement("");
+
+        }catch (SQLException ex) {
+            throw new DataException("Errore d'inizializzazione Data Layer", ex);
+        }
     }
     
     @Override
     public void destroy() throws DataException {
-        super.destroy(); //To change body of generated methods, choose Tools | Templates.
+        try{
+            
+            create.close();
+            read.close();
+            update.close();
+            delete.close();
+            readAll.close();
+            
+        }catch (SQLException ex) {
+            throw new DataException("Errore di chiusura Data Layer", ex);
+        }
+        super.destroy();
     }
-
 
     @Override
     public Stagione_Proxy makeObj() {
@@ -46,8 +73,9 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO, DAO_Interface
         Stagione_Proxy a = makeObj();
         try {
             
-            a.setKey(rs.getInt("ID"));
+            a.setKey(rs.getInt("idStagione"));
             a.setNumero(rs.getInt("numero"));
+            a.setVersion(rs.getLong("version"));
             
             a.setImmagine_key(rs.getInt("immagineID"));
             
@@ -58,27 +86,46 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO, DAO_Interface
     }
 
     @Override
-    public List getAll(ResultSet rs) {
+    public List getAll() throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void create(Object t) {
+    public void create(Stagione item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Stagione read(int key) throws DataException {
+        Stagione item = null;
+        // Controllo se l'oggetto è nella cache, in caso prendo quello
+        if(dataLayer.getCache().has(Stagione.class, key)){
+            item = dataLayer.getCache().get(Stagione.class, key);
+        }else{
+            try{
+                read.setInt(1, key);
+                try (ResultSet rs = read.executeQuery()){
+                    if(rs.next()){                      
+                        item = makeObj(rs);
+                        // ricorda di aggiungere l'oggetto appena creato nella cache
+                        dataLayer.getCache().add(Stagione.class, item);  
+                    }
+                }  
+            } catch (SQLException ex) {
+                Logger.getLogger(Stagione_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return item;
+    }
+
+    @Override
+    public void update(Stagione item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void update(Object t, String[] params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void delete(Object t) {
+    public void delete(Stagione item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -9,9 +9,12 @@ import data.DAO;
 import data.DAO_Interface;
 import data.DataException;
 import data.DataLayer;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import models.Preferenza;
 import models.Preferenza_Imp;
@@ -21,7 +24,9 @@ import proxys.Preferenza_Proxy;
  *
  * @author leonardo
  */
-public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO, DAO_Interface{
+public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
+    
+    private PreparedStatement create, createCanaliPreferiti, read, update, delete, readAll;
 
     public Preferenza_DAO_Imp(DataLayer d) {
         super(d);
@@ -29,12 +34,37 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO, DAO_Inter
     
     @Override
     public void init() throws DataException {
-        super.init(); //To change body of generated methods, choose Tools | Templates.
+        try {
+            super.init();
+            
+            create = connection.prepareStatement("INSERT INTO Preferenza(fasciaID) VALUES(?)");
+            createCanaliPreferiti = connection.prepareStatement("INSERTI INTO Preferenza_has_Canale(preferenzaID, canaleID) VALUES (?,?)");
+            read = connection.prepareStatement("SELECT * FROM Preferenza WHERE idPreferenza=?");
+            update = connection.prepareStatement("");
+            delete = connection.prepareStatement("");
+            
+            readAll = connection.prepareStatement("");
+
+        }catch (SQLException ex) {
+            throw new DataException("Errore d'inizializzazione Data Layer", ex);
+        }
     }
     
     @Override
     public void destroy() throws DataException {
-        super.destroy(); //To change body of generated methods, choose Tools | Templates.
+        try{
+            
+            create.close();
+            createCanaliPreferiti.close();
+            read.close();
+            update.close();
+            delete.close();
+            readAll.close();
+            
+        }catch (SQLException ex) {
+            throw new DataException("Errore di chiusura Data Layer", ex);
+        }
+        super.destroy();
     }
 
 
@@ -48,7 +78,8 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO, DAO_Inter
         Preferenza_Proxy a = makeObj();
         try {
             
-            a.setKey(rs.getInt("ID"));
+            a.setKey(rs.getInt("idPreferenza"));
+            a.setVersion(rs.getLong("version"));
                        
             a.setFascia_key(rs.getInt("fasciaID"));
             
@@ -58,27 +89,46 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO, DAO_Inter
         return a;    }
 
     @Override
-    public List getAll(ResultSet rs) {
+    public List getAll() throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void create(Object t) {
+    public void create(Preferenza item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Preferenza read(int key) throws DataException {
-        return new Preferenza_Imp();
+        Preferenza item = null;
+        // Controllo se l'oggetto è nella cache, in caso prendo quello
+        if(dataLayer.getCache().has(Preferenza.class, key)){
+            item = dataLayer.getCache().get(Preferenza.class, key);
+        }else{
+            try{
+                read.setInt(1, key);
+                try (ResultSet rs = read.executeQuery()){
+                    if(rs.next()){                      
+                        item = makeObj(rs);
+                        // ricorda di aggiungere l'oggetto appena creato nella cache
+                        dataLayer.getCache().add(Preferenza.class, item);  
+                    }
+                }  
+            } catch (SQLException ex) {
+                Logger.getLogger(Preferenza_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return item;
     }
 
     @Override
-    public void update(Object t, String[] params) {
+    public void update(Preferenza item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Object t) {
+    public void delete(Preferenza item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -5,15 +5,14 @@
  */
 package models;
 
+import data.DataItem;
+
 /**
  *
  * @author leonardo
  */
-public interface Ricerca {
+public interface Ricerca extends DataItem<Integer>{
 
-    public int getKey();
-    public void setKey(int key);
-    
     public Canale getCanale();
     public void setCanale(Canale canale);
 

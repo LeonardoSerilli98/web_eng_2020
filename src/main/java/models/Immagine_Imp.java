@@ -5,24 +5,26 @@
  */
 package models;
 
+import data.DataItemImpl;
+
 /**
  *
  * @author leonardo
  */
-public class Immagine_Imp implements Immagine{
+public class Immagine_Imp extends DataItemImpl<Integer>implements Immagine{
     
-    private int key;
     private String nome;
     private String tipo;
     private long taglia;
 
-    public int getKey() {
-        return key;
+    public Immagine_Imp(){
+        
+        super();
+        nome = "";
+        tipo = "";
+        taglia = 0;
     }
-
-    public void setKey(int key) {
-        this.key = key;
-    }
+   
 
     public String getNome() {
         return nome;

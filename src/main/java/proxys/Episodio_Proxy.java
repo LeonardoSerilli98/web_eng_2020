@@ -14,12 +14,13 @@ import java.util.logging.Logger;
 import models.Episodio_Imp;
 import models.Programma;
 import models.Stagione;
+import data.Data_ItemProxy;
 
 /**
  *
  * @author leonardo
  */
-public class Episodio_Proxy extends Episodio_Imp{
+public class Episodio_Proxy extends Episodio_Imp implements Data_ItemProxy{
         
     protected DataLayer dataLayer;
     protected boolean dirty;
@@ -38,7 +39,7 @@ public class Episodio_Proxy extends Episodio_Imp{
     //METODI SET DELL'IMPLEMENTAZIONE DEL MODELLO (tolti campi di tipo LIST o dotati di PROXY_KEY)
     
     @Override
-    public void setKey(int key) {
+    public void setKey(Integer key) {
         super.setKey(key); 
         this.dirty = true;
     }

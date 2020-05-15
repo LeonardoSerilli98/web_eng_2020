@@ -15,12 +15,13 @@ import java.util.logging.Logger;
 import models.Episodio;
 import models.Immagine;
 import models.Stagione_Imp;
+import data.Data_ItemProxy;
 
 /**
  *
  * @author leonardo
  */
-public class Stagione_Proxy extends Stagione_Imp{
+public class Stagione_Proxy extends Stagione_Imp implements Data_ItemProxy{
         
     protected DataLayer dataLayer;
     protected boolean dirty;
@@ -44,7 +45,7 @@ public class Stagione_Proxy extends Stagione_Imp{
     }
 
     @Override
-    public void setKey(int key) {
+    public void setKey(Integer key) {
         super.setKey(key); 
         this.dirty = true;
 

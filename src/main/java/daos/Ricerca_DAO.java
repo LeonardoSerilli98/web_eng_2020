@@ -5,10 +5,13 @@
  */
 package daos;
 
+import data.DAO_Interface;
+import models.Ricerca;
+
 /**
  *
  * @author leonardo
  */
-public interface Ricerca_DAO {
+public interface Ricerca_DAO  extends DAO_Interface<Ricerca>{
     
 }

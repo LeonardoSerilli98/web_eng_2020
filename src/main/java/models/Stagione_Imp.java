@@ -5,26 +5,26 @@
  */
 package models;
 
+import data.DataItemImpl;
 import java.util.List;
 
 /**
  *
  * @author leonardo
  */
-public class Stagione_Imp implements Stagione {
+public class Stagione_Imp extends DataItemImpl<Integer> implements Stagione {
     
-    private int key;
     private int numero;
     private Immagine immagine;
     private List<Episodio> episodi;
 
-    public int getKey(){
-        return this.key;
+    public Stagione_Imp(){
+        super();
+        numero = 0;
+        immagine = null;
+        episodi = null;
     }
-    public void setKey(int key){
-        this.key = key;
-    }
-
+    
     public int getNumero(){
         return this.numero;
     }

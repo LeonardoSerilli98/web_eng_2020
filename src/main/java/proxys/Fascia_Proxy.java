@@ -8,12 +8,13 @@ package proxys;
 import data.DataLayer;
 import java.sql.Time;
 import models.Fascia_Imp;
+import data.Data_ItemProxy;
 
 /**
  *
  * @author leonardo
  */
-public class Fascia_Proxy extends Fascia_Imp{
+public class Fascia_Proxy extends Fascia_Imp implements Data_ItemProxy{
         
     protected DataLayer dataLayer;
     protected boolean dirty;
@@ -30,7 +31,7 @@ public class Fascia_Proxy extends Fascia_Imp{
     //METODI SET DELL'IMPLEMENTAZIONE DEL MODELLO (tolti campi di tipo LIST o dotati di PROXY_KEY)
     
     @Override
-    public void setKey(int key) {
+    public void setKey(Integer key) {
         super.setKey(key); 
         this.dirty = true;
     }

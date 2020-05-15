@@ -7,19 +7,20 @@ package proxys;
 
 import data.DataLayer;
 import models.Genere_Imp;
+import data.Data_ItemProxy;
 
 /**
  *
  * @author leonardo
  */
-public class Genere_Proxy extends Genere_Imp{
+public class Genere_Proxy extends Genere_Imp implements Data_ItemProxy{
         
     protected DataLayer dataLayer;
     protected boolean dirty;
           
     public Genere_Proxy(DataLayer d) {
         super();
-        
+
         this.dataLayer = d;
         this.dirty = false;
         
@@ -28,7 +29,7 @@ public class Genere_Proxy extends Genere_Imp{
     //METODI SET DELL'IMPLEMENTAZIONE DEL MODELLO (tolti campi di tipo LIST o dotati di PROXY_KEY)
     
     @Override
-    public void setKey(int key) {
+    public void setKey(Integer key) {
         super.setKey(key);
         this.dirty = true;
     }
@@ -45,10 +46,12 @@ public class Genere_Proxy extends Genere_Imp{
     
     //METODI DEL PROXY
     
+    @Override
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
-        }
+    }
 
+    @Override
     public boolean isDirty() {
             return dirty;
     }

@@ -5,14 +5,15 @@
  */
 package models;
 
+import data.DataItemImpl;
 import java.util.List;
 
 /**
  *
  * @author leonardo
  */
-public class Programma_Imp implements Programma{
-    private int key;
+public class Programma_Imp extends DataItemImpl<Integer> implements Programma{
+    
     private String nome;
     private String descrizione;
     private Genere genere;
@@ -20,13 +21,17 @@ public class Programma_Imp implements Programma{
     private String approfondimento;
     private Immagine immagine;
     
-    public int getKey(){
-        return this.key;
+    public Programma_Imp(){
+        
+        super();
+        nome = "";
+        descrizione = "";
+        genere = null;
+        isSerie = false;
+        approfondimento = "";
+        immagine = null;
+        
     }
-    public void setKey(int key){
-        this.key = key;
-    }
-
     public String getNome(){
         return this.nome;
     }

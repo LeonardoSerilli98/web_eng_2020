@@ -5,10 +5,13 @@
  */
 package daos;
 
+import data.DAO_Interface;
+import models.Preferenza;
+
 /**
  *
  * @author leonardo
  */
-public interface Preferenza_DAO {
+public interface Preferenza_DAO extends DAO_Interface<Preferenza>{
     
 }

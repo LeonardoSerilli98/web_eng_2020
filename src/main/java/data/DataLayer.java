@@ -35,7 +35,7 @@ public class DataLayer implements AutoCloseable {
     }
 
     public void init() throws DataException {
-        //call registerDAO on your own DAOs
+        //call registerDAO for your own DAOs
     }
 
     public void destroy() {
@@ -61,8 +61,6 @@ public class DataLayer implements AutoCloseable {
         return cache;
     }
 
-    //metodo dell'interfaccia AutoCloseable (permette di usare questa classe nei try-with-resources)
-    //method from the Autocloseable interface (allows this class to be used in try-with-resources)
     @Override
     public void close() throws Exception {
         destroy();

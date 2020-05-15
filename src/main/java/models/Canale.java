@@ -5,16 +5,15 @@
  */
 package models;
 
+import data.DataItem;
+
 
 /**
  *
  * @author leonardo
  */
-public interface Canale {
+public interface Canale extends DataItem<Integer>  {
     
-    int getKey(); 
-    void setKey(int key);
-
     String getNome();
     void setNome(String nome);
     

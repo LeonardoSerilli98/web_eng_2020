@@ -5,10 +5,13 @@
  */
 package daos;
 
+import data.DAO_Interface;
+import models.Fascia;
+
 /**
  *
  * @author leonardo
  */
-public interface Fascia_DAO {
+public interface Fascia_DAO extends DAO_Interface<Fascia>{
     
 }

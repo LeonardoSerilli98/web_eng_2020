@@ -5,10 +5,13 @@
  */
 package daos;
 
+import data.DAO_Interface;
+import models.Stagione;
+
 /**
  *
  * @author leonardo
  */
-public interface Stagione_DAO {
+public interface Stagione_DAO  extends DAO_Interface<Stagione>{
     
 }

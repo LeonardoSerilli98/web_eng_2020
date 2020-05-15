@@ -5,31 +5,24 @@
  */
 package models;
 
+import data.DataItemImpl;
+
 /**
  *
  * @author leonardo
  */
-public class Episodio_Imp implements Episodio {
+public class Episodio_Imp extends DataItemImpl<Integer> implements Episodio {
     
-    private int key;
     private int numero;
     private Stagione stagione;
     private Programma serie;
     
     public Episodio_Imp (){
-        key = 0;
+        super();
         numero = 0;
         stagione = null;
         serie = null;
     }   
-
-    public int getKey() {
-        return key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
-    }
 
     public int getNumero() {
         return numero;

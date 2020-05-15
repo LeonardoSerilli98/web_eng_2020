@@ -5,17 +5,15 @@
  */
 package models;
 
+import data.DataItem;
 import java.sql.Time;
 
 /**
  *
  * @author leonardo
  */
-public interface Fascia {
+public interface Fascia extends DataItem<Integer>{
     
-    public int getKey();
-    public void setKey(int key);
-            
     public Time getInizio();
     public void setInizio(Time inizio);
             

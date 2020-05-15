@@ -5,6 +5,7 @@
  */
 package daos;
 
+import data.DAO_Interface;
 import data.DataException;
 import java.util.List;
 import models.Episodio;
@@ -15,7 +16,7 @@ import models.Stagione;
  *
  * @author leonardo
  */
-public interface Episodio_DAO {
+public interface Episodio_DAO extends DAO_Interface<Episodio>{
     
     List<Episodio> getEpisodiByProgramma(Programma programma) throws DataException;
     List<Episodio> getEpisodiByStagione(Stagione stagione) throws DataException;

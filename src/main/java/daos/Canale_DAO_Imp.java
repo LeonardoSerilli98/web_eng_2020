@@ -6,7 +6,6 @@
 package daos;
 
 import data.DAO;
-import data.DAO_Interface;
 import data.DataException;
 import data.DataLayer;
 import java.sql.PreparedStatement;
@@ -24,10 +23,12 @@ import proxys.Canale_Proxy;
  *
  * @author leonardo
  */
-public class Canale_DAO_Imp extends DAO implements DAO_Interface, Canale_DAO{
+public class Canale_DAO_Imp extends DAO implements Canale_DAO{
     
     // dichiariamo qui i prepared Statement
+    private PreparedStatement create, read, update, delete, readAll;
     private PreparedStatement canaleByPreferenza;
+
     
     public Canale_DAO_Imp(DataLayer d) {
         super(d);
@@ -43,7 +44,15 @@ public class Canale_DAO_Imp extends DAO implements DAO_Interface, Canale_DAO{
         
         try {            
             
+            create = connection.prepareStatement("INSERT INTO Canale (nome, immagineID, ) VALUES (?, ?)");
+            read = connection.prepareStatement("SELECT * FROM Canale WHERE idCanale=?");
+            update = connection.prepareStatement("");
+            delete = connection.prepareStatement("");
+            
+            readAll = connection.prepareStatement("");            
+            
             canaleByPreferenza = connection.prepareStatement("SELECT canaleID FROM Preferenza WHERE idPreferenze=?");
+            
             
         } catch (SQLException ex) {
             throw new DataException("Errore di inizializzazione per 'GuidaTV Data Layer'", ex);
@@ -57,6 +66,12 @@ public class Canale_DAO_Imp extends DAO implements DAO_Interface, Canale_DAO{
             //qui dentro chiudiamo i preparedStmnt
             
         try {
+            
+            create.close();
+            read.close();
+            update.close();
+            delete.close();
+            readAll.close();
 
             canaleByPreferenza.close();
             
@@ -75,12 +90,13 @@ public class Canale_DAO_Imp extends DAO implements DAO_Interface, Canale_DAO{
     }
 
     @Override
-    public Canale_Proxy makeObj(ResultSet rs) throws DataException {
+    public Canale_Proxy makeObj(ResultSet rs) throws DataException{
         Canale_Proxy a = makeObj();
         try {
             
             a.setKey(rs.getInt("idCanale"));
             a.setNome(rs.getString("nome"));
+            a.setVersion(rs.getLong("version"));
             
             a.setImmagine_key(rs.getInt("immagineID"));
             
@@ -91,27 +107,46 @@ public class Canale_DAO_Imp extends DAO implements DAO_Interface, Canale_DAO{
     }
 
     @Override
-    public List<Canale> getAll(ResultSet rs) {
+    public List<Canale> getAll() throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void create(Object t) {
+    public void create(Canale item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Canale read(int key) throws DataException {
+        Canale item = null;
+        // Controllo se l'oggetto è nella cache, in caso prendo quello
+        if(dataLayer.getCache().has(Canale.class, key)){
+            item = dataLayer.getCache().get(Canale.class, key);
+        }else{
+            try{
+                read.setInt(1, key);
+                try (ResultSet rs = read.executeQuery()){
+                    if(rs.next()){                      
+                        item = makeObj(rs);
+                        // ricorda di aggiungere l'oggetto appena creato nella cache
+                        dataLayer.getCache().add(Canale.class, item);  
+                    }
+                }  
+            } catch (SQLException ex) {
+                Logger.getLogger(Canale_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return item;
+    }
+
+    @Override
+    public void update(Canale item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void update(Object t, String[] params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void delete(Object t) {
+    public void delete(Canale item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -5,28 +5,26 @@
  */
 package models;
 
+import data.DataItemImpl;
 import java.sql.Time;
 
 /**
  *
  * @author leonardo
  */
-public class Fascia_Imp implements Fascia{
+public class Fascia_Imp extends DataItemImpl<Integer> implements Fascia{
     
-    private int key;
     private Time inizio;
     private Time fine;
     private String fascia;
-
-
-    public int getKey() {
-        return key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
-    }
     
+    public Fascia_Imp(){
+        super();
+        inizio = null;
+        fine = null;
+        fascia = "";
+    }
+
     public Time getInizio() {
         return inizio;
     }

@@ -5,14 +5,14 @@
  */
 package models;
 
+import data.DataItem;
+
 /**
  *
  * @author leonardo
  */
-public interface Genere {
-    public int getKey();
-    public void setKey(int key);
-     
+public interface Genere extends DataItem<Integer>{
+
     public String getNome();
     public void setNome(String nome);
     

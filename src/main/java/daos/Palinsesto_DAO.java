@@ -5,10 +5,13 @@
  */
 package daos;
 
+import data.DAO_Interface;
+import models.Palinsesto;
+
 /**
  *
  * @author leonardo
  */
-public interface Palinsesto_DAO {
+public interface Palinsesto_DAO extends DAO_Interface<Palinsesto>{
     
 }

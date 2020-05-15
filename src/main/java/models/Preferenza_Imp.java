@@ -5,32 +5,24 @@
  */
 package models;
 
+import data.DataItemImpl;
 import java.util.List;
 
 /**
  *
  * @author leonardo
  */
-public class Preferenza_Imp implements Preferenza{
+public class Preferenza_Imp extends DataItemImpl<Integer> implements Preferenza{
     
-    private int key;
     private List<Canale> canali;
     private Fascia fascia;
     
     public Preferenza_Imp(){
         
-        key = 0;
+        super();
         canali = null;
         fascia = null;      
                 
-    }
-
-    public int getKey() {
-        return key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
     }
 
     public List<Canale> getCanali() {

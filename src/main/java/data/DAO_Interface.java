@@ -17,12 +17,12 @@ public interface DAO_Interface<T> {
     T makeObj();
     T makeObj(ResultSet rs) throws DataException;
     
-    List<T> getAll(ResultSet rs);
+    List<T> getAll() throws DataException;
     
-    void create(T t);
+    void create(T item) throws DataException;
     T read(int key) throws DataException;
-    void update(T t, String[] params);
-    void delete(T t);
+    void update(T item) throws DataException;
+    void delete(T item) throws DataException;
     
      
 }

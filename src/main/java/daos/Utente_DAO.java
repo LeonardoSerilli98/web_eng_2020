@@ -5,10 +5,13 @@
  */
 package daos;
 
+import data.DAO_Interface;
+import models.Utente;
+
 /**
  *
  * @author leonardo
  */
-public interface Utente_DAO {
+public interface Utente_DAO extends DAO_Interface<Utente>{
     
 }

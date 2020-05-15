@@ -19,12 +19,13 @@ import models.Episodio;
 import models.Fascia;
 import models.Palinsesto_Imp;
 import models.Programma;
+import data.Data_ItemProxy;
 
 /**
  *
  * @author leonardo
  */
-public class Palinsesto_Proxy extends Palinsesto_Imp{
+public class Palinsesto_Proxy extends Palinsesto_Imp implements Data_ItemProxy{
         
     protected DataLayer dataLayer;
     protected boolean dirty;
@@ -46,7 +47,7 @@ public class Palinsesto_Proxy extends Palinsesto_Imp{
     //METODI SET DELL'IMPLEMENTAZIONE DEL MODELLO (tolti campi di tipo LIST o dotati di PROXY_KEY)
     
     @Override
-    public void setKey(int key) {
+    public void setKey(Integer key) {
         super.setKey(key);
         this.dirty = true;
     }
