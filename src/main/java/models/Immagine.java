@@ -22,4 +22,12 @@ public interface Immagine extends DataItem<Integer>{
     public long getTaglia();
     public void setTaglia(long taglia);
     
+    public Stagione getStagione();
+    public void setStagione(Stagione stagione);
+    
+    public Programma getProgramma();
+    public void setProgramma(Programma programma);
+    
+    
+    
 }

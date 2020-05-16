@@ -8,6 +8,9 @@ package daos;
 import data.DAO;
 import data.DataException;
 import data.DataLayer;
+import data.Data_ItemProxy;
+import data.OptimisticLockException;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,10 +41,10 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
             
             create = connection.prepareStatement("INSERT INTO Palinsesto(inizio, fine, data, programmaID, episodoID, fasciaID, canaleID) VALUES (?,?,?,?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Palinsesto WHERE idPalinsesto=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Palinsesto SET inizio=?, fine=?, data=?, programmaID=?, episodioID=?, fasciaID=?, canaleID=?, versione=? WHERE idPalinsesto=? and version=?");
             delete = connection.prepareStatement("");
             
-            readAll = connection.prepareStatement("");
+            readAll = connection.prepareStatement("SELECT idPalinsesto FORM Palisesto");
 
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -109,8 +112,34 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
 
     @Override
     public void create(Palinsesto item) throws DataException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        if (item.getKey() != null && item.getKey() > 0) { 
+                update(item);
+            }else{ 
+                try {                 
+                    
+                    update.setTime(1, item.getInizio());
+                    update.setTime(2, item.getFine());
+                    update.setDate(3, (Date) item.getData()); 
+                    update.setInt(4, item.getProgramma().getKey());
+                    update.setInt(5, item.getEpisodio().getKey());
+                    update.setInt(6, item.getFascia().getKey());
+                    update.setInt(7, item.getCanale().getKey());
+                    
+                    if(create.executeUpdate() == 1){                       
+                        ResultSet keys = create.getGeneratedKeys();
+                        if(keys.next()){
+                            item.setKey(keys.getInt(1));
+                            dataLayer.getCache().add(Palinsesto.class, item);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new DataException("Unable to create Palinsesto", ex);
+                }
+                
+            }
+            if(item instanceof Data_ItemProxy){
+                ((Data_ItemProxy) item).setDirty(false);
+            }    }
 
     @Override
     public Palinsesto read(int key) throws DataException {
@@ -138,7 +167,36 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
 
     @Override
     public void update(Palinsesto item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                 return;
+             }
+             
+             long versione = (long) item.getVersion();
+         
+ 
+             update.setTime(1, item.getInizio());
+             update.setTime(2, item.getFine());
+             update.setDate(3, (Date) item.getData()); 
+             update.setInt(4, item.getProgramma().getKey());
+             update.setInt(5, item.getEpisodio().getKey());
+             update.setInt(6, item.getFascia().getKey());
+             update.setInt(7, item.getCanale().getKey());
+             update.setLong(8, versione+1);
+             
+             update.setInt(9, item.getKey());
+             update.setLong(10, versione);
+             
+             if(update.executeUpdate() == 0){
+                 throw new OptimisticLockException(item);
+             }
+             
+             item.setVersion(versione + 1);
+             
+         } catch (SQLException ex) {
+             throw new DataException("Unable to update Palinsesto", ex);
+         }
     }
 
     @Override

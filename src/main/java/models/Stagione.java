@@ -20,6 +20,9 @@ public interface Stagione extends DataItem<Integer>{
 
     public Immagine getImmagine();
     public void setImmagine(Immagine immagine);
+    
+    public Programma getProgramma();
+    public void setProgramma(Programma programma);
 
     public List<Episodio> getEpisodi();
     public void setEpisodi(List<Episodio> episodi);

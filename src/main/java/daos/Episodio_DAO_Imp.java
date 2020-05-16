@@ -9,6 +9,8 @@ import data.DAO;
 import data.DAO_Interface;
 import data.DataException;
 import data.DataLayer;
+import data.Data_ItemProxy;
+import data.OptimisticLockException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,12 +44,12 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
         
         try {
             
-            create = connection.prepareStatement("INSERT INTO Episodio (numero, programmaID, stagioneID) VALUES(?,?,?)");
+            create = connection.prepareStatement("INSERT INTO Episodio (titolo, numero, programmaID, stagioneID) VALUES(?, ?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Episodio WHERE idEpisodio=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Episodio SET titolo=?, numero=?, programmaID=?, stagioneID=?, version=? WHERE idEpisodio=? and version=?");
             delete = connection.prepareStatement("");
             
-            readAll = connection.prepareStatement("");              
+            readAll = connection.prepareStatement("SELECT idEpisodio FROM Episodio");              
 
             episodioByProgramma = connection.prepareStatement("SELECT * FROM Episodio WHERE programmaID=?");
             episodioByStagione = connection.prepareStatement("SELECT * FROM Episodio WHERE stagioneID=?");
@@ -89,6 +91,7 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
             
             a.setKey(rs.getInt("idEpisodio"));
             a.setNumero(rs.getInt("numero"));
+            a.setTitolo(rs.getString("titolo"));
             
             a.setStagione_key(rs.getInt("stagioneID"));
             a.setSerie_key(rs.getInt("programmaID"));
@@ -116,7 +119,32 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
 
     @Override
     public void create(Episodio item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        if (item.getKey() != null && item.getKey() > 0) { 
+                update(item);
+            }else{ 
+                try {                 
+                    
+                    update.setString(1, item.getTitolo());
+                    update.setInt(2, item.getNumero());
+                    update.setInt(3, item.getSerie().getKey()); 
+                    update.setInt(4, item.getStagione().getKey());
+                    
+                    if(create.executeUpdate() == 1){                       
+                        ResultSet keys = create.getGeneratedKeys();
+                        if(keys.next()){
+                            item.setKey(keys.getInt(1));
+                            dataLayer.getCache().add(Episodio.class, item);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new DataException("Unable to create Episodio", ex);
+                }
+                
+            }
+            if(item instanceof Data_ItemProxy){
+                ((Data_ItemProxy) item).setDirty(false);
+            }
     }
 
     @Override
@@ -145,7 +173,34 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
 
     @Override
     public void update(Episodio item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                 return;
+             }
+             
+             long versione = (long) item.getVersion();
+         
+ 
+             update.setString(1, item.getTitolo());
+             update.setInt(2, item.getNumero());
+             update.setInt(3, item.getSerie().getKey()); 
+             update.setInt(4, item.getStagione().getKey());
+             update.setLong(5, versione+1);
+             
+             update.setInt(6, item.getKey());
+             update.setLong(7, versione);
+             
+             if(update.executeUpdate() == 0){
+                 throw new OptimisticLockException(item);
+             }
+             
+             item.setVersion(versione + 1);
+             
+         } catch (SQLException ex) {
+             throw new DataException("Unable to update Canale", ex);
+         }
+        
     }
 
     @Override

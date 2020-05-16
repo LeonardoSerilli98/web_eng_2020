@@ -14,12 +14,14 @@ import data.DataItemImpl;
 public class Episodio_Imp extends DataItemImpl<Integer> implements Episodio {
     
     private int numero;
+    private String titolo;
     private Stagione stagione;
     private Programma serie;
     
     public Episodio_Imp (){
         super();
         numero = 0;
+        titolo = "";
         stagione = null;
         serie = null;
     }   
@@ -46,6 +48,16 @@ public class Episodio_Imp extends DataItemImpl<Integer> implements Episodio {
 
     public void setSerie(Programma serie) {
         this.serie = serie;
+    }
+
+    @Override
+    public String getTitolo() {
+        return this.titolo;
+    }
+
+    @Override
+    public void setTitolo(String titolo) {
+        this.titolo = titolo;
     }
     
 }

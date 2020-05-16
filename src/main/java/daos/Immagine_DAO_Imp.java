@@ -8,6 +8,8 @@ package daos;
 import data.DAO;
 import data.DataException;
 import data.DataLayer;
+import data.Data_ItemProxy;
+import data.OptimisticLockException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,10 +39,10 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
 
             create = connection.prepareStatement("INSERT INTO Immagine (tipo, nome, taglia, stagioneID, programmaID), values(?,?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Immagine WHERE idImmagine=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Immagine SET tipo=?, nome=?, taglia=?, stagioneID=?, programmaID=?, version=? WHERE idImmagine=? and version=?");
             delete = connection.prepareStatement("");
             
-            readAll = connection.prepareStatement("");
+            readAll = connection.prepareStatement("SELECT idImmagine FROM Immagine");
             
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -103,7 +105,29 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
 
     @Override
     public void create(Immagine item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (item.getKey() != null && item.getKey() > 0) { 
+                update(item);
+            }else{ 
+                try {                 
+                    
+                 update.setString(1, item.getTipo());
+                 update.setString(2, item.getNome());
+                 update.setLong(3, item.getTaglia()); 
+                 update.setInt(4, item.getStagione().getKey());
+                 update.setInt(5, item.getProgramma().getKey());
+                    
+                    if(create.executeUpdate() == 1){                       
+                        ResultSet keys = create.getGeneratedKeys();
+                        if(keys.next()){
+                            item.setKey(keys.getInt(1));
+                            dataLayer.getCache().add(Immagine.class, item);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new DataException("Unable to create Immagine", ex);
+                }
+                
+            }
     }
 
     @Override
@@ -135,7 +159,37 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
 
     @Override
     public void update(Immagine item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        try {
+
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                 return;
+             }
+             
+             long versione = (long) item.getVersion();
+         
+ 
+             update.setString(1, item.getTipo());
+             update.setString(2, item.getNome());
+             update.setLong(3, item.getTaglia()); 
+             update.setInt(4, item.getStagione().getKey());
+             update.setInt(5, item.getProgramma().getKey());
+             update.setLong(6, versione+1);
+             
+             update.setInt(7, item.getKey());
+             update.setLong(8, versione);
+             
+             if(update.executeUpdate() == 0){
+                 throw new OptimisticLockException(item);
+             }
+             
+             item.setVersion(versione + 1);
+             
+         } catch (SQLException ex) {
+             throw new DataException("Unable to update Immagine", ex);
+         }
+    
+    
     }
 
     @Override

@@ -22,4 +22,7 @@ public interface Episodio extends DataItem<Integer>{
     public Programma getSerie();
     public void setSerie(Programma serie);
     
+    public String getTitolo();
+    public void setTitolo(String titolo);
+    
 }

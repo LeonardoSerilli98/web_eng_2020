@@ -49,6 +49,12 @@ public class Episodio_Proxy extends Episodio_Imp implements Data_ItemProxy{
         super.setNumero(numero);  
         this.dirty = true;
     }
+    
+     @Override
+    public void setTitolo(String titolo) {
+        super.setTitolo(titolo);  
+        this.dirty = true;
+    }
 
 
     //METODI SET/GET DEI CAMPI DOTATI DI PROXY_KEY

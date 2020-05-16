@@ -16,12 +16,14 @@ public class Stagione_Imp extends DataItemImpl<Integer> implements Stagione {
     
     private int numero;
     private Immagine immagine;
+    private Programma programma;
     private List<Episodio> episodi;
 
     public Stagione_Imp(){
         super();
         numero = 0;
         immagine = null;
+        programma = null;
         episodi = null;
     }
     
@@ -44,6 +46,14 @@ public class Stagione_Imp extends DataItemImpl<Integer> implements Stagione {
     }
     public void setEpisodi(List<Episodio> episodi){
         this.episodi = episodi;
+    }
+
+    public Programma getProgramma() {
+        return programma;
+    }
+
+    public void setProgramma(Programma programma) {
+        this.programma = programma;
     }
 
    

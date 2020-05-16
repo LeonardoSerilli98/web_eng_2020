@@ -7,6 +7,7 @@ package proxys;
 
 import daos.Episodio_DAO;
 import daos.Immagine_DAO_Imp;
+import daos.Programma_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
 import java.util.List;
@@ -16,6 +17,7 @@ import models.Episodio;
 import models.Immagine;
 import models.Stagione_Imp;
 import data.Data_ItemProxy;
+import models.Programma;
 
 /**
  *
@@ -26,6 +28,7 @@ public class Stagione_Proxy extends Stagione_Imp implements Data_ItemProxy{
     protected DataLayer dataLayer;
     protected boolean dirty;
     protected int immagine_key;
+    protected int programma_key;
    
     public Stagione_Proxy(DataLayer d) {
         super();
@@ -33,6 +36,7 @@ public class Stagione_Proxy extends Stagione_Imp implements Data_ItemProxy{
         this.dataLayer = d;
         this.dirty = false;
         this.immagine_key = 0;
+        this.programma_key=0;
         
     }
     
@@ -72,6 +76,25 @@ public class Stagione_Proxy extends Stagione_Imp implements Data_ItemProxy{
         return super.getImmagine();
     }
     
+       @Override
+    public void setProgramma(Programma programma) {
+        super.setProgramma(programma); 
+        this.programma_key = programma.getKey();
+        this.dirty = true;
+    }
+
+    @Override
+    public Programma getProgramma() {       
+        
+        if (super.getProgramma() == null && programma_key > 0) {           
+            try {               
+                super.setProgramma(((Programma_DAO_Imp) dataLayer.getDAO(Programma.class)).read(programma_key));               
+            } catch (DataException ex) {        
+                Logger.getLogger(Stagione_Proxy.class.getName()).log(Level.SEVERE, null, ex);  
+            }
+        }
+        return super.getProgramma(); 
+    }
     //METODI SET/GET DEI CAMPI DI TIPO LIST
 
     @Override

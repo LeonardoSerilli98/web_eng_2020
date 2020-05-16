@@ -8,6 +8,8 @@ package daos;
 import data.DAO;
 import data.DataException;
 import data.DataLayer;
+import data.Data_ItemProxy;
+import data.OptimisticLockException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,10 +39,10 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
 
             create = connection.prepareStatement("INSERT INTO Fascia(inizio, fine, fascia) VALUES(?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Fascia WHERE idFascia=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Fascia SET inizio=?, fine=?, fascia=?, version=? WHERE idFascia=?, version=?");
             delete = connection.prepareStatement("");
             
-            readAll = connection.prepareStatement(""); 
+            readAll = connection.prepareStatement("SELECT idFascia FROM Fascia"); 
             
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -102,7 +104,30 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
 
     @Override
     public void create(Fascia item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (item.getKey() != null && item.getKey() > 0) { 
+                update(item);
+            }else{ 
+                try {                 
+                    
+                    update.setTime(1, item.getInizio());
+                    update.setTime(3, item.getFine());
+                    update.setString(3, item.getFascia());                    
+                    
+                    if(create.executeUpdate() == 1){                       
+                        ResultSet keys = create.getGeneratedKeys();
+                        if(keys.next()){
+                            item.setKey(keys.getInt(1));
+                            dataLayer.getCache().add(Fascia.class, item);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new DataException("Unable to create Fascia", ex);
+                }
+                
+            }
+            if(item instanceof Data_ItemProxy){
+                ((Data_ItemProxy) item).setDirty(false);
+            }
     }
 
     @Override
@@ -131,7 +156,32 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
 
     @Override
     public void update(Fascia item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         try {
+
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                 return;
+             }
+             
+             long versione = (long) item.getVersion();
+         
+ 
+             update.setTime(1, item.getInizio());
+             update.setTime(2, item.getFine());
+             update.setString(3, item.getFascia());
+             update.setLong(4, versione+1);
+             
+             update.setInt(5, item.getKey());
+             update.setLong(6, versione);
+             
+             if(update.executeUpdate() == 0){
+                 throw new OptimisticLockException(item);
+             }
+             
+             item.setVersion(versione + 1);
+             
+         } catch (SQLException ex) {
+             throw new DataException("Unable to update Fascia", ex);
+         }
     }
 
     @Override
