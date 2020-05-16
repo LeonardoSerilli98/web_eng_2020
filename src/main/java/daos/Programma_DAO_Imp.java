@@ -5,10 +5,8 @@
  */
 package daos;
 
-import data.DAO;
-import data.DAO_Interface;
-import data.DataException;
-import data.DataLayer;
+import data.*;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Programma;
+import models.Utente;
 import proxys.Programma_Proxy;
 
 /**
@@ -38,10 +37,10 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
             
             create = connection.prepareStatement("INSERT INTO Programma(nome, descrizione, isSerie, approfondimento, genereID) VALUES(?,?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Programma WHERE idProgramma=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Programma SET nome=? descrizione=? isSerie=? approfondimento=? genereID=? version=? WHERE idProgramma=? and version=?");
             delete = connection.prepareStatement("");
             
-            readAll = connection.prepareStatement("");
+            readAll = connection.prepareStatement("SELECT idProgramma FROM Programma");
 
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -108,7 +107,28 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
 
     @Override
     public void create(Programma item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (item.getKey() != null && item.getKey() > 0){
+            update(item);
+        } else {
+            try {
+                create.setString(1, item.getNome());
+                create.setString(2, item.getDescrizione());
+                create.setBoolean(3, item.getIsSerie());
+                create.setString(4, item.getApprofondimento());
+                create.setInt(5, item.getGenere().getKey());
+                if (create.executeUpdate() == 1){
+                    ResultSet keys = create.getGeneratedKeys();
+                    while ( keys.next()) {
+                        item.setKey(keys.getInt(1));
+
+                        // ricordiamo di inserire l'oggetto appena creato in cache
+                        dataLayer.getCache().add(Programma.class, item);
+                    }
+                }
+            } catch (SQLException ex) {
+                throw new DataException("Unable to create programma", ex);
+            }
+        }
     }
 
     @Override
@@ -135,9 +155,34 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
         return item;
     }
 
+    //UPDATE Programma SET nome=? descrizione=? isSerie=? approfondimento=? genereID=? version=? WHERE idProgramma=? and version=?
     @Override
     public void update(Programma item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                return;
+            }
+
+            long versione = (long) item.getVersion();
+
+            update.setString(1, item.getNome());
+            update.setString(2, item.getDescrizione());
+            update.setBoolean(3, item.getIsSerie());
+            update.setString(4, item.getApprofondimento());
+            update.setInt(5, item.getGenere().getKey());
+            update.setLong(6, versione + 1);
+
+            update.setInt(7, item.getKey());
+            update.setLong(8, versione);
+
+            if (update.executeUpdate() == 0){
+                throw new OptimisticLockException(item);
+            }
+
+            item.setVersion(versione + 1);
+        } catch (SQLException ex) {
+            throw new DataException("Unable to update programma", ex);
+        }
     }
 
     @Override

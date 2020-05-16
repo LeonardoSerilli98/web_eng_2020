@@ -5,10 +5,8 @@
  */
 package daos;
 
-import data.DAO;
-import data.DAO_Interface;
-import data.DataException;
-import data.DataLayer;
+import data.*;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import models.Ricerca;
+import models.Utente;
 import proxys.Ricerca_Proxy;
 
 /**
@@ -39,10 +38,10 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
             
             create = connection.prepareStatement("INSERT INTO Ricerca(fasciaID, programmaID, genereID, canaleID) VALUES(?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Ricerca WHERE idRicerca=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Ricerca SET fasciaID=? programmaID=? genereID=? canaleID=? version=? WHERE idRicerca=? and version=?");
             delete = connection.prepareStatement("");
             
-            readAll = connection.prepareStatement("");
+            readAll = connection.prepareStatement("SELECT idRicerca FROM Ricerca");
 
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -106,7 +105,27 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
 
     @Override
     public void create(Ricerca item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (item.getKey() != null && item.getKey() > 0){
+            update(item);
+        } else {
+            try {
+                create.setInt(1, item.getFascia().getKey());
+                create.setInt(2, item.getProgramma().getKey());
+                create.setInt(3, item.getGenere().getKey());
+                create.setInt(4, item.getCanale().getKey());
+                if (create.executeUpdate() == 1){
+                    ResultSet keys = create.getGeneratedKeys();
+                    while ( keys.next()) {
+                        item.setKey(keys.getInt(1));
+
+                        // ricordiamo di inserire l'oggetto appena creato in cache
+                        dataLayer.getCache().add(Ricerca.class, item);
+                    }
+                }
+            } catch (SQLException ex) {
+                throw new DataException("Unable to create ricerca", ex);
+            }
+        }
     }
 
     @Override
@@ -135,7 +154,30 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
 
     @Override
     public void update(Ricerca item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                return;
+            }
+
+            long versione = (long) item.getVersion();
+
+            update.setInt(1, item.getFascia().getKey());
+            update.setInt(2, item.getProgramma().getKey());
+            update.setInt(3, item.getGenere().getKey());
+            update.setInt(4, item.getCanale().getKey());
+            update.setLong(5, versione + 1);
+
+            update.setInt(6, item.getKey());
+            update.setLong(7, versione);
+
+            if (update.executeUpdate() == 0){
+                throw new OptimisticLockException(item);
+            }
+
+            item.setVersion(versione + 1);
+        } catch (SQLException ex) {
+            throw new DataException("Unable to update ricerca", ex);
+        }
     }
 
     @Override

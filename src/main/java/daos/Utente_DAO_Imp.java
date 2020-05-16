@@ -5,10 +5,8 @@
  */
 package daos;
 
-import data.DAO;
-import data.DAO_Interface;
-import data.DataException;
-import data.DataLayer;
+import data.*;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import models.Canale;
 import models.Utente;
 import proxys.Utente_Proxy;
 
@@ -36,12 +36,13 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
         try {
             super.init();
             
-            create = connection.prepareStatement("INSERT INTO Utente(email, password, preferenzaID, ricercaID) VALUES(?,?,?,?)");
+            create = connection.prepareStatement("INSERT INTO Utente(email, password, preferenzaID, ricercaID) VALUES(?,MD5(?),?,?)");
             read = connection.prepareStatement("SELECT * FROM Utente WHERE idUtente=?");
-            update = connection.prepareStatement("");
-            delete = connection.prepareStatement("");
+
+            update = connection.prepareStatement("UPDATE Utente SET email=? password=MD5(?) ricercaID=? preferenzaID=? version=? WHERE idUtente=? and version=?");
+            delete = connection.prepareStatement("DELETE FROM Utente WHERE idUtente=?");
             
-            readAll = connection.prepareStatement("");
+            readAll = connection.prepareStatement("SELECT idUtente FROM Utente");
 
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -106,7 +107,27 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
 
     @Override
     public void create(Utente item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (item.getKey() != null && item.getKey() > 0){
+            update(item);
+        } else {
+            try {
+                create.setString(1, item.getEmail());
+                create.setString(2, item.getPassword());
+                create.setInt(3, item.getRicerca().getKey());
+                create.setInt(4, item.getPreferenza().getKey());
+                if (create.executeUpdate() == 1){
+                    ResultSet keys = create.getGeneratedKeys();
+                    while ( keys.next()) {
+                        item.setKey(keys.getInt(1));
+
+                        // ricordiamo di inserire l'oggetto appena creato in cache
+                        dataLayer.getCache().add(Utente.class, item);
+                    }
+                }
+            } catch (SQLException ex) {
+                throw new DataException("Unable to create utente", ex);
+            }
+        }
     }
 
     @Override
@@ -136,7 +157,30 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
 
     @Override
     public void update(Utente item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                return;
+            }
+
+            long versione = (long) item.getVersion();
+
+            update.setString(1, item.getEmail());
+            update.setString(2, item.getPassword());
+            update.setInt(3, item.getRicerca().getKey());
+            update.setInt(4, item.getPreferenza().getKey());
+            update.setLong(5, versione + 1);
+
+            update.setInt(6, item.getKey());
+            update.setLong(7, versione);
+
+            if (update.executeUpdate() == 0){
+                throw new OptimisticLockException(item);
+            }
+
+            item.setVersion(versione + 1);
+        } catch (SQLException ex) {
+            throw new DataException("Unable to update utente", ex);
+        }
     }
 
     @Override

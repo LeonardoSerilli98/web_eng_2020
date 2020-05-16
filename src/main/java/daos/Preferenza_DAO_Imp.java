@@ -5,10 +5,8 @@
  */
 package daos;
 
-import data.DAO;
-import data.DAO_Interface;
-import data.DataException;
-import data.DataLayer;
+import data.*;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,8 +15,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import models.Canale;
 import models.Preferenza;
 import models.Preferenza_Imp;
+import models.Ricerca;
 import proxys.Preferenza_Proxy;
 
 /**
@@ -27,7 +27,7 @@ import proxys.Preferenza_Proxy;
  */
 public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
     
-    private PreparedStatement create, createCanaliPreferiti, read, update, delete, readAll;
+    private PreparedStatement create, createCanaliPreferiti, read, update, delete, readAll, deleteCanaliPreferiti;
 
     public Preferenza_DAO_Imp(DataLayer d) {
         super(d);
@@ -39,12 +39,15 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
             super.init();
             
             create = connection.prepareStatement("INSERT INTO Preferenza(fasciaID) VALUES(?)");
-            createCanaliPreferiti = connection.prepareStatement("INSERTI INTO Preferenza_has_Canale(preferenzaID, canaleID) VALUES (?,?)");
+            createCanaliPreferiti = connection.prepareStatement("INSERT INTO Preferenza_has_Canale(preferenzaID, canaleID) VALUES (?,?)");
             read = connection.prepareStatement("SELECT * FROM Preferenza WHERE idPreferenza=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Preferenza SET fasciaID=? version=? WHERE idPreferenza=? and version=?");
             delete = connection.prepareStatement("");
+            deleteCanaliPreferiti = connection.prepareStatement("DELETE FROM Preferenza_has_Canale WHERE preferenzaID=?");
             
-            readAll = connection.prepareStatement("");
+            readAll = connection.prepareStatement("SELECT idPreferenza FROM Preferenza");
+
+
 
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -61,6 +64,7 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
             update.close();
             delete.close();
             readAll.close();
+            deleteCanaliPreferiti.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -106,7 +110,31 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
 
     @Override
     public void create(Preferenza item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (item.getKey() != null && item.getKey() > 0){
+            update(item);
+        } else {
+            try {
+                create.setInt(1, item.getFascia().getKey());
+                if (create.executeUpdate() == 1){
+                    ResultSet keys = create.getGeneratedKeys();
+                    while ( keys.next()) {
+                        item.setKey(keys.getInt(1));
+
+                        // ricordiamo di inserire l'oggetto appena creato in cache
+                        dataLayer.getCache().add(Preferenza.class, item);
+                    }
+                }
+
+                for (Canale c : item.getCanali()) {
+                    createCanaliPreferiti.setInt(1, item.getKey());
+                    createCanaliPreferiti.setInt(2, c.getKey());
+                    createCanaliPreferiti.executeUpdate();
+                }
+
+            } catch (SQLException ex) {
+                throw new DataException("Unable to create preferenza", ex);
+            }
+        }
     }
 
     @Override
@@ -135,7 +163,36 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
 
     @Override
     public void update(Preferenza item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                return;
+            }
+
+            long versione = (long) item.getVersion();
+
+            update.setInt(1, item.getFascia().getKey());
+            update.setLong(2, versione + 1);
+
+            update.setInt(3, item.getKey());
+            update.setLong(4, versione);
+
+            if (update.executeUpdate() == 0){
+                throw new OptimisticLockException(item);
+            }
+
+            item.setVersion(versione + 1);
+
+            deleteCanaliPreferiti.setInt(1, item.getKey());
+            deleteCanaliPreferiti.executeUpdate();
+
+            for (Canale c : item.getCanali()) {
+                createCanaliPreferiti.setInt(1, item.getKey());
+                createCanaliPreferiti.setInt(2, c.getKey());
+                createCanaliPreferiti.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to update preferenza", ex);
+        }
     }
 
     @Override

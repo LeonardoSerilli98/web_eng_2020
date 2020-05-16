@@ -5,10 +5,8 @@
  */
 package daos;
 
-import data.DAO;
-import data.DAO_Interface;
-import data.DataException;
-import data.DataLayer;
+import data.*;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,10 +36,10 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
             
             create = connection.prepareStatement("INSERT INTO Stagione(numero, programmaID) VALUES(?,?)");
             read = connection.prepareStatement("SELECT * FROM Stagione WHERE idStagione=?");
-            update = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Stagione SET numero=? version=? programmaID=? WHERE idStagione=? and version=?");
             delete = connection.prepareStatement("");
             
-            readAll = connection.prepareStatement("");
+            readAll = connection.prepareStatement("SELECT idStagione FROM Stagione");
 
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
@@ -132,7 +130,28 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
 
     @Override
     public void update(Stagione item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                return;
+            }
+
+            long versione = (long) item.getVersion();
+
+            update.setInt(1, item.getNumero());
+            update.setLong(2, versione + 1);
+            update.setInt(3, item.getProgramma().getKey());
+
+            update.setInt(6, item.getKey());
+            update.setLong(7, item.getVersion());
+
+            if (update.executeUpdate() == 0){
+                throw new OptimisticLockException(item);
+            }
+
+            item.setVersion(versione + 1);
+        } catch (SQLException ex) {
+            throw new DataException("Unable to update stagione", ex);
+        }
     }
 
     @Override
