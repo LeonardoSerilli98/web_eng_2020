@@ -12,6 +12,7 @@ import data.DataLayer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,8 +90,18 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
     }
 
     @Override
-    public List getAll() throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Utente> getAll() throws DataException{
+        List<Utente> result = new ArrayList();
+
+        try (ResultSet rs = readAll.executeQuery()) {
+            while (rs.next()) {
+                result.add((Utente) read(rs.getInt("idUtente")));
+            }
+        
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Utente", ex);
+        }
+        return result;
     }
 
     @Override

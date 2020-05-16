@@ -100,8 +100,18 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
     }
 
     @Override
-    public List getAll() throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Episodio> getAll() throws DataException{
+        List<Episodio> result = new ArrayList();
+
+        try (ResultSet rs = readAll.executeQuery()) {
+            while (rs.next()) {
+                result.add((Episodio) read(rs.getInt("idEpisodio")));
+            }
+        
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Episodio", ex);
+        }
+        return result;
     }
 
     @Override

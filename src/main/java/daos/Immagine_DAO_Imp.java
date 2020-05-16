@@ -11,6 +11,7 @@ import data.DataLayer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,8 +87,18 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
     }
 
     @Override
-    public List getAll() throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Immagine> getAll() throws DataException{
+        List<Immagine> result = new ArrayList();
+
+        try (ResultSet rs = readAll.executeQuery()) {
+            while (rs.next()) {
+                result.add((Immagine) read(rs.getInt("idImmagine")));
+            }
+        
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Immagine", ex);
+        }
+        return result;
     }
 
     @Override

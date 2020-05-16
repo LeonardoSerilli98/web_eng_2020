@@ -8,9 +8,12 @@ package daos;
 import data.DAO;
 import data.DataException;
 import data.DataLayer;
+import data.Data_ItemProxy;
+import data.OptimisticLockException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,12 +47,12 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
         
         try {            
             
-            create = connection.prepareStatement("INSERT INTO Canale (nome, immagineID, ) VALUES (?, ?)");
+            create = connection.prepareStatement("INSERT INTO Canale (nome, immagineID) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Canale WHERE idCanale=?");
-            update = connection.prepareStatement("");
-            delete = connection.prepareStatement("");
+            update = connection.prepareStatement("UPDATE Canale SET nome=?, immagineID=?, version=? WHERE idCanale=? and version=?");
+            delete = connection.prepareStatement("DELETE FROM Canale WHERE idCanale=?");
             
-            readAll = connection.prepareStatement("");            
+            readAll = connection.prepareStatement("SELECT idCanale FROM Canale");            
             
             canaleByPreferenza = connection.prepareStatement("SELECT canaleID FROM Preferenza WHERE idPreferenze=?");
             
@@ -108,12 +111,54 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
 
     @Override
     public List<Canale> getAll() throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Canale> result = new ArrayList();
+
+        try (ResultSet rs = readAll.executeQuery()) {
+            while (rs.next()) {
+                result.add((Canale) read(rs.getInt("idCanale")));
+            }
+        
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Canale", ex);
+        }
+        return result; 
     }
 
     @Override
     public void create(Canale item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    
+        //se l'ID del'oggetto gia esiste chiamiamo l'update altrimenti ne creiamo uno
+            if (item.getKey() != null && item.getKey() > 0) { 
+                update(item);
+            }else{ 
+                try {
+                    
+                    create.setString(1, item.getNome());
+                    create.setInt(2, item.getImmagine().getKey());
+                    
+                    if(create.executeUpdate() == 1){
+                        // per leggere la chiave generata dal db usiamo il 
+                        // metodo getGeneratedKeys sullo statement
+                        //che ritorna un resultset
+                        ResultSet keys = create.getGeneratedKeys();
+                        if(keys.next()){
+                            item.setKey(keys.getInt(1));
+                            
+                            // ricordiamo di inserire l'oggetto appena creato in cache
+                            dataLayer.getCache().add(Canale.class, item);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new DataException("Unable to create Canale", ex);
+                }
+                
+            }
+            
+            // infine che sia stato creato o aggiornato dobbiamo resettare l'attributo 
+            // dirty del proxy
+            if(item instanceof Data_ItemProxy){
+                ((Data_ItemProxy) item).setDirty(false);
+            }
     }
 
     @Override
@@ -142,7 +187,38 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
 
     @Override
     public void update(Canale item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+         try {
+             // se l'item risulta un proxy che non ha subito modifiche non c'è motivo di effettuarne l'update
+             if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                 return;
+             }
+             
+             // compiliamo i field della query
+             long versione = (long) item.getVersion();
+             int immagineID = item.getImmagine().getKey();
+ 
+             update.setString(1, item.getNome());
+             update.setInt(2, immagineID);
+             update.setLong(3, versione+1);
+             
+             update.setInt(4, item.getKey());
+             update.setLong(5, versione);
+             
+             // nel caso la query non va a buon fine è molto probabile che la 
+             // versione sul db sia diversa da quella del nostro item
+             // essendo la tecnica che sfrutta la versione l'optimisticLock
+             // chiamiamo la relativa eccezzione
+             if(update.executeUpdate() == 0){
+                 throw new OptimisticLockException(item);
+             }
+             
+             // infine  ricordiamo di aggiornare la vesione del nostro Item
+             item.setVersion(versione + 1);
+             
+         } catch (SQLException ex) {
+             throw new DataException("Unable to update Canale", ex);
+         }
     }
 
     @Override

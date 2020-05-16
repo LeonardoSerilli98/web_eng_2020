@@ -11,6 +11,7 @@ import data.DataLayer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,8 +86,18 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
     }
 
     @Override
-    public List getAll() throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Fascia> getAll() throws DataException{
+        List<Fascia> result = new ArrayList();
+
+        try (ResultSet rs = readAll.executeQuery()) {
+            while (rs.next()) {
+                result.add((Fascia) read(rs.getInt("idFascia")));
+            }
+        
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Fascia", ex);
+        }
+        return result;
     }
 
     @Override

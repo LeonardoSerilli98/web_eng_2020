@@ -8,9 +8,12 @@ package daos;
 import data.DAO;
 import data.DataException;
 import data.DataLayer;
+import data.Data_ItemProxy;
+import data.OptimisticLockException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,7 +39,7 @@ public class Genere_DAO_Imp extends DAO implements Genere_DAO{
         try{
             super.init();
             
-            create = connection.prepareStatement("INSERT INTO Genere (nome) VALUES (?)");
+            create = connection.prepareStatement("INSERT INTO Genere (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Genere WHERE idGenere=?");
             update = connection.prepareStatement("UPDATE Genere SET nome=?,version=? WHERE idGenere=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Genere WHERE idGenere=?");
@@ -104,12 +107,37 @@ public class Genere_DAO_Imp extends DAO implements Genere_DAO{
     @Override
     public void create(Genere item) throws DataException{
             
-        //se l'ID del'oggetto gia esiste chiamiamo l'update
+        //se l'ID del'oggetto gia esiste chiamiamo l'update altrimenti ne creiamo uno
             if (item.getKey() != null && item.getKey() > 0) { 
                 update(item);
             }else{ 
+                try {
+                    create.setString(1, item.getNome());
+                    if(create.executeUpdate() == 1){
+                        // per leggere la chiave generata dal db usiamo il 
+                        // metodo getGeneratedKeys sullo statement
+                        //che ritorna un resultset
+                        ResultSet keys = create.getGeneratedKeys();
+                        if(keys.next()){
+                            item.setKey(keys.getInt(1));
+                            
+                            // ricordiamo di inserire l'oggetto appena creato in cache
+                            dataLayer.getCache().add(Genere.class, item);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new DataException("Unable to update Genere", ex);
+                }
                 
             }
+            
+            // infine che sia stato creato o aggiornato dobbiamo resettare l'attributo 
+            // dirty del proxy
+            if(item instanceof Data_ItemProxy){
+                ((Data_ItemProxy) item).setDirty(false);
+            }
+            
+            
     }
 
     @Override
@@ -141,7 +169,37 @@ public class Genere_DAO_Imp extends DAO implements Genere_DAO{
 
     @Override
     public void update(Genere item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+         try {
+             // se l'item risulta un proxy che non ha subito modifiche non c'è motivo di effettuarne l'update
+             if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
+                 return;
+             }
+             
+             // compiliamo i field della query
+             long versione = (long) item.getVersion();
+             
+             update.setString(1, item.getNome());
+             update.setLong(2, versione+1);
+             update.setInt(3, item.getKey());
+             update.setLong(4, versione);
+             
+             // nel caso la query non va a buon fine è molto probabile che la 
+             // versione sul db sia diversa da quella del nostro item
+             // essendo la tecnica che sfrutta la versione l'optimisticLock
+             // chiamiamo la relativa eccezzione
+             
+             if(update.executeUpdate() == 0){
+                 throw new OptimisticLockException(item);
+             }
+             
+             // infine  ricordiamo di aggiornare la vesione del nostro Item
+             item.setVersion(versione + 1);
+             
+         } catch (SQLException ex) {
+             throw new DataException("Unable to update Genere", ex);
+         }
+        
     }
 
     @Override

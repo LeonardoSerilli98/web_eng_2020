@@ -5,8 +5,10 @@
  */
 package com.mycompany.we_2020;
 
+import daos.Canale_DAO_Imp;
 import daos.Genere_DAO;
 import daos.Genere_DAO_Imp;
+import daos.Immagine_DAO_Imp;
 import daos.Utente_DAO_Imp;
 import data.DataException;
 import data.GuidaTV_DataLayer;
@@ -28,8 +30,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import models.Canale;
+import models.Canale_Imp;
 import models.Genere;
 import models.Genere_Imp;
+import models.Immagine;
+import models.Immagine_Imp;
 import models.Utente;
 
 /**
@@ -116,17 +122,27 @@ public class servletEsempio extends HttpServlet {
             // Article article = ((NewspaperDataLayer) request.getAttribute("datalayer")).getArticleDAO().getArticle(k);
             //Genere genere = (Genere) (((GuidaTV_DataLayer) request.getAttribute("datalayer")).getGenereDAO().read(1));
            
-            Genere utente;
+            Canale c = new Canale_Imp();
+            Immagine i = new Immagine_Imp();
             GuidaTV_DataLayer dl = (GuidaTV_DataLayer) request.getAttribute("datalayer");
-            Genere_DAO_Imp utenteDAO = (Genere_DAO_Imp) dl.getGenereDAO();
-            
+            Canale_DAO_Imp canaleDAO = (Canale_DAO_Imp) dl.getCanaleDAO();
+            Immagine_DAO_Imp immagineDAO = (Immagine_DAO_Imp) dl.getImmagineDAO();
+           
         try {
-               
-                System.out.println(utenteDAO.getAll());
+           
+           i = immagineDAO.read(1);
+           c.setImmagine(i);
+           c.setNome("tst");   
+           canaleDAO.create(c);
+           c.setNome("italia2");   
+           canaleDAO.update(c);
                 
+
         } catch (DataException ex) {
             Logger.getLogger(servletEsempio.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+            
             
         
     }
