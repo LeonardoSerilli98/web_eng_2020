@@ -15,31 +15,6 @@
         </session-timeout>
     </session-config>
     
-    
-    <!-- UTILIZZATI PER IL JDBC DIRETTO (usato solo nella servletEsempio--> 
-    <context-param>
-        <param-name>data.jdbc.driver</param-name>
-        <!-- attenzione: questo esempio usa il connector/J 8: il nome del driver è diverso per evitare conflitti col driver della versione precedente -->
-        >
-        <param-value>com.mysql.cj.jdbc.Driver</param-value>
-    </context-param>
-    <context-param>
-        <param-name>data.jdbc.connectionstring</param-name>
-        
-    <!-- Il connector/J8 necessita della timezone del server specificata -->
- 
-        <param-value>jdbc:mysql://localhost/we_database_2020?serverTimezone=UTC</param-value>
-    </context-param>
-    <context-param>
-        <param-name>data.jdbc.username</param-name>
-        <param-value>root</param-value>
-    </context-param>
-    <context-param>
-        <param-name>data.jdbc.password</param-name>
-        <param-value>Rorschach69</param-value>
-    </context-param>
-    
-    
 <!-- riferimento per il pooling, deve essere associato alla Risorsa database nel 'context.xml' -->
     <resource-ref>
         <description>Your Description</description>

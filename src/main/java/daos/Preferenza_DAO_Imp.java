@@ -42,7 +42,7 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
             createCanaliPreferiti = connection.prepareStatement("INSERT INTO Preferenza_has_Canale(preferenzaID, canaleID) VALUES (?,?)");
             read = connection.prepareStatement("SELECT * FROM Preferenza WHERE idPreferenza=?");
             update = connection.prepareStatement("UPDATE Preferenza SET fasciaID=? version=? WHERE idPreferenza=? and version=?");
-            delete = connection.prepareStatement("");
+            delete = connection.prepareStatement("DELETE FROM Preferenza where idPreferenza=?");
             deleteCanaliPreferiti = connection.prepareStatement("DELETE FROM Preferenza_has_Canale WHERE preferenzaID=?");
             
             readAll = connection.prepareStatement("SELECT idPreferenza FROM Preferenza");

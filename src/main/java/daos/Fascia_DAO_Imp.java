@@ -40,7 +40,7 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
             create = connection.prepareStatement("INSERT INTO Fascia(inizio, fine, fascia) VALUES(?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Fascia WHERE idFascia=?");
             update = connection.prepareStatement("UPDATE Fascia SET inizio=?, fine=?, fascia=?, version=? WHERE idFascia=?, version=?");
-            delete = connection.prepareStatement("");
+            delete = connection.prepareStatement("DELETE FROM Fascia WHERE idFascia=?");
             
             readAll = connection.prepareStatement("SELECT idFascia FROM Fascia"); 
             

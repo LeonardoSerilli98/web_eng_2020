@@ -36,6 +36,7 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
     
     public Episodio_DAO_Imp(DataLayer d) {
         super(d);
+        
     }
 
      @Override
@@ -47,7 +48,7 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
             create = connection.prepareStatement("INSERT INTO Episodio (titolo, numero, programmaID, stagioneID) VALUES(?, ?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Episodio WHERE idEpisodio=?");
             update = connection.prepareStatement("UPDATE Episodio SET titolo=?, numero=?, programmaID=?, stagioneID=?, version=? WHERE idEpisodio=? and version=?");
-            delete = connection.prepareStatement("");
+            delete = connection.prepareStatement("DELETE FROM Episodio WHERE idEpisodio=?");
             
             readAll = connection.prepareStatement("SELECT idEpisodio FROM Episodio");              
 

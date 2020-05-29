@@ -42,7 +42,7 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
             create = connection.prepareStatement("INSERT INTO Palinsesto(inizio, fine, data, programmaID, episodoID, fasciaID, canaleID) VALUES (?,?,?,?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Palinsesto WHERE idPalinsesto=?");
             update = connection.prepareStatement("UPDATE Palinsesto SET inizio=?, fine=?, data=?, programmaID=?, episodioID=?, fasciaID=?, canaleID=?, versione=? WHERE idPalinsesto=? and version=?");
-            delete = connection.prepareStatement("");
+            delete = connection.prepareStatement("DELETE FROM Palinsesto where idPalinsesto=?");
             
             readAll = connection.prepareStatement("SELECT idPalinsesto FORM Palisesto");
 

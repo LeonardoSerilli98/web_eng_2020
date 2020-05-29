@@ -38,7 +38,7 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
             create = connection.prepareStatement("INSERT INTO Programma(nome, descrizione, isSerie, approfondimento, genereID) VALUES(?,?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Programma WHERE idProgramma=?");
             update = connection.prepareStatement("UPDATE Programma SET nome=? descrizione=? isSerie=? approfondimento=? genereID=? version=? WHERE idProgramma=? and version=?");
-            delete = connection.prepareStatement("");
+            delete = connection.prepareStatement("DELETE FROM Programma where idProgramma=?");
             
             readAll = connection.prepareStatement("SELECT idProgramma FROM Programma");
 

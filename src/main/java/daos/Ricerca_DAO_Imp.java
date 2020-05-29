@@ -39,7 +39,7 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
             create = connection.prepareStatement("INSERT INTO Ricerca(fasciaID, programmaID, genereID, canaleID) VALUES(?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Ricerca WHERE idRicerca=?");
             update = connection.prepareStatement("UPDATE Ricerca SET fasciaID=? programmaID=? genereID=? canaleID=? version=? WHERE idRicerca=? and version=?");
-            delete = connection.prepareStatement("");
+            delete = connection.prepareStatement("DELETE FROM Ricerca where idRicerca=?");
             
             readAll = connection.prepareStatement("SELECT idRicerca FROM Ricerca");
 

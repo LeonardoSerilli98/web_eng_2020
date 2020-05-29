@@ -53,18 +53,17 @@ public class GuidaTV_DataLayer extends DataLayer {
     @Override
     public void init() throws DataException {
         //registriamo i DAO
-       
-        registerDAO(Canale.class, new Canale_DAO_Imp(this));
-        registerDAO(Episodio.class, new Episodio_DAO_Imp(this));
-        registerDAO(Fascia.class, new Fascia_DAO_Imp(this));
-        registerDAO(Genere.class, new Genere_DAO_Imp(this));
+        registerDAO(Canale.class, new Canale_DAO_Imp(this));    
+        registerDAO(Episodio.class, new Episodio_DAO_Imp(this));  
+        registerDAO(Fascia.class, new Fascia_DAO_Imp(this));        
+        registerDAO(Genere.class, new Genere_DAO_Imp(this));        
         registerDAO(Immagine.class, new Immagine_DAO_Imp(this));
         registerDAO(Palinsesto.class, new Palinsesto_DAO_Imp(this));
         registerDAO(Preferenza.class, new Preferenza_DAO_Imp(this));
         registerDAO(Programma.class, new Programma_DAO_Imp(this));
         registerDAO(Ricerca.class, new Ricerca_DAO_Imp(this));
         registerDAO(Stagione.class, new Stagione_DAO_Imp(this));
-        registerDAO(Utente.class, new Utente_DAO_Imp(this));
+        registerDAO(Utente.class, new Utente_DAO_Imp(this));   
 
   
     }
@@ -75,6 +74,7 @@ public class GuidaTV_DataLayer extends DataLayer {
     }    
     public Episodio_DAO getEpisodioDAO() {
         return (Episodio_DAO) getDAO(Episodio.class);
+        
     }    
     public Fascia_DAO getFasciaDAO() {
         return (Fascia_DAO) getDAO(Fascia.class);

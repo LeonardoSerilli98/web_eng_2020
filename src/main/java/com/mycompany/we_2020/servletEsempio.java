@@ -102,22 +102,31 @@ public class servletEsempio extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             {
-             try{ 
-                GuidaTV_DataLayer datalayer = new GuidaTV_DataLayer(ds); 
-                datalayer.init();
-                
-                request.setAttribute("datalayer", datalayer);
+             try{
                 query_esempio(request, response);
+
                 //pooling_action_query(request, response);
                 //action_query(request, response);       
             }catch(Exception e){
                     //
                 }
             }
+    
+        private void processBaseRequest(HttpServletRequest request, HttpServletResponse response) {
+        //WARNING: inizialzza il datalayer fuori da ProcessRequest, poiche, al contrario
+        // di doGet quello viene chiamato ogni richiesta da un utente, mentre doGet solo alla prima
+        try (GuidaTV_DataLayer datalayer = new GuidaTV_DataLayer(ds)) {
+            datalayer.init();
+            request.setAttribute("datalayer", datalayer);
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(servletEsempio.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(servletEsempio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
         private void query_esempio(HttpServletRequest request, HttpServletResponse response) {
-       
-            
        
             // Article article = ((NewspaperDataLayer) request.getAttribute("datalayer")).getArticleDAO().getArticle(k);
             //Genere genere = (Genere) (((GuidaTV_DataLayer) request.getAttribute("datalayer")).getGenereDAO().read(1));
@@ -127,15 +136,21 @@ public class servletEsempio extends HttpServlet {
             GuidaTV_DataLayer dl = (GuidaTV_DataLayer) request.getAttribute("datalayer");
             Canale_DAO_Imp canaleDAO = (Canale_DAO_Imp) dl.getCanaleDAO();
             Immagine_DAO_Imp immagineDAO = (Immagine_DAO_Imp) dl.getImmagineDAO();
+            
            
         try {
+            
            
-           i = immagineDAO.read(1);
-           c.setImmagine(i);
-           c.setNome("tst");   
-           canaleDAO.create(c);
-           c.setNome("italia2");   
+           c = canaleDAO.read(22);
+                      System.out.println(c);
+
+          i=c.getImmagine();
+           System.out.println(i);
+           c.setNome("ita2");
            canaleDAO.update(c);
+           System.out.println(c.getNome());
+
+           
                 
 
         } catch (DataException ex) {
@@ -161,7 +176,7 @@ public class servletEsempio extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        processBaseRequest(request, response);
     }
 
     /**

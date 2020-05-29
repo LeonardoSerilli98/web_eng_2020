@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/WE_2020">
-  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxActive="15" maxIdle="3" name="jdbc/we_database_2020" password="Rorschach69" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/we_database_2020?serverTimezone=UTC" username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxActive="100" maxIdle="30" name="jdbc/we_database_2020" password="Rorschach69" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/we_database_2020?serverTimezone=UTC" username="root"/>
 </Context>

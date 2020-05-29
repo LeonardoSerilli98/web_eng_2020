@@ -187,7 +187,7 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
 
     @Override
     public void update(Canale item) throws DataException{
-        
+                
          try {
              // se l'item risulta un proxy che non ha subito modifiche non c'è motivo di effettuarne l'update
              if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {

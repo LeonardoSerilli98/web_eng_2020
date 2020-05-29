@@ -25,7 +25,7 @@ public class DAO {
     }
 
     public void init() throws DataException {
-
+                
     }
 
     public void destroy() throws DataException {

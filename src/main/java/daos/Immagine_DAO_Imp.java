@@ -40,7 +40,7 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
             create = connection.prepareStatement("INSERT INTO Immagine (tipo, nome, taglia, stagioneID, programmaID), values(?,?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Immagine WHERE idImmagine=?");
             update = connection.prepareStatement("UPDATE Immagine SET tipo=?, nome=?, taglia=?, stagioneID=?, programmaID=?, version=? WHERE idImmagine=? and version=?");
-            delete = connection.prepareStatement("");
+            delete = connection.prepareStatement("DELETE FROM Immagine where idImmagine=?");
             
             readAll = connection.prepareStatement("SELECT idImmagine FROM Immagine");
             
