@@ -25,7 +25,42 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.20</version>
-        </dependency>        
+        </dependency> 
+        <!-- Dipendenze per un'applicazione che usa JAX-RS -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>2.29.1</version>
+        </dependency>
+         <!-- (...non dovrebbe servire, ma a quanto pare l'altra dipendenza di JAX-RS non lo importa...) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>2.29</version>
+        </dependency>
+        
+        
+        <!-- (...per la serializzazione JSON...) -->
+        <!-- jackson è utile in quanto di base JaxRs non lavora solamente in json ma puo restituire in xml e via dicendo -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>2.7.0</version>
+            <classifier>no-metainf-services</classifier>
+        </dependency>
+        
+        
+        <!-- (...solo nel caso si utilizzi JWT per l'autenticazione...) -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.10.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.10.7</version>
+        </dependency>       
     </dependencies>
 
     <build>
