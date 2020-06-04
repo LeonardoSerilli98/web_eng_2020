@@ -1,6 +1,7 @@
 package authResources;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,17 +25,18 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("auth")
 public class AuthRes {
-
+    
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response doLogin(@Context UriInfo uriinfo,            
             @FormParam("email") String email,
             @FormParam("password") String password ) {
+        
         try {
             if (autenticazione(email, password)) {   
                 
                 String authToken = registraToken(uriinfo, email);                
-             
+         
                 return Response.ok(authToken)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
                         .build();
@@ -43,6 +45,7 @@ public class AuthRes {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
         } catch (Exception e) {
+            
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
@@ -52,12 +55,11 @@ public class AuthRes {
     @Path("/logout")
     public Response doLogout(@Context HttpServletRequest request) {
         try {
-            //estraiamo i dati inseriti dal nostro LoggedFilter...
             String token = (String) request.getAttribute("token");
             if (token != null) {
                 revokeToken(token);
             }
-            return Response.ok("slogged").build();
+            return Response.ok("logout succeded").build();
             //return Response.noContent().build();
         } catch (Exception e) {
             return Response.serverError().build();
@@ -69,9 +71,7 @@ public class AuthRes {
         return true;
     }
 
-    private String registraToken(UriInfo context, String username) {
-       
-    //JWT        
+    private String registraToken(UriInfo context, String username) {        
         Key key = JWTHelpers.getInstance().getJwtKey();
         String token = Jwts.builder()
                 .setSubject(username)
@@ -80,13 +80,13 @@ public class AuthRes {
                 .setExpiration(Date.from(LocalDateTime.now().plusMinutes(15L).atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(key)
                 .compact();
-        
-        //prima di ridarlo all'utente dove lo salviamo?
-        
+        //aggiungi token al database nella riga dell'utente
+        //setta expired a false
         return token;
     }
 
     private void revokeToken(String token) {
         /* invalidate il token per il logout*/
+        //settiamo expired a true
     }
 }

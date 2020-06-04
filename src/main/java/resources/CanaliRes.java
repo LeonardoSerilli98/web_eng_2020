@@ -11,6 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -36,8 +37,8 @@ public class CanaliRes {
     @Logged
     @POST
     @Consumes("application/json")
-    public Response Store(@Context UriInfo uriinfo, Canale item ){
-        return Response.ok("store un canale").build(); 
+    public Response Store(@Context UriInfo uriinfo, Canale item){
+        return Response.ok("Store di un canale").build(); 
     }
     
     @Path("{id: [1-9]+}")
