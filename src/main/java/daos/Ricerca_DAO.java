@@ -6,6 +6,7 @@
 package daos;
 
 import data.DAO_Interface;
+import data.DataException;
 import models.Ricerca;
 
 /**
@@ -13,5 +14,6 @@ import models.Ricerca;
  * @author leonardo
  */
 public interface Ricerca_DAO  extends DAO_Interface<Ricerca>{
+    public Ricerca checkExistence(String username) throws DataException;
     
 }

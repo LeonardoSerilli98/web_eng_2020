@@ -10,13 +10,13 @@ import data.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import models.Ricerca;
-import models.Utente;
 import proxys.Ricerca_Proxy;
 
 /**
@@ -26,6 +26,7 @@ import proxys.Ricerca_Proxy;
 public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
     
     private PreparedStatement create, read, update, delete, readAll;
+    private PreparedStatement checkExistece;
 
     public Ricerca_DAO_Imp(DataLayer d) {
         super(d);
@@ -36,13 +37,14 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
         try {
             super.init();
             
-            create = connection.prepareStatement("INSERT INTO Ricerca(fasciaID, programmaID, genereID, canaleID) VALUES(?,?,?,?)");
+            create = connection.prepareStatement("INSERT INTO Ricerca(fasciaID, programmaID, genereID, canaleID, inizioMIN, inizioMax, data, titolo) VALUES(?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Ricerca WHERE idRicerca=?");
-            update = connection.prepareStatement("UPDATE Ricerca SET fasciaID=? programmaID=? genereID=? canaleID=? version=? WHERE idRicerca=? and version=?");
+            update = connection.prepareStatement("UPDATE Ricerca SET fasciaID=?, programmaID=?, genereID=?, canaleID=?, version=?, inizioMin=?, inizioMax=?, data=?, titolo WHERE idRicerca=? AND version=?");
             delete = connection.prepareStatement("DELETE FROM Ricerca where idRicerca=?");
             
             readAll = connection.prepareStatement("SELECT idRicerca FROM Ricerca");
-
+            
+            checkExistece = connection.prepareStatement("SELECT r.idRicerca, r.fasciaID, r.programmaID, r.genereID, r.canaleID, r.version, r.inizioMIN, r.inizioMAX, r.data, r.titolo FROM Ricerca as r INNER JOIN Utente as u WHERE u.email=? AND u.ricercaID = r.idRicerca");
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
@@ -81,6 +83,10 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
             a.setProgramma_key(rs.getInt("programmaID"));
             a.setCanale_key(rs.getInt("canaleID"));
             a.setVersion(rs.getLong("version"));
+            a.setInizioMin(rs.getTime("inizioMin"));
+            a.setInizioMax(rs.getTime("inizioMax"));
+            a.setData(rs.getDate("data"));
+            a.setTitolo(rs.getString("titolo"));
             
         } catch (SQLException ex) {
             throw new DataException("Unable to create article object form ResultSet", ex);
@@ -109,10 +115,36 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
             update(item);
         } else {
             try {
-                create.setInt(1, item.getFascia().getKey());
-                create.setInt(2, item.getProgramma().getKey());
-                create.setInt(3, item.getGenere().getKey());
-                create.setInt(4, item.getCanale().getKey());
+                
+                if(item.getFascia()==null || item.getFascia().getKey()==0){
+                    create.setNull(1, java.sql.Types.INTEGER);                
+                }else{
+                    create.setInt(1, item.getFascia().getKey());
+                }
+
+                if(item.getProgramma()==null || item.getProgramma().getKey()==0){
+                    create.setNull(2, java.sql.Types.INTEGER);                
+                }else{
+                    create.setInt(2, item.getProgramma().getKey());
+                }
+                
+                if(item.getGenere()==null || item.getGenere().getKey()==0){
+                    create.setNull(3, java.sql.Types.INTEGER);                
+                }else{
+                    create.setInt(3, item.getGenere().getKey());
+                }
+                
+                if(item.getCanale()==null || item.getCanale().getKey()==0){
+                    create.setNull(4, java.sql.Types.INTEGER);                
+                }else{
+                    create.setInt(4, item.getCanale().getKey());
+                }
+            
+                create.setTime(5, item.getInizioMin());
+                create.setTime(6, item.getInizioMax());
+                create.setDate(7, item.getData());
+                create.setString(8 , item.getTitlo());
+
                 if (create.executeUpdate() == 1){
                     ResultSet keys = create.getGeneratedKeys();
                     while ( keys.next()) {
@@ -160,16 +192,52 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
             }
 
             long versione = (long) item.getVersion();
-
-            update.setInt(1, item.getFascia().getKey());
-            update.setInt(2, item.getProgramma().getKey());
-            update.setInt(3, item.getGenere().getKey());
-            update.setInt(4, item.getCanale().getKey());
+            
+            if(item.getFascia()==null){
+                update.setNull(1, java.sql.Types.INTEGER);                
+            }else{
+                if(item.getFascia().getKey()!=0){
+                   update.setInt(1, item.getFascia().getKey());
+                }else{
+                    update.setNull(1, java.sql.Types.INTEGER); 
+                }
+            }
+            if(item.getProgramma()==null){
+                update.setNull(2, java.sql.Types.INTEGER);                
+            }else{
+                if(item.getProgramma().getKey()!=0){
+                    update.setInt(2, item.getProgramma().getKey());
+                }else{
+                    update.setNull(2, java.sql.Types.INTEGER); 
+                }
+            }
+            if(item.getGenere()==null){
+                update.setNull(3, java.sql.Types.INTEGER);                
+            }else{
+                if(item.getGenere().getKey()!=0){
+                    update.setInt(3, item.getGenere().getKey());
+                }else{
+                    update.setNull(3, java.sql.Types.INTEGER); 
+                }
+            }
+            if(item.getCanale()==null){
+                update.setNull(4, java.sql.Types.INTEGER);                
+            }else{
+                if(item.getCanale().getKey()!=0){
+                    update.setInt(4, item.getCanale().getKey());
+                }else{
+                    update.setNull(4, java.sql.Types.INTEGER); 
+                }
+            }
+            
             update.setLong(5, versione + 1);
+            update.setTime(6,item.getInizioMin());
+            update.setTime(7,item.getInizioMax());
+            update.setDate(8,item.getData());
+            update.setString(9, item.getTitlo());
 
-            update.setInt(6, item.getKey());
-            update.setLong(7, versione);
-
+            update.setInt(10, item.getKey());
+            update.setLong(11, versione);
             if (update.executeUpdate() == 0){
                 throw new OptimisticLockException(item);
             }
@@ -182,7 +250,33 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
 
     @Override
     public void delete(Ricerca item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(item==null){
+            return;
+        }
+        try {
+            delete.setInt(1, item.getKey());
+            delete.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataException("Unable to delete ricerca", ex);
+        }
+    }
+
+    @Override
+    public Ricerca checkExistence(String username) throws DataException {
+        Ricerca r = null;
+        try {
+            
+            checkExistece.setString(1, username);   
+            
+            try(ResultSet rs = checkExistece.executeQuery()){
+                while (rs.next()) {
+                    r = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+            throw new DataException("Unable to checkExistence of ricerca", ex);
+        }
+        return r;
     }
     
 }

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-   
+    <welcome-file-list>
+        <welcome-file>home</welcome-file>
+    </welcome-file-list>
     <context-param>
         <param-name>view.date_format</param-name>
         <param-value>dd/MM/yyyy hh:mm:ss</param-value>
     </context-param>
     <context-param>
+        <param-name>view.outline_template</param-name>
+        <param-value>outline.ftl.html</param-value>
+    </context-param>
+    <context-param>
         <param-name>view.error_template</param-name>
         <param-value>error.ftl.html</param-value>
-    </context-param> 
-    
+    </context-param>
     <servlet>
         <servlet-name>servletEsempio</servlet-name>
         <servlet-class>com.mycompany.we_2020.servletEsempio</servlet-class>
@@ -36,11 +41,15 @@
     </servlet>
     <servlet>
         <servlet-name>Login_Controller</servlet-name>
-        <servlet-class>controllers.Login_Controller</servlet-class>
+        <servlet-class>controllers.Autenticazione_Controller</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SignUp_Controller</servlet-name>
         <servlet-class>controllers.SignUp_Controller</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>bruciami</servlet-name>
+        <servlet-class>deleteME.bruciami</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>servletEsempio</servlet-name>
@@ -69,10 +78,9 @@
     <servlet-mapping>
         <servlet-name>Login_Controller</servlet-name>
         <url-pattern>/login</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>SignUp_Controller</servlet-name>
-        <url-pattern>/SignUp</url-pattern>
+        <url-pattern>/signUp</url-pattern>
+        <url-pattern>/logout</url-pattern>
+        <url-pattern>/signUp/validateAccount</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -80,10 +88,14 @@
         </session-timeout>
     </session-config>
     <!-- riferimento per il pooling, deve essere associato alla Risorsa database nel 'context.xml' -->
+    <context-param>
+        <param-name>data.source</param-name>
+        <param-value>java:comp/env/jdbc/we_database_2020</param-value>
+    </context-param>
     <resource-ref>
-        <description>Your Description</description>
         <res-ref-name>jdbc/we_database_2020</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
 </web-app>

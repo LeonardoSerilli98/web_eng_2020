@@ -6,6 +6,8 @@
 package models;
 
 import data.DataItemImpl;
+import java.sql.Date;
+import java.sql.Time;
 
 /**
  *
@@ -17,6 +19,10 @@ public class Ricerca_Imp extends DataItemImpl<Integer>implements Ricerca{
     private Programma programma;
     private Genere genere;
     private Fascia fascia;
+    private Time inizioMin;
+    private Time inizioMax;
+    private Date data;
+    private String titolo;
 
     public Ricerca_Imp(){
         super();
@@ -24,6 +30,10 @@ public class Ricerca_Imp extends DataItemImpl<Integer>implements Ricerca{
         programma = null;
         genere = null;
         fascia = null;
+        inizioMin = null;
+        inizioMax = null;
+        data = null;
+        titolo = "";
     }
 
     public Canale getCanale(){
@@ -52,5 +62,45 @@ public class Ricerca_Imp extends DataItemImpl<Integer>implements Ricerca{
     }
     public void setFascia(Fascia fascia){
         this.fascia = fascia;
+    }
+
+    @Override
+    public Time getInizioMin() {
+        return this.inizioMin;
+    }
+
+    @Override
+    public void setInizioMin(Time inizioMin) {
+        this.inizioMin = inizioMin;
+    }
+
+    @Override
+    public Time getInizioMax() {
+        return this.inizioMax;
+    }
+
+    @Override
+    public void setInizioMax(Time inizioMax) {
+        this.inizioMax = inizioMax;
+    }
+
+    @Override
+    public Date getData() {
+        return this.data;
+    }
+
+    @Override
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    @Override
+    public String getTitlo() {
+        return this.getTitlo();
+    }
+
+    @Override
+    public void setTitolo(String titolo) {
+        this.titolo= titolo;
     }
 }

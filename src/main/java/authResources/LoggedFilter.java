@@ -1,8 +1,10 @@
 package authResources;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.io.IOException;
 import java.security.Key;
+import java.util.Date;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -24,14 +26,15 @@ public class LoggedFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) throws IOException {
         
         String token = null;
-        String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring("Bearer".length()).trim();
+        
+        if (requestContext.getCookies().containsKey("jwt")) {
+            token = requestContext.getCookies().get("jwt").getValue();
         }
         
         if (token != null && !token.isEmpty()) {
             
             String user = validateToken(requestContext,token);
+            
             if(user!=null && !"".equals(user)){
                 // per usare i parametri inseriti nel contesto in un metodo, basta inserire tra i 
                 //parametri '@Context ContainerRequestContext crc ' e fare 'crc.getProperty"token/user")'
@@ -51,17 +54,16 @@ public class LoggedFilter implements ContainerRequestFilter {
     private String validateToken(ContainerRequestContext requestContext, String token) {
         try{
             Key key = JWTHelpers.getInstance().getJwtKey();
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-            System.out.println("#### valid token : " + token);
+            Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();                                                                                                                                                                                                                   
+            System.out.println("#### valid token: " + token);
         }catch (Exception e) {
-            System.out.println("#### invalid token : " + token);
+            System.out.println("#### invalid token: " + token);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             return "";
-        }
+        }    
         
-        
+        //controllo se coincide con quello sul db
         //se il token è valido prendiamo l'utente associato al token dal db
-        return "pippo"; 
+        return "pippo";
     }
-
 }

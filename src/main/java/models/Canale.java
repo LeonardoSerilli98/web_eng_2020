@@ -6,6 +6,7 @@
 package models;
 
 import data.DataItem;
+import java.util.List;
 
 
 /**
@@ -20,6 +21,8 @@ public interface Canale extends DataItem<Integer>  {
     Immagine getImmagine();
     void setImmagine(Immagine immagine);
     
-
+    List<Palinsesto> getPalinsesti();
+    void setPalinsesti(List<Palinsesto> palinsesti); 
+    
     
 }

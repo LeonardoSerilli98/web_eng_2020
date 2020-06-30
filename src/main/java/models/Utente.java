@@ -13,6 +13,9 @@ import data.DataItem;
  */
 public interface Utente extends DataItem<Integer>{
     
+    public String getToken();
+    public void setToken(String token);
+    
     public String getEmail();
     public void setEmail(String email);
 
@@ -24,4 +27,13 @@ public interface Utente extends DataItem<Integer>{
 
     public Preferenza getPreferenza();
     public void setPreferenza(Preferenza preferenza);
+    
+    public boolean getPreferenzaMail();
+    public void setPreferenzaMail(boolean preferenzaMail);
+    
+    public boolean getNotAuthFlag();
+    public void setNotAuthFlag(boolean notAuthFlag);
+    
+    public String getUUID();
+    public void setUUID(String UUID);
 }

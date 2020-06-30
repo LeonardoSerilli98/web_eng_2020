@@ -16,6 +16,8 @@ import models.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import data.Data_ItemProxy;
+import java.sql.Date;
+import java.sql.Time;
 
 /**
  *
@@ -48,7 +50,30 @@ public class Ricerca_Proxy extends Ricerca_Imp implements Data_ItemProxy{
         super.setKey(key); 
         this.dirty = true;
     }
+    
+    @Override
+    public void setData(Date data) {
+        super.setData(data); 
+        this.dirty = true;
+    }
+    
+    @Override
+    public void setInizioMin(Time inizioMin) {
+        super.setInizioMin(inizioMin); 
+        this.dirty = true;
+    }
+    
+    @Override
+    public void setInizioMax(Time inizioMax) {
+        super.setInizioMax(inizioMax); 
+        this.dirty = true;
+    }
         
+    @Override
+    public void setTitolo(String titolo){
+        super.setTitolo(titolo);
+        this.dirty = true;
+    }
 
     //METODI SET/GET DEI CAMPI DOTATI DI PROXY_KEY
     

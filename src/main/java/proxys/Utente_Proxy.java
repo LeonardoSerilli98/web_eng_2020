@@ -51,9 +51,34 @@ public class Utente_Proxy extends Utente_Imp implements Data_ItemProxy{
         this.dirty = true;
     }
     
-     @Override
+    @Override
     public void setPassword(String password) {
         super.setPassword(password); 
+        this.dirty = true;
+    }
+    
+ 
+    @Override
+    public void setToken(String token) {
+        super.setToken(token); 
+        this.dirty = true;
+    }
+    
+    @Override
+    public void setPreferenzaMail(boolean preferenzaMail) {
+        super.setPreferenzaMail(preferenzaMail); 
+        this.dirty = true;
+    }
+    
+    @Override
+    public void setNotAuthFlag(boolean NotAuthFlag) {
+        super.setNotAuthFlag(NotAuthFlag); 
+        this.dirty = true;
+    }
+       
+    @Override
+    public void setUUID(String UUID) {
+        super.setUUID(UUID); 
         this.dirty = true;
     }
     

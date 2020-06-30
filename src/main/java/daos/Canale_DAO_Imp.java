@@ -104,7 +104,7 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
             a.setImmagine_key(rs.getInt("immagineID"));
             
         } catch (SQLException ex) {
-            throw new DataException("Unable to create article object form ResultSet", ex);
+            throw new DataException("Unable to create Canale form ResultSet", ex);
         }
         return a;
     }

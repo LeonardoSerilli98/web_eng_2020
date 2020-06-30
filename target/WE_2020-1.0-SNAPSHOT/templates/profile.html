@@ -1,0 +1,53 @@
+<div>
+    <h1>utente -> ${user.email}</h1>
+</div>
+
+<#if user.ricerca??>
+    <div>
+        <form name="ricerca" action="/profilo" method="POST">
+            <input type="hidden" name="rmRicerca" value="1" >
+            <input type="submit"  value="rimuovi la ricerca salvata">
+        </form>
+    </div>
+<#else>
+    <p>non hai ricerche salvate, effettuane una e spunta la casella "salva la ricerca" </p>
+</#if>
+
+<form>
+    <#list canali as c>
+         <label>${c.nome} <input type="checkbox" name="canali" value="${c.key}"/></label> 
+    </#list>
+    
+    <select name="fascia">
+        <option value="0">Fasce</option>
+            <#list fasce as f>
+                <option value=${f.key}>${f.fascia}</option>
+            </#list>
+        </select>
+    
+    <input type="submit"  value="salva preferenza mail">
+</form>
+<#if user.preferenza??>
+    <div>
+        <form name="preferenza" action="/profilo" method="POST">
+            <input type="hidden" name="rmPreferenza" value="1" >
+            <input type="submit"  value="rimuovi la preferenza salvata">
+        </form>
+    </div>
+<#else>
+    <p>non hai preferenze salvate, creane una per ricevere una mail sulle novità" </p>
+</#if>
+
+
+    <div>
+        <form name="preferenzaMail" action="/profilo" method="POST">
+            <#if user.preferenzaMail==false>
+                <input type="hidden" name="setPreferenzaMail" value="1" >
+                <input type="submit"  value="abilita la mail">
+            <#else>
+                <input type="hidden" name="setPreferenzaMail" value="0" >
+                <input type="submit"  value="disabilita la mail">
+            </#if>
+        </form>
+    </div>
+

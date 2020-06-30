@@ -10,6 +10,7 @@ import data.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +29,8 @@ import proxys.Preferenza_Proxy;
 public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
     
     private PreparedStatement create, createCanaliPreferiti, read, update, delete, readAll, deleteCanaliPreferiti;
-
+    private PreparedStatement checkExistence;
+    
     public Preferenza_DAO_Imp(DataLayer d) {
         super(d);
     }
@@ -38,15 +40,15 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
         try {
             super.init();
             
-            create = connection.prepareStatement("INSERT INTO Preferenza(fasciaID) VALUES(?)");
-            createCanaliPreferiti = connection.prepareStatement("INSERT INTO Preferenza_has_Canale(preferenzaID, canaleID) VALUES (?,?)");
+            create = connection.prepareStatement("INSERT INTO Preferenza(fasciaID) VALUES(?)",  Statement.RETURN_GENERATED_KEYS);
+            createCanaliPreferiti = connection.prepareStatement("INSERT INTO Preferenza_has_Canale(preferenzaID, canaleID) VALUES (?,?)",  Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Preferenza WHERE idPreferenza=?");
-            update = connection.prepareStatement("UPDATE Preferenza SET fasciaID=? version=? WHERE idPreferenza=? and version=?");
+            update = connection.prepareStatement("UPDATE Preferenza SET fasciaID=?, version=? WHERE idPreferenza=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Preferenza where idPreferenza=?");
             deleteCanaliPreferiti = connection.prepareStatement("DELETE FROM Preferenza_has_Canale WHERE preferenzaID=?");
             
             readAll = connection.prepareStatement("SELECT idPreferenza FROM Preferenza");
-
+            checkExistence = connection.prepareStatement("SELECT p.idPreferenza, p.fasciaID, p.version FROM Preferenza as p INNER JOIN Utente as u WHERE u.email=? AND p.idPreferenza=u.preferenzaID");
 
 
         }catch (SQLException ex) {
@@ -65,6 +67,7 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
             delete.close();
             readAll.close();
             deleteCanaliPreferiti.close();
+            checkExistence.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -113,8 +116,12 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
         if (item.getKey() != null && item.getKey() > 0){
             update(item);
         } else {
-            try {
-                create.setInt(1, item.getFascia().getKey());
+            try {                
+                if(item.getFascia()==null || item.getFascia().getKey()==0){
+                    create.setNull(1, java.sql.Types.INTEGER);                
+                }else{
+                    create.setInt(1, item.getFascia().getKey());
+                }
                 if (create.executeUpdate() == 1){
                     ResultSet keys = create.getGeneratedKeys();
                     while ( keys.next()) {
@@ -170,7 +177,15 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
 
             long versione = (long) item.getVersion();
 
-            update.setInt(1, item.getFascia().getKey());
+            if(item.getFascia()==null){
+                update.setNull(1, java.sql.Types.INTEGER);                
+            }else{
+                if(item.getFascia().getKey()!=0){
+                   update.setInt(1, item.getFascia().getKey());
+                }else{
+                    update.setNull(1, java.sql.Types.INTEGER); 
+                }
+            }
             update.setLong(2, versione + 1);
 
             update.setInt(3, item.getKey());
@@ -197,7 +212,33 @@ public class Preferenza_DAO_Imp extends DAO implements Preferenza_DAO{
 
     @Override
     public void delete(Preferenza item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(item==null){
+            return;
+        }
+        try {
+            delete.setInt(1, item.getKey());
+            delete.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataException("Unable to delete ricerca", ex);
+        }
+    }
+
+    @Override
+    public Preferenza checkExistence(String username) throws DataException {
+        Preferenza p = null;
+        try {
+            
+            checkExistence.setString(1, username);   
+            
+            try(ResultSet rs = checkExistence.executeQuery()){
+                while (rs.next()) {
+                    p = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+           throw new DataException("Unable to check existence of preferenza", ex);
+        }
+        return p;
     }
     
 }

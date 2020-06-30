@@ -85,7 +85,7 @@ public class GuidaTV_DataLayer extends DataLayer {
     public Immagine_DAO getImmagineDAO() {
         return (Immagine_DAO) getDAO(Immagine.class);
     }    
-    public Palinsesto_DAO getPalinestoDAO() {
+    public Palinsesto_DAO getPalinsestoDAO() {
         return (Palinsesto_DAO) getDAO(Palinsesto.class);
     }    
     public Preferenza_DAO getPreferenzaDAO() {

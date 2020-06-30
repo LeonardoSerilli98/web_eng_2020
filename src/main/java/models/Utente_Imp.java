@@ -17,6 +17,10 @@ public class Utente_Imp extends DataItemImpl<Integer>implements Utente{
     private String password;
     private Ricerca ricerca;
     private Preferenza preferenza;
+    private String token;
+    private boolean preferenzaMail;
+    private boolean notAuthFlag;
+    private String UUID;
 
     public Utente_Imp(){    
         super();
@@ -24,9 +28,15 @@ public class Utente_Imp extends DataItemImpl<Integer>implements Utente{
         password = "";
         ricerca = null;
         preferenza = null;
+        token = "";
+        preferenzaMail = false;
+        notAuthFlag = true;
+        UUID = "";
+        
     }
 
     public String getEmail(){
+        
         return this.email;
     }
     public void setEmail(String email){
@@ -54,6 +64,42 @@ public class Utente_Imp extends DataItemImpl<Integer>implements Utente{
     public void setPreferenza(Preferenza preferenza){
         this.preferenza = preferenza;
     }
+    public String getToken() {
+        return token;
+    }
 
-    
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    @Override
+    public boolean getPreferenzaMail() {
+        return this.preferenzaMail;
+    }
+
+    @Override
+    public void setPreferenzaMail(boolean preferenzaMail) {
+        this.preferenzaMail = preferenzaMail;
+    }
+
+    @Override
+    public boolean getNotAuthFlag() {
+        return this.notAuthFlag;
+    }
+
+    @Override
+    public void setNotAuthFlag(boolean notAuthFlag) {
+        this.notAuthFlag = notAuthFlag;
+    }
+
+    @Override
+    public String getUUID() {
+        return this.UUID;
+    }
+
+    @Override
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
+    }
+
 }

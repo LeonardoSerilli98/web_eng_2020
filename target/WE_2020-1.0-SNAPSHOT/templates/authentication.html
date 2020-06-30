@@ -1,0 +1,15 @@
+<#if msg??>
+    <h1>${msg}</h1>
+    <a href="/home"> Home </a>
+<#else>  
+<form name ="loginForm" action="/login" method="post">
+    <label>email: <input type="email" name="email"/></label>
+    <label>password: <input type="text" name="password"/></label>
+    <input type="submit"/>
+</form>
+<form name ="signUpForm" action="/signUp" method="POST">
+    <label>email: <input type="email" name="email"/></label>
+    <label>password: <input type="text" name="password"/></label>
+    <input type="submit"/>
+</form>
+</#if>

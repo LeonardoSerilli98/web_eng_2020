@@ -14,11 +14,22 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import models.Canale;
 import models.Palinsesto;
+import models.Programma;
+import models.Ricerca;
 import proxys.Palinsesto_Proxy;
 
 /**
@@ -29,6 +40,7 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
     
     
     private PreparedStatement create, read, update, delete, readAll;
+    private PreparedStatement palinsestiByCanale, palinsestiByProgramma, ricerca;
 
     public Palinsesto_DAO_Imp(DataLayer d) {
         super(d);
@@ -44,9 +56,13 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
             update = connection.prepareStatement("UPDATE Palinsesto SET inizio=?, fine=?, data=?, programmaID=?, episodioID=?, fasciaID=?, canaleID=?, versione=? WHERE idPalinsesto=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Palinsesto where idPalinsesto=?");
             
-            readAll = connection.prepareStatement("SELECT idPalinsesto FORM Palisesto");
-
-        }catch (SQLException ex) {
+            readAll = connection.prepareStatement("SELECT idPalinsesto FROM Palinsesto");
+            
+            palinsestiByCanale = connection.prepareStatement("SELECT * FROM Palinsesto WHERE canaleID=? AND data=?");
+            palinsestiByProgramma = connection.prepareStatement("SELECT * FROM Palinsesto WHERE programmaID=?");
+            ricerca = connection.prepareStatement("SELECT * FROM Palinsesto WHERE data=? UNION SELECT * FROM Palinsesto WHERE inizio>=? UNION SELECT * FROM Palinsesto WHERE inizio<=? UNION SELECT * FROM Palinsesto WHERE canaleID=? UNION SELECT * FROM Palinsesto WHERE fasciaID=? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.nome=? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.genereID=?");
+        }
+        catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
     }
@@ -60,6 +76,9 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
             update.close();
             delete.close();
             readAll.close();
+            palinsestiByCanale.close();
+            palinsestiByProgramma.close();
+            ricerca.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -76,6 +95,7 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
     @Override
     public Palinsesto_Proxy makeObj(ResultSet rs) throws DataException {
         Palinsesto_Proxy a = makeObj();
+
         try {
             
             a.setKey(rs.getInt("idPalinsesto"));
@@ -90,7 +110,7 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
             a.setFascia_key(rs.getInt("fasciaID"));
     
         } catch (SQLException ex) {
-            throw new DataException("Unable to create article object form ResultSet", ex);
+            throw new DataException("Unable to create Palinsesto object form ResultSet asd", ex);
         }
         return a;
     }
@@ -117,13 +137,13 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
             }else{ 
                 try {                 
                     
-                    update.setTime(1, item.getInizio());
-                    update.setTime(2, item.getFine());
-                    update.setDate(3, (Date) item.getData()); 
-                    update.setInt(4, item.getProgramma().getKey());
-                    update.setInt(5, item.getEpisodio().getKey());
-                    update.setInt(6, item.getFascia().getKey());
-                    update.setInt(7, item.getCanale().getKey());
+                    create.setTime(1, item.getInizio());
+                    create.setTime(2, item.getFine());
+                    create.setDate(3, (Date) item.getData()); 
+                    create.setInt(4, item.getProgramma().getKey());
+                    create.setInt(5, item.getEpisodio().getKey());
+                    create.setInt(6, item.getFascia().getKey());
+                    create.setInt(7, item.getCanale().getKey());
                     
                     if(create.executeUpdate() == 1){                       
                         ResultSet keys = create.getGeneratedKeys();
@@ -203,5 +223,107 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO{
     public void delete(Palinsesto item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /**
+     *
+     * @param canale
+     * @return
+     * @throws DataException
+     */
+    @Override
+    public List<Palinsesto> getPalinsestiByCanale(Canale canale) throws DataException {   
+        
+        List<Palinsesto> result = new ArrayList();
+        
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        String today = sdf.format(java.util.Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+        //String tomorrow = sdf.format(java.util.Date.from(LocalDateTime.now().plusMinutes(1440L).atZone(ZoneId.systemDefault()).toInstant()));
+       
+        try {
+            palinsestiByCanale.setInt(1, canale.getKey());  
+            palinsestiByCanale.setDate(2,  Date.valueOf(today));   
+            try(ResultSet rs = palinsestiByCanale.executeQuery()){
+                while (rs.next()) {
+                    result.add(makeObj(rs));
+                }
+
+            }  
+        }catch (SQLException ex) {
+                 throw new DataException("Impossibile ottenere Palinsesti by Canale", ex);
+        }
+                return result;        
+    }
+
+    @Override
+    public List<Palinsesto> getPalinsestiByCanale(Canale canale, String data) throws DataException {   
+        
+        List<Palinsesto> result = new ArrayList();
+        
+        //java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        //String chosenDate = sdf.format(data);
+       
+        try {
+            palinsestiByCanale.setInt(1, canale.getKey());  
+            palinsestiByCanale.setDate(2,  Date.valueOf(data));   
+            try(ResultSet rs = palinsestiByCanale.executeQuery()){
+                while (rs.next()) {
+                    result.add(makeObj(rs));
+                }
+
+            }  
+        }catch (SQLException ex) {
+                 throw new DataException("Impossibile ottenere Palinsesti by Canale", ex);
+        }
+                return result;        
+    }
+    
+    @Override
+    public List<Palinsesto> getPalinsestiByProgramma(Programma programma) throws DataException {   
+        
+        List<Palinsesto> result = new ArrayList();
+        
+        try {
+            palinsestiByProgramma.setInt(1, programma.getKey());  
+            try(ResultSet rs = palinsestiByProgramma.executeQuery()){
+                while (rs.next()) {
+                    result.add(makeObj(rs));
+                }
+
+            }  
+        }catch (SQLException ex) {
+                 throw new DataException("Impossibile ottenere Palinsesti by Programma", ex);
+        }
+                return result;        
+    }
+
+    @Override
+    public List<Palinsesto> ricerca(Ricerca r) throws DataException {
+
+        List<Palinsesto> result = new ArrayList();
+
+
+        try {
+            ricerca.setDate(1, r.getData());                
+            ricerca.setTime(2, r.getInizioMin());                
+            ricerca.setTime(3, r.getInizioMax());                
+            ricerca.setInt(4, Integer.parseInt(params.get("canale")));
+            ricerca.setInt(5, Integer.parseInt(params.get("fascia")));
+            ricerca.setString(6, params.get("titolo"));
+            ricerca.setInt(7, Integer.parseInt(params.get("genere")));
+            
+
+            try(ResultSet rs = ricerca.executeQuery()){
+                while (rs.next()) {
+                    result.add(makeObj(rs));
+                }
+            }      
+        }catch (SQLException ex) {
+            Logger.getLogger(Palinsesto_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        
+        return result;
+    }
+
+        
     
 }

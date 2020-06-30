@@ -6,6 +6,7 @@
 package daos;
 
 import data.DAO_Interface;
+import data.DataException;
 import models.Programma;
 
 /**
@@ -13,5 +14,9 @@ import models.Programma;
  * @author leonardo
  */
 public interface Programma_DAO  extends DAO_Interface<Programma>{
+    
+    public Programma getProgrammaByTitolo(String titolo) throws DataException;
+    
+    
     
 }

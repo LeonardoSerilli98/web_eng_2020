@@ -10,6 +10,7 @@ import data.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ import proxys.Utente_Proxy;
 public class Utente_DAO_Imp extends DAO implements Utente_DAO{
     
     private PreparedStatement create, read, update, delete, readAll;
+    private PreparedStatement utenteByAuth, utenteByUsername, utenteByUUID;
 
     public Utente_DAO_Imp(DataLayer d) {
         super(d);
@@ -36,14 +38,18 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
         try {
             super.init();
             
-            create = connection.prepareStatement("INSERT INTO Utente(email, password, preferenzaID, ricercaID) VALUES(?,MD5(?),?,?)");
+            create = connection.prepareStatement("INSERT INTO Utente(email, password, UUID) VALUES(?,MD5(?),?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Utente WHERE idUtente=?");
 
-            update = connection.prepareStatement("UPDATE Utente SET email=? password=MD5(?) ricercaID=? preferenzaID=? version=? WHERE idUtente=? and version=?");
+            update = connection.prepareStatement("UPDATE Utente SET email=?, password=?, ricercaID=?, preferenzaID=?, version=?, token=?, enableMail=?, accountDisabled=?, UUID=? WHERE idUtente=? AND version=?");
             delete = connection.prepareStatement("DELETE FROM Utente WHERE idUtente=?");
             
             readAll = connection.prepareStatement("SELECT idUtente FROM Utente");
-
+            
+            utenteByAuth = connection.prepareStatement("SELECT * FROM Utente WHERE email=? AND password=MD5(?)");
+            utenteByUsername = connection.prepareStatement("SELECT * FROM Utente WHERE email=?");
+            utenteByUUID = connection.prepareStatement("SELECT * FROM Utente WHERE UUID=?");
+        
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
@@ -58,6 +64,9 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
             update.close();
             delete.close();
             readAll.close();
+            utenteByAuth.close();
+            utenteByUsername.close();
+            utenteByUUID.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -78,8 +87,12 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
             
             a.setKey(rs.getInt("idUtente"));
             a.setEmail(rs.getString("email"));
-            a.setEmail(rs.getString("password"));
+            a.setPassword(rs.getString("password"));
             a.setVersion(rs.getLong("version"));
+            a.setToken(rs.getString("token"));
+            a.setPreferenzaMail(rs.getBoolean("enableMail"));
+            a.setUUID(rs.getString("UUID"));
+            a.setNotAuthFlag(rs.getBoolean("accountDisabled"));
             
             a.setRicerca_key(rs.getInt("ricercaID"));
             a.setPreferenza_key(rs.getInt("preferenzaID"));
@@ -113,8 +126,7 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
             try {
                 create.setString(1, item.getEmail());
                 create.setString(2, item.getPassword());
-                create.setInt(3, item.getRicerca().getKey());
-                create.setInt(4, item.getPreferenza().getKey());
+                create.setString(3, item.getUUID());
                 if (create.executeUpdate() == 1){
                     ResultSet keys = create.getGeneratedKeys();
                     while ( keys.next()) {
@@ -166,13 +178,35 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
 
             update.setString(1, item.getEmail());
             update.setString(2, item.getPassword());
-            update.setInt(3, item.getRicerca().getKey());
-            update.setInt(4, item.getPreferenza().getKey());
+            
+            
+            if(item.getRicerca()==null){
+                update.setNull(3, java.sql.Types.INTEGER);                
+            }else{
+                if(item.getRicerca().getKey()!=0){
+                    update.setInt(3, item.getRicerca().getKey());
+                }else{
+                    update.setNull(3, java.sql.Types.INTEGER); 
+                }
+            }
+            if(item.getPreferenza()==null){
+                update.setNull(4, java.sql.Types.INTEGER);                
+            }else{
+                if(item.getPreferenza().getKey()!=0){
+                    update.setInt(4, item.getPreferenza().getKey());
+                }else{
+                    update.setNull(4, java.sql.Types.INTEGER);                
+                }
+            }
+            
             update.setLong(5, versione + 1);
-
-            update.setInt(6, item.getKey());
-            update.setLong(7, versione);
-
+            update.setString(6, item.getToken());
+            update.setBoolean(7, item.getPreferenzaMail());
+            update.setBoolean(8, item.getNotAuthFlag());
+            update.setString(9, item.getUUID());
+            
+            update.setInt(10, item.getKey());
+            update.setLong(11, versione);
             if (update.executeUpdate() == 0){
                 throw new OptimisticLockException(item);
             }
@@ -185,7 +219,61 @@ public class Utente_DAO_Imp extends DAO implements Utente_DAO{
 
     @Override
     public void delete(Utente item) throws DataException{
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    @Override
+    public Utente checkUtente(String username, String password) throws DataException {
+        Utente item = null;
+        try{
+            utenteByAuth.setString(1, username);
+            utenteByAuth.setString(2, password);
+                try (ResultSet rs = utenteByAuth.executeQuery()){
+                    if(rs.next()){         
+                        item = makeObj(rs); 
+                    }
+                }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to check if user exists", ex);
+        }
+        
+        return item;
+    }
+
+    @Override
+    public Utente getUtenteByUsername(String username) throws DataException {
+        Utente item = null;
+        try{
+            utenteByUsername.setString(1, username);
+                try (ResultSet rs = utenteByUsername.executeQuery()){
+                    if(rs.next()){                      
+                        item = makeObj(rs); 
+                    }
+                }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to check if user exists", ex);
+        }
+        
+        return item;
+    
+    }
+
+    @Override
+    public Utente getUtenteByUUID(String UUID) throws DataException {
+        Utente item = null;
+        try{
+            utenteByUUID.setString(1, UUID);
+                try (ResultSet rs = utenteByUUID.executeQuery()){
+                    if(rs.next()){                      
+                        item = makeObj(rs); 
+                    }
+                }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to check if find user for validation", ex);
+        }
+        
+        return item;
+    
     }
     
 }

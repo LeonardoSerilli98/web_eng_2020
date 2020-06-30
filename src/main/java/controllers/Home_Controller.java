@@ -5,11 +5,16 @@
  */
 package controllers;
 
+import data.DataException;
+import data.GuidaTV_DataLayer;
 import resultsHandler.FailureResult;
-import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import models.Canale;
+import resultsHandler.TemplateManagerException;
+import resultsHandler.TemplateResult;
 
 /**
  *
@@ -25,9 +30,32 @@ public class Home_Controller extends Base_Controller {
         }
     }
     
+    private void action_default(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, TemplateManagerException {
+            
+        try {
+            TemplateResult res = new TemplateResult(getServletContext());
+            List<Canale> canali =  ((GuidaTV_DataLayer)request.getAttribute("datalayer")).getCanaleDAO().getAll();
+            request.setAttribute("canali", canali);
+            res.activate("home.html", request, response);
+                   
+        } catch (DataException ex) {
+            
+            request.setAttribute("message", "Data access exception: " + ex.getMessage());
+            action_error(request, response);
+        }
+    }
+
+    @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException{
         
+        try {
+            action_default(request, response); 
+        }catch (TemplateManagerException ex) {
+            request.setAttribute("exception", ex);
+            action_error(request, response);
+        }
     }
 
     @Override

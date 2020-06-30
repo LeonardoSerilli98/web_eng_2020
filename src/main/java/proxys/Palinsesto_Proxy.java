@@ -8,6 +8,7 @@ package proxys;
 import daos.Canale_DAO_Imp;
 import daos.Episodio_DAO_Imp;
 import daos.Fascia_DAO_Imp;
+import daos.Programma_DAO_Imp;
 import data.DataException;
 import data.DataLayer;
 import java.sql.Time;
@@ -123,7 +124,7 @@ public class Palinsesto_Proxy extends Palinsesto_Imp implements Data_ItemProxy{
     @Override
     public Canale getCanale() {
         
-        if (super.getCanale() == null && fascia_key > 0) {           
+        if (super.getCanale() == null && canale_key > 0) {           
             try {               
                 super.setCanale(((Canale_DAO_Imp) dataLayer.getDAO(Canale.class)).read(canale_key));               
             } catch (DataException ex) {        
@@ -142,7 +143,14 @@ public class Palinsesto_Proxy extends Palinsesto_Imp implements Data_ItemProxy{
 
     @Override
     public Programma getProgramma() {
-        return super.getProgramma(); //To change body of generated methods, choose Tools | Templates.
+            if (super.getProgramma() == null && programma_key > 0) {           
+            try {               
+                super.setProgramma(((Programma_DAO_Imp) dataLayer.getDAO(Programma.class)).read(programma_key));               
+            } catch (DataException ex) {        
+                Logger.getLogger(Palinsesto_Proxy.class.getName()).log(Level.SEVERE, null, ex);  
+            }
+        }
+        return super.getProgramma(); 
     }
     
     //METODI SET/GET DEI CAMPI DI TIPO LIST

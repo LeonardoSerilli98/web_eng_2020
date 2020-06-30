@@ -7,10 +7,13 @@ package controllers;
 
 import data.GuidaTV_DataLayer;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,22 +26,31 @@ import javax.sql.DataSource;
  */
 public abstract class Base_Controller extends HttpServlet {
 
-    @Resource(name = "jdbc/we_database_2020")
-    private DataSource ds;
+    
+    protected abstract void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException{}
     
     private void processBaseRequest(HttpServletRequest request, HttpServletResponse response) {
-        try (GuidaTV_DataLayer datalayer = new GuidaTV_DataLayer(ds)) {
-            datalayer.init();
-            request.setAttribute("datalayer", datalayer);
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(Base_Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
+
+        try {
+            
+            InitialContext ctx = new InitialContext();
+            DataSource datasrc = (DataSource) ctx.lookup(getServletContext().getInitParameter("data.source"));
+            Connection connection = datasrc.getConnection();
+            
+            try (GuidaTV_DataLayer datalayer = new GuidaTV_DataLayer(datasrc)) {
+                datalayer.init();
+                request.setAttribute("datalayer", datalayer);
+                processRequest(request, response);
+            
+            } catch (Exception ex) {
+                Logger.getLogger(Base_Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (NamingException | SQLException ex) {
             Logger.getLogger(Base_Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+    
     }
 
     @Override

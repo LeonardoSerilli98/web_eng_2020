@@ -11,7 +11,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -30,8 +29,7 @@ public class CanaliRes {
     @Produces("application/json")
     public Response getAll(){
         //dobbiamo ritornare l'url di tutti i canali
-        Canale c = new Canale_Imp();
-        return Response.ok(c).build();
+        return Response.ok("tutti i canali").build();
     }
     
     @Logged

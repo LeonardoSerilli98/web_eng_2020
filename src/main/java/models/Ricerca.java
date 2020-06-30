@@ -6,6 +6,8 @@
 package models;
 
 import data.DataItem;
+import java.sql.Date;
+import java.sql.Time;
 
 /**
  *
@@ -24,5 +26,17 @@ public interface Ricerca extends DataItem<Integer>{
 
     public Fascia getFascia();
     public void setFascia(Fascia fascia);
+    
+    public Time getInizioMin();
+    public void setInizioMin(Time inizioMin);
+    
+    public Time getInizioMax();
+    public void setInizioMax(Time inizioMax);
+    
+    public Date getData();
+    public void setData(Date data);
+    
+    public String getTitlo();
+    public void setTitolo(String titolo);
     
 }

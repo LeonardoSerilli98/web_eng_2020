@@ -6,6 +6,7 @@
 package models;
 
 import data.DataItemImpl;
+import java.util.List;
 
 /**
  *
@@ -15,11 +16,13 @@ public class Canale_Imp extends DataItemImpl<Integer> implements Canale {
     
     private String nome;
     private Immagine immagine;
+    private List<Palinsesto> palinsesti;
         
     public Canale_Imp(){
         super();
         nome = "";
         immagine = null;
+        palinsesti = null;
     }
 
     public String getNome() {
@@ -37,5 +40,16 @@ public class Canale_Imp extends DataItemImpl<Integer> implements Canale {
     public void setImmagine(Immagine immagine) {
         this.immagine = immagine;
     }
+
+    @Override
+    public List<Palinsesto> getPalinsesti() {
+        return palinsesti;
+    }
+
+    @Override
+    public void setPalinsesti(List<Palinsesto> palinsesti) {
+        this.palinsesti = palinsesti; 
+    }
+    
     
 }

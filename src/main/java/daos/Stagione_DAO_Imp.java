@@ -36,7 +36,7 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
             
             create = connection.prepareStatement("INSERT INTO Stagione(numero, programmaID) VALUES(?,?)");
             read = connection.prepareStatement("SELECT * FROM Stagione WHERE idStagione=?");
-            update = connection.prepareStatement("UPDATE Stagione SET numero=? version=? programmaID=? WHERE idStagione=? and version=?");
+            update = connection.prepareStatement("UPDATE Stagione SET numero=?, version=?, programmaID=? WHERE idStagione=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Stagione where idStagione=?");
             
             readAll = connection.prepareStatement("SELECT idStagione FROM Stagione");

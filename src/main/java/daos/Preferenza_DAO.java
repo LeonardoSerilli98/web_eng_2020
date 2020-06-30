@@ -6,6 +6,7 @@
 package daos;
 
 import data.DAO_Interface;
+import data.DataException;
 import models.Preferenza;
 
 /**
@@ -13,5 +14,7 @@ import models.Preferenza;
  * @author leonardo
  */
 public interface Preferenza_DAO extends DAO_Interface<Preferenza>{
+    
+    public Preferenza checkExistence(String username) throws DataException;
     
 }

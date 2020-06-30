@@ -20,6 +20,7 @@ public class Programma_Imp extends DataItemImpl<Integer> implements Programma{
     private Boolean isSerie;
     private String approfondimento;
     private Immagine immagine;
+    private List<Episodio> episodi;
     
     public Programma_Imp(){
         
@@ -30,6 +31,7 @@ public class Programma_Imp extends DataItemImpl<Integer> implements Programma{
         isSerie = false;
         approfondimento = "";
         immagine = null;
+        episodi = null;
         
     }
     public String getNome(){
@@ -77,12 +79,12 @@ public class Programma_Imp extends DataItemImpl<Integer> implements Programma{
 
     @Override
     public List<Episodio> getEpisodi() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.episodi;
     }
 
     @Override
     public void setEpisodi(List<Episodio> episodi) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.episodi = episodi;
     }
 
 

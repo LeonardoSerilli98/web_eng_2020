@@ -25,7 +25,8 @@ import proxys.Programma_Proxy;
 public class Programma_DAO_Imp extends DAO implements Programma_DAO{
     
     private PreparedStatement create, read, update, delete, readAll;
-
+    private PreparedStatement getProgrammaByTitolo;
+    
     public Programma_DAO_Imp(DataLayer d) {
         super(d);
     }
@@ -37,11 +38,11 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
             
             create = connection.prepareStatement("INSERT INTO Programma(nome, descrizione, isSerie, approfondimento, genereID) VALUES(?,?,?,?,?)");
             read = connection.prepareStatement("SELECT * FROM Programma WHERE idProgramma=?");
-            update = connection.prepareStatement("UPDATE Programma SET nome=? descrizione=? isSerie=? approfondimento=? genereID=? version=? WHERE idProgramma=? and version=?");
+            update = connection.prepareStatement("UPDATE Programma SET nome=?, descrizione=?, isSerie=?, approfondimento=?, genereID=?, version=? WHERE idProgramma=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Programma where idProgramma=?");
             
             readAll = connection.prepareStatement("SELECT idProgramma FROM Programma");
-
+            getProgrammaByTitolo = connection.prepareStatement("SELECT * FROM Programma WHERE nome=?");
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
@@ -56,6 +57,7 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
             update.close();
             delete.close();
             readAll.close();
+            getProgrammaByTitolo.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -77,7 +79,7 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
             a.setKey(rs.getInt("idProgramma"));
             a.setNome(rs.getString("nome"));
             a.setIsSerie(rs.getBoolean("isSerie"));
-            a.setDescrizione(rs.getString("dscrizione"));
+            a.setDescrizione(rs.getString("descrizione"));
             a.setApprofondimento(rs.getString("approfondimento"));
             a.setVersion(rs.getLong("version"));
             
@@ -188,6 +190,27 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
     @Override
     public void delete(Programma Item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Programma getProgrammaByTitolo(String titolo) throws DataException {
+        Programma p = null;
+        
+        
+        try {
+            getProgrammaByTitolo.setString(1, titolo);   
+            
+            try(ResultSet rs = getProgrammaByTitolo.executeQuery()){
+                while (rs.next()) {
+                    p = makeObj(rs);
+                }
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Programma_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return p;
+        
     }
     
 }

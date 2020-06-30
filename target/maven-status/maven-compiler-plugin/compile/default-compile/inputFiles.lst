@@ -1,8 +1,7 @@
-/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/SignUp_Controller.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resultsHandler/FailureResult.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Palinsesto_DAO_Imp.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Ricerca.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Ricerca_DAO.java
-/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Login_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Canale_DAO.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Stagione_DAO.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/authResources/AuthRes.java
@@ -26,6 +25,7 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Programma_DAO_Imp.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/GuidaTV_DataLayer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/ProgrammaSerializer.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/deleteME/bruciami.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/CanaleDeserializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/OptimisticLockException.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Programma_Imp.java
@@ -43,6 +43,7 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Genere_Imp.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Utente_DAO.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Fascia_DAO_Imp.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/utilities/MsgSerializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Ricerca_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Programma_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Base_Controller.java
@@ -52,11 +53,14 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/CanaliRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/PalinsestoRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Palinsesto_DAO.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Autenticazione_Controller.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/Database.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/CanaleRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/DataCache.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/authResources/JWTHelpers.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/proxys/Episodio_Proxy.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Ricerca_Imp.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/utilities/SecurityLayer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/DataItemImpl.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/EpisodiRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/ImmagineSerializer.java
@@ -66,7 +70,6 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Episodio.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/ImmagineDeserializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/proxys/Canale_Proxy.java
-/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/exceptionHandler/FailureResult.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Programma.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/Data_ItemProxy.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Palinsesto.java
@@ -84,9 +87,11 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Fascia.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Home_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/PalinsestoSerializer.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resultsHandler/TemplateManagerException.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/ProgrammiRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Canale.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Fascia_Imp.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resultsHandler/TemplateResult.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/EpisodioSerializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/CanaleSerializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/authResources/LoggedFilter.java
@@ -98,4 +103,3 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Canale_Imp.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/DAO_Interface.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Utente.java
-/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/com/mycompany/we_2020/servletEsempio.java

@@ -1,0 +1,11 @@
+
+        <#list canali as c>
+            <h1>${c.nome}</h1>
+            <#list c.palinsesti as p>
+                <#if (p.inizio?string.iso?time.iso lte .now?time?string.iso?time.iso)&&(p.fine?string.iso?time.iso gte .now?time?string.iso?time.iso)>
+                    <h1>${p.programma.nome}</h1>
+                    <h5> inizio programma ${p.inizio} </h5>
+                    <h5> fine programma ${p.fine} </h5>
+                    </#if>
+            </#list>
+        </#list>

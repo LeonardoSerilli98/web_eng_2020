@@ -6,6 +6,7 @@
 package proxys;
 
 import daos.Immagine_DAO_Imp;
+import daos.Palinsesto_DAO;
 import data.DataException;
 import data.DataLayer;
 import java.util.logging.Level;
@@ -13,8 +14,8 @@ import java.util.logging.Logger;
 import models.Canale_Imp;
 import models.Immagine;
 import data.Data_ItemProxy;
-
-
+import java.util.List;
+import models.Palinsesto;
 /**
  *
  * @author leonardo
@@ -25,7 +26,7 @@ public class Canale_Proxy extends Canale_Imp implements Data_ItemProxy {
     protected boolean dirty;
     
     protected int immagine_key;
-        
+    
     public Canale_Proxy(DataLayer d) {
         super();
         
@@ -71,9 +72,28 @@ public class Canale_Proxy extends Canale_Imp implements Data_ItemProxy {
         
         return super.getImmagine();
     }
-
     
+
      //METODI SET/GET DEI CAMPI DI TIPO LIST
+    
+    
+    @Override
+    public List<Palinsesto> getPalinsesti() {
+        if(super.getPalinsesti() == null){
+            try{
+                super.setPalinsesti(((Palinsesto_DAO) dataLayer.getDAO(Palinsesto.class)).getPalinsestiByCanale(this));
+            } catch (DataException ex) {
+                Logger.getLogger(Programma_Proxy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return super.getPalinsesti(); 
+    }
+
+    @Override
+    public void setPalinsesti(List<Palinsesto> palinsesti) {
+        super.setPalinsesti(palinsesti);
+        this.dirty = true; 
+    }
     
         
     //METODI DEL PROXY
@@ -93,9 +113,4 @@ public class Canale_Proxy extends Canale_Imp implements Data_ItemProxy {
         //qui resettiamo la cache
         super.setImmagine(null);
     }
-    
-    
-        
-        
-    
 }

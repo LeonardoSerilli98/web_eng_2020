@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <title>intitolami</title>       
+    </head>
+    <body>
+        
+        <div>
+            <a href="/login">login</a>
+            <a href="/logout">lgout</a>
+            <a href="/profilo">profile</a>
+
+        </div>
+        
+        <div>
+        <form name ="searchForm" action="/ricerca" method="GET" style="width: 350px; display:flex; flex-direction: column;">
+            
+            <label>inizioMin <input type="time" name="inizioMin"/></label>
+            <label>inizioMax <input type="time" name="inizioMax"/></label>
+            <label>titolo <input type="text" name="titolo"/></label>
+            <label>data <input type="date" name="data"/></label>
+            
+
+            <select name="canale">
+                <option value="0">Canali</option>
+                <#list canali as c>
+                    <option value=${c.key}>${c.nome}</option>
+                </#list>
+            </select>
+            
+            <select name="genere">
+                <option value="0">Generi</option>
+                <#list generi as g>
+                    <option value=${g.key}>${g.nome}</option>
+                </#list>
+            </select>
+          
+                
+            <select name="fascia">
+                <option value="0">Fasce</option>
+                <#list fasce as f>
+                    <option value=${f.key}>${f.fascia}</option>
+                </#list>
+            </select>
+            
+            <label>salva ricerca <input type="checkbox" name="salvaRicerca" value="1"/></label> 
+            <input type="submit"/>
+        </form>
+            
+        </div>
+        
+        <div>
+            <#include content_tpl>
+        </div>
+            
+    </body>
+</html>

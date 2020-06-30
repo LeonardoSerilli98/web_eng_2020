@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import models.Canale;
 import models.Canale_Imp;
+import models.Immagine;
+import models.Immagine_Imp;
 
 /**
  *
@@ -32,8 +34,18 @@ public class CanaleRes {
 
     @GET
     @Produces("application/json")
-    public Response getSingeCanale(){
-        return Response.ok("url singolo canale").build();
+    public Response getSingleCanale(){
+        
+        Canale c = new Canale_Imp();
+        Immagine i = new Immagine_Imp();
+        
+        i.setKey(7);
+        i.setNome("imgProva");
+        c.setKey(3);
+        c.setNome("canaleProva");
+        c.setImmagine(i);
+        
+        return Response.ok(c).build();
     }
 
      

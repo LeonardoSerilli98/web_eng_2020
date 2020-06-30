@@ -20,7 +20,6 @@ import models.Programma;
  */
 @Path("programmi")
 public class ProgrammiRes {
-    
     @Path("{id: [1-9]+}")
     public ProgrammaRes singleRes(){
         return new ProgrammaRes();
