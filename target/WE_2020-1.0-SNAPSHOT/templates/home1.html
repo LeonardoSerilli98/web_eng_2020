@@ -1,0 +1,34 @@
+<div class="homeI-table">
+    <div class="gridHomeI">
+      <div class="cell grid-header">Canale</div>
+      <div class="cell grid-header">Programma</div>
+      <div class="cell grid-header">episodio/stagione</div>
+      <div class="cell grid-header">genere</div>
+      <div class="cell grid-header">inizio</div>
+      <div class="cell grid-header">fine</div>
+    </div> 
+
+    <#list canali as c>
+        <div class="gridHomeI">    
+            <div class="cell"><a href="/canale?id=${c.key}">${c.nome}</a></div> 
+            <#list c.palinsesti as p>
+                <#if (p.inizio?string.iso?time.iso lte .now?time?string.iso?time.iso)&&(p.fine?string.iso?time.iso gte .now?time?string.iso?time.iso)>        
+                <div class="cell"><a href="/canale?id=${p.programma.key}">${p.programma.nome}</a></div>
+                    <div class="cell">
+                        <#if p.episodio??>
+                            ${p.episodio.numero}x${p.episodio.stagione.numero} 
+                        </#if>  
+                    </div>
+                    <div class="cell">${p.programma.genere.nome}</div>
+                    <div class="cell">${p.inizio}</div>
+                    <div class="cell">${p.fine}</div>
+                </#if>
+            </#list>
+        </div>     
+    </#list>    
+</div>
+<form>
+    <input type="hidden" name="allDayView" value="1" >
+    <input type="submit"  value="visualizza l'intera programmazione del giorno">
+</form>
+

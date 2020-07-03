@@ -47,7 +47,6 @@ public class Autenticazione_Controller extends Base_Controller {
             
             if(u != null && u.getNotAuthFlag()==false){                
                 SecurityLayer.createSession(request, u.getEmail(), u.getKey());
-                request.setAttribute("username", u.getEmail());
                 return true;
             }
      
@@ -121,13 +120,14 @@ public class Autenticazione_Controller extends Base_Controller {
             }else{
                 
                 if (url.toLowerCase().indexOf("login") != -1 && request.getMethod().equals("POST")){                   
-                    if(action_login(request, response)){
+                    if(action_login(request, response) && request.getParameter("username")!="" && request.getParameter("password")!=""){
                         msg= "logged successfully";
+                        request.setAttribute("user", request.getParameter("username"));
                     }else{
                         msg="check your credentials";
                     }
                 }else if(url.toLowerCase().indexOf("signup") != -1 && request.getMethod().equals("POST")){ 
-                    if(action_signUp(request, response)){
+                    if(action_signUp(request, response) && request.getParameter("username")!="" && request.getParameter("password")!=""){
                         msg= "check your mail for confirmation";
                     }else{
                         msg="try other credentials";

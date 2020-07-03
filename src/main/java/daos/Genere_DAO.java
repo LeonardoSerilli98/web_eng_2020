@@ -6,6 +6,7 @@
 package daos;
 
 import data.DAO_Interface;
+import data.DataException;
 import models.Genere;
 
 
@@ -15,5 +16,6 @@ import models.Genere;
  * @author leonardo
  */
 public interface Genere_DAO extends DAO_Interface<Genere>{
+    public Genere getGenereByName(String genere) throws DataException;
     
 }

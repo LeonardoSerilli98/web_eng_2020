@@ -19,6 +19,7 @@ import models.Preferenza;
 public interface Canale_DAO extends DAO_Interface<Canale>{
     
     List<Canale> getCanaliByPreferenza(Preferenza preferenza) throws DataException;
+    public Canale checkExistence(String nome) throws DataException;
     
     
 }

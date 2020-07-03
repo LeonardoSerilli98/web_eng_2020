@@ -20,4 +20,9 @@ public class MsgSerializer {
         params.put("message", msg);
         return new ObjectMapper().writeValueAsString(params);
     }
+    public static String serialize(String key, String value) throws JsonProcessingException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(key, value);
+        return new ObjectMapper().writeValueAsString(params);
+    }
 }

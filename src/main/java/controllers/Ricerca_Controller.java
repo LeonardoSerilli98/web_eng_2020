@@ -47,55 +47,8 @@ public class Ricerca_Controller extends Base_Controller {
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws DataException, TemplateManagerException {
         TemplateResult res = new TemplateResult(getServletContext());
         List<Palinsesto> risultati = null;
-        Ricerca r = new Ricerca_Imp();
-        r.setTitolo(request.getParameter("titolo"));
-        r.setData(Date.valueOf(request.getParameter("data")));
-        r.setInizioMin(Time.valueOf(request.getParameter("inizioMin")));
-        r.setInizioMax(Time.valueOf(request.getParameter("inizioMax")));
-        r.setCanale(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getCanaleDAO().read(SecurityLayer.checkNumeric(request.getParameter("canale"))));
-        r.setFascia(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getFasciaDAO().read(SecurityLayer.checkNumeric(request.getParameter("fascia"))));
-        r.setProgramma(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getProgrammaDAO().read(SecurityLayer.checkNumeric(request.getParameter("programma"))));
-/*       
-        HashMap<String, String> params = new HashMap();
-        
-        if(request.getParameter("titolo")!="" && request.getParameter("titolo")!= null){
-            params.put("titolo", request.getParameter("titolo"));
-        }else{
-            params.put("titolo", "");
-        } 
-        if(request.getParameter("data")!="" && request.getParameter("data")!= null){
-            params.put("data", request.getParameter("data"));
-        }else{
-            params.put("data", "");
-        } 
-        if(request.getParameter("inizioMin")!="" && request.getParameter("inizioMin")!= null){
-            params.put("inizioMin", request.getParameter("inizioMin"));
-        }else{
-            params.put("inizioMin", "");
-        } 
-        if(request.getParameter("inizioMax")!="" && request.getParameter("inizioMax")!= null){
-            params.put("inizioMax", request.getParameter("inizioMax"));
-        }else{
-            params.put("inizioMax", "");
-        } 
-        if(request.getParameter("canale")!="" && request.getParameter("canale")!= null){
-            params.put("canale", request.getParameter("canale"));
-        }else{
-            params.put("canale", "");
-        } 
-        if(request.getParameter("genere")!="" && request.getParameter("genere")!= null){
-            params.put("genere", request.getParameter("genere"));
-        }else{
-            params.put("genere", "");
-        } 
-        if(request.getParameter("fascia")!="" && request.getParameter("fascia")!= null){
-            params.put("fascia", request.getParameter("fascia"));
-        }else{
-            params.put("fascia", "");
-        }
-                risultati = ((GuidaTV_DataLayer)request.getAttribute("datalayer")).getPalinsestoDAO().ricerca(params);
-*/
-        
+        Ricerca r = ricercaFromResultSet(request, response);
+                
         risultati = ((GuidaTV_DataLayer)request.getAttribute("datalayer")).getPalinsestoDAO().ricerca(r);
         request.setAttribute("risultati", risultati);
         res.activate("search.html", request, response);
@@ -135,26 +88,7 @@ public class Ricerca_Controller extends Base_Controller {
 
         String username = (String) request.getSession().getAttribute("username");
         Ricerca ricercaSalvata = ((GuidaTV_DataLayer)request.getAttribute("datalayer")).getRicercaDAO().checkExistence(username);
-        Ricerca r = new Ricerca_Imp();
-        
-        if(request.getParameter("canale")!=null && request.getParameter("canale")!= ""){
-            r.setCanale(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getCanaleDAO().read(SecurityLayer.checkNumeric(request.getParameter("canale"))));
-        }
-        if(request.getParameter("fascia")!=null && request.getParameter("fascia")!= ""){
-            r.setFascia(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getFasciaDAO().read(SecurityLayer.checkNumeric(request.getParameter("fascia"))));
-        }
-        if(request.getParameter("genere")!=null && request.getParameter("genere")!= ""){
-            r.setGenere(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getGenereDAO().read(SecurityLayer.checkNumeric(request.getParameter("genere"))));
-        }
-        if(request.getParameter("titolo")!=null && request.getParameter("titolo")!= ""){
-            r.setProgramma(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getProgrammaDAO().getProgrammaByTitolo(request.getParameter("titolo")));
-        }
-        if(request.getParameter("inizioMin")!="null" && request.getParameter("inizioMin")!= ""){
-            r.setInizioMin(Time.valueOf(request.getParameter("inizioMin")+":00"));
-        }
-        if(request.getParameter("inizioMax")!="null" && request.getParameter("inizioMax")!= ""){
-            r.setInizioMax(Time.valueOf(request.getParameter("inizioMax")+":00"));
-        }
+        Ricerca r = ricercaFromResultSet(request, response);
                 
         if(ricercaSalvata == null){
            
@@ -172,6 +106,30 @@ public class Ricerca_Controller extends Base_Controller {
         }     
     }
 
-
+    private Ricerca ricercaFromResultSet(HttpServletRequest request, HttpServletResponse response) throws DataException{
+        Ricerca r = new Ricerca_Imp();
+        r.setTitolo(request.getParameter("titolo"));
+        if(request.getParameter("data")!=null && request.getParameter("data")!="" ){
+            r.setData(Date.valueOf(request.getParameter("data")));
+        }
+        if(request.getParameter("inizioMin")!=null && request.getParameter("inizioMin")!="" ){
+            r.setInizioMin(Time.valueOf(request.getParameter("inizioMin")+":00"));
+        }
+        if(request.getParameter("inizioMax")!=null && request.getParameter("inizioMax")!=""){
+            r.setInizioMax(Time.valueOf(request.getParameter("inizioMax")+":00"));
+        }
+        if(request.getParameter("canale")!=null && request.getParameter("canale")!=""){
+            r.setCanale(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getCanaleDAO().read(SecurityLayer.checkNumeric(request.getParameter("canale"))));
+        }
+        if(request.getParameter("fascia")!=null && request.getParameter("fascia")!=""){
+            r.setFascia(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getFasciaDAO().read(SecurityLayer.checkNumeric(request.getParameter("fascia"))));
+        }
+        if(request.getParameter("programma")!=null && request.getParameter("programma")!=""){
+            r.setProgramma(((GuidaTV_DataLayer)request.getAttribute("datalayer")).getProgrammaDAO().read(SecurityLayer.checkNumeric(request.getParameter("programma"))));
+        }
+        
+        return r;
+        
+    }
 
 }

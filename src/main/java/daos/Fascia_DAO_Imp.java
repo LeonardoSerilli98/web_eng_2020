@@ -24,14 +24,14 @@ import proxys.Fascia_Proxy;
  *
  * @author leonardo
  */
-public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
-  
-    private PreparedStatement create, read, update, delete, readAll;
+public class Fascia_DAO_Imp extends DAO implements Fascia_DAO {
+
+    private PreparedStatement create, read, update, delete, readAll, fasciaByName;
 
     public Fascia_DAO_Imp(DataLayer d) {
         super(d);
     }
-    
+
     @Override
     public void init() throws DataException {
         try {
@@ -41,25 +41,26 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
             read = connection.prepareStatement("SELECT * FROM Fascia WHERE idFascia=?");
             update = connection.prepareStatement("UPDATE Fascia SET inizio=?, fine=?, fascia=?, version=? WHERE idFascia=?, version=?");
             delete = connection.prepareStatement("DELETE FROM Fascia WHERE idFascia=?");
-            
-            readAll = connection.prepareStatement("SELECT idFascia FROM Fascia"); 
-            
-        }catch (SQLException ex) {
+
+            readAll = connection.prepareStatement("SELECT idFascia FROM Fascia");
+            fasciaByName = connection.prepareStatement("SELECT * FROM Fascia WHERE fascia=?");
+        } catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
     }
-    
+
     @Override
     public void destroy() throws DataException {
-        try{
- 
+        try {
+
             create.close();
             read.close();
             update.close();
             delete.close();
             readAll.close();
-            
-        }catch (SQLException ex) {
+            fasciaByName.close();
+
+        } catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
         }
         super.destroy();
@@ -74,13 +75,13 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
     public Fascia_Proxy makeObj(ResultSet rs) throws DataException {
         Fascia_Proxy a = makeObj();
         try {
-            
+
             a.setKey(rs.getInt("idFascia"));
             a.setFascia(rs.getString("fascia"));
             a.setFine(rs.getTime("inizio"));
             a.setFine(rs.getTime("fine"));
             a.setVersion(rs.getLong("version"));
-            
+
         } catch (SQLException ex) {
             throw new DataException("Unable to create article object form ResultSet", ex);
         }
@@ -88,14 +89,14 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
     }
 
     @Override
-    public List<Fascia> getAll() throws DataException{
+    public List<Fascia> getAll() throws DataException {
         List<Fascia> result = new ArrayList();
 
-        try (ResultSet rs = readAll.executeQuery()) {
+        try ( ResultSet rs = readAll.executeQuery()) {
             while (rs.next()) {
                 result.add((Fascia) read(rs.getInt("idFascia")));
             }
-        
+
         } catch (SQLException ex) {
             throw new DataException("Unable to load Fascia", ex);
         }
@@ -103,90 +104,106 @@ public class Fascia_DAO_Imp extends DAO implements Fascia_DAO{
     }
 
     @Override
-    public void create(Fascia item) throws DataException{
-        if (item.getKey() != null && item.getKey() > 0) { 
-                update(item);
-            }else{ 
-                try {                 
-                    
-                    update.setTime(1, item.getInizio());
-                    update.setTime(3, item.getFine());
-                    update.setString(3, item.getFascia());                    
-                    
-                    if(create.executeUpdate() == 1){                       
-                        ResultSet keys = create.getGeneratedKeys();
-                        if(keys.next()){
-                            item.setKey(keys.getInt(1));
-                            dataLayer.getCache().add(Fascia.class, item);
-                        }
+    public void create(Fascia item) throws DataException {
+        if (item.getKey() != null && item.getKey() > 0) {
+            update(item);
+        } else {
+            try {
+
+                update.setTime(1, item.getInizio());
+                update.setTime(3, item.getFine());
+                update.setString(3, item.getFascia());
+
+                if (create.executeUpdate() == 1) {
+                    ResultSet keys = create.getGeneratedKeys();
+                    if (keys.next()) {
+                        item.setKey(keys.getInt(1));
+                        dataLayer.getCache().add(Fascia.class, item);
                     }
-                } catch (SQLException ex) {
-                    throw new DataException("Unable to create Fascia", ex);
                 }
-                
+            } catch (SQLException ex) {
+                throw new DataException("Unable to create Fascia", ex);
             }
-            if(item instanceof Data_ItemProxy){
-                ((Data_ItemProxy) item).setDirty(false);
-            }
+
+        }
+        if (item instanceof Data_ItemProxy) {
+            ((Data_ItemProxy) item).setDirty(false);
+        }
     }
 
     @Override
     public Fascia read(int key) throws DataException {
         Fascia item = null;
         // Controllo se l'oggetto è nella cache, in caso prendo quello
-        if(dataLayer.getCache().has(Fascia.class, key)){
+        if (dataLayer.getCache().has(Fascia.class, key)) {
             item = dataLayer.getCache().get(Fascia.class, key);
-        }else{
-            try{
+        } else {
+            try {
                 read.setInt(1, key);
-                try (ResultSet rs = read.executeQuery()){
-                    if(rs.next()){                      
+                try ( ResultSet rs = read.executeQuery()) {
+                    if (rs.next()) {
                         item = makeObj(rs);
                         // ricorda di aggiungere l'oggetto appena creato nella cache
-                        dataLayer.getCache().add(Fascia.class, item);  
+                        dataLayer.getCache().add(Fascia.class, item);
                     }
-                }  
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Fascia_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         return item;
     }
 
     @Override
-    public void update(Fascia item) throws DataException{
-         try {
+    public void update(Fascia item) throws DataException {
+        try {
 
             if (item instanceof Data_ItemProxy && !((Data_ItemProxy) item).isDirty()) {
-                 return;
-             }
-             
-             long versione = (long) item.getVersion();
-         
- 
-             update.setTime(1, item.getInizio());
-             update.setTime(2, item.getFine());
-             update.setString(3, item.getFascia());
-             update.setLong(4, versione+1);
-             
-             update.setInt(5, item.getKey());
-             update.setLong(6, versione);
-             
-             if(update.executeUpdate() == 0){
-                 throw new OptimisticLockException(item);
-             }
-             
-             item.setVersion(versione + 1);
-             
-         } catch (SQLException ex) {
-             throw new DataException("Unable to update Fascia", ex);
-         }
+                return;
+            }
+
+            long versione = (long) item.getVersion();
+
+            update.setTime(1, item.getInizio());
+            update.setTime(2, item.getFine());
+            update.setString(3, item.getFascia());
+            update.setLong(4, versione + 1);
+
+            update.setInt(5, item.getKey());
+            update.setLong(6, versione);
+
+            if (update.executeUpdate() == 0) {
+                throw new OptimisticLockException(item);
+            }
+
+            item.setVersion(versione + 1);
+
+        } catch (SQLException ex) {
+            throw new DataException("Unable to update Fascia", ex);
+        }
     }
 
     @Override
-    public void delete(Fascia item) throws DataException{
+    public void delete(Fascia item) throws DataException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    public Fascia getFasciaByName(String fascia) throws DataException {
+        Fascia g = null;
+        try {
+
+            fasciaByName.setString(1, fascia);
+
+            try ( ResultSet rs = fasciaByName.executeQuery()) {
+                while (rs.next()) {
+                    g = makeObj(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find fascia", ex);
+        }
+        return g;
+    }
 }

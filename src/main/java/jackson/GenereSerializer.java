@@ -25,7 +25,7 @@ public class GenereSerializer extends StdSerializer<Genere> {
     @Override
     public void serialize(Genere item, com.fasterxml.jackson.core.JsonGenerator jsonGenerator, SerializerProvider sp) throws IOException {
         jsonGenerator.writeStartObject();
-            jsonGenerator.writeObjectField("id", item.getKey());
+            jsonGenerator.writeNumberField("id", item.getKey());
             jsonGenerator.writeObjectField("nome", item.getNome());  
         jsonGenerator.writeEndObject(); 
     }

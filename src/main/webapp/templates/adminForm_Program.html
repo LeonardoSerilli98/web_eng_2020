@@ -1,0 +1,15 @@
+<form class="crud" action="/admin" method="POST" enctype="multipart/form-data">  
+    <h3> Programma </h3>
+    <label>Nome: <input type="text" name="nome"/></label>
+    <label>Descrizione: <input type="text" name="descrizione"/></label>
+    <label>Approfondimento: <input type="text" name="aprofondimento"/></label>               
+    <select name="genere">
+        <option value="0">Generi</option>
+        <#list generi as g>
+        <option value=${g.key}>${g.nome}</option>
+        </#list>
+    </select>
+    <label> Serie? <input type="checkbox" name="isSerie" value="1"/></label>
+    <#include "adminImgUploaderForm.html">
+    <input type="submit" name="form" value="programma"/>
+</form>

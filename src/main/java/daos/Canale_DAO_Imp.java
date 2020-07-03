@@ -30,7 +30,7 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
     
     // dichiariamo qui i prepared Statement
     private PreparedStatement create, read, update, delete, readAll;
-    private PreparedStatement canaleByPreferenza;
+    private PreparedStatement canaleByPreferenza, checkExistence;
 
     
     public Canale_DAO_Imp(DataLayer d) {
@@ -55,7 +55,7 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
             readAll = connection.prepareStatement("SELECT idCanale FROM Canale");            
             
             canaleByPreferenza = connection.prepareStatement("SELECT canaleID FROM Preferenza WHERE idPreferenze=?");
-            
+            checkExistence = connection.prepareStatement("SELECT * FROM Canale WHERE nome=?");
             
         } catch (SQLException ex) {
             throw new DataException("Errore di inizializzazione per 'GuidaTV Data Layer'", ex);
@@ -77,6 +77,7 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
             readAll.close();
 
             canaleByPreferenza.close();
+            checkExistence.close();
             
         } catch (SQLException ex) {
             Logger.getLogger(Canale_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
@@ -244,6 +245,24 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
         return result;
     }
     
+    @Override
+    public Canale checkExistence(String nome) throws DataException {
+        Canale r = null;
+        try {
+            
+            checkExistence.setString(1, nome);   
+            
+            try(ResultSet rs = checkExistence.executeQuery()){
+                while (rs.next()) {
+                    r = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+            throw new DataException("Unable to checkExistence of ricerca", ex);
+        }
+        return r;
+        
+    }
    
     
     

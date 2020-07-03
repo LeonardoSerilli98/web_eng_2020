@@ -46,12 +46,15 @@ public class PalinsestoDeserializer extends JsonDeserializer<Palinsesto> {
             item.setProgramma(jsonParser.getCodec().treeToValue(node.get("programma"), Programma.class));
         }
 
-        if (node.has("episodio")) {
+        if (node.has("fascia")) {
             item.setFascia(jsonParser.getCodec().treeToValue(node.get("fascia"), Fascia.class));
         }
 
         if (node.has("canale")) {
             item.setCanale(jsonParser.getCodec().treeToValue(node.get("canale"), Canale.class));
+        }
+        if (node.has("episodio")) {
+            item.setEpisodio(jsonParser.getCodec().treeToValue(node.get("episodio"), Episodio.class));
         }
 
         return item;

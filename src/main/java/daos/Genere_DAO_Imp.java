@@ -28,7 +28,7 @@ import proxys.Genere_Proxy;
 public class Genere_DAO_Imp extends DAO implements Genere_DAO{
     
    
-     private PreparedStatement create, read, update, delete, readAll;
+     private PreparedStatement create, read, update, delete, readAll, genereByName;
      
     public Genere_DAO_Imp(DataLayer d) {
         super(d);
@@ -45,7 +45,7 @@ public class Genere_DAO_Imp extends DAO implements Genere_DAO{
             delete = connection.prepareStatement("DELETE FROM Genere WHERE idGenere=?");
             
             readAll = connection.prepareStatement("SELECT idGenere FROM Genere");
-            
+            genereByName = connection.prepareStatement("SELECT * FROM Genere WHERE nome=?");
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
@@ -60,6 +60,7 @@ public class Genere_DAO_Imp extends DAO implements Genere_DAO{
             update.close();
             delete.close();
             readAll.close();
+            genereByName.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -205,6 +206,24 @@ public class Genere_DAO_Imp extends DAO implements Genere_DAO{
     @Override
     public void delete(Genere item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Genere getGenereByName(String genere) throws DataException {
+        Genere g = null;
+        try {
+            
+            genereByName.setString(1, genere);   
+            
+            try(ResultSet rs = genereByName.executeQuery()){
+                while (rs.next()) {
+                    g = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find genere", ex);
+        }
+        return g;
     }
     
 }

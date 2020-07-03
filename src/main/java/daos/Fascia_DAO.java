@@ -6,6 +6,7 @@
 package daos;
 
 import data.DAO_Interface;
+import data.DataException;
 import models.Fascia;
 
 /**
@@ -13,5 +14,7 @@ import models.Fascia;
  * @author leonardo
  */
 public interface Fascia_DAO extends DAO_Interface<Fascia>{
+    
+    public Fascia getFasciaByName(String fascia) throws DataException;
     
 }

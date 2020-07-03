@@ -7,13 +7,16 @@ package jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
+import java.util.List;
 import models.Canale;
 import models.Canale_Imp;
 import models.Immagine;
+import models.Palinsesto;
 
 /**
  *
@@ -38,6 +41,10 @@ public class CanaleDeserializer extends JsonDeserializer<Canale> {
         }
         if (node.has("immagine")) {
             item.setImmagine(jp.getCodec().treeToValue(node.get("immagine"), Immagine.class));
+        }
+        if (node.has("palinsesti")) {
+            item.setPalinsesti(jp.getCodec().treeToValue(node.get("palinsesti"), List.class));
+            
         }
 
         return item;

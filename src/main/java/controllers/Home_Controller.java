@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import models.Canale;
 import resultsHandler.TemplateManagerException;
 import resultsHandler.TemplateResult;
+import utilities.SecurityLayer;
 
 /**
  *
@@ -37,8 +38,12 @@ public class Home_Controller extends Base_Controller {
             TemplateResult res = new TemplateResult(getServletContext());
             List<Canale> canali =  ((GuidaTV_DataLayer)request.getAttribute("datalayer")).getCanaleDAO().getAll();
             request.setAttribute("canali", canali);
-            res.activate("home.html", request, response);
-                   
+            
+            if(request.getParameter("allDayView")!=null){
+                request.setAttribute("allDayView", SecurityLayer.checkNumeric(request.getParameter("allDayView")));
+            }
+            res.activate("home.html", request, response);                
+      
         } catch (DataException ex) {
             
             request.setAttribute("message", "Data access exception: " + ex.getMessage());

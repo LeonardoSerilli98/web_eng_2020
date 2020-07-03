@@ -12,13 +12,12 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import models.Canale;
 
-
 /**
  *
  * @author leonardo
  */
-public class CanaleSerializer extends StdSerializer<Canale>{
-    
+public class CanaleSerializer extends StdSerializer<Canale> {
+
     public CanaleSerializer() {
         this(null);
     }
@@ -28,13 +27,13 @@ public class CanaleSerializer extends StdSerializer<Canale>{
     }
 
     @Override
-    public void serialize(Canale item, JsonGenerator jg, SerializerProvider sp) throws IOException, JsonProcessingException {
-                jg.writeStartObject();   
-                jg.writeObjectField("id", item.getKey());           
-                jg.writeObjectField("nome", item.getNome());             
-                jg.writeObjectField("immagine", item.getImmagine());
-                jg.writeEndObject();
+    public void serialize(Canale item, JsonGenerator jsonGenerator, SerializerProvider sp) throws IOException, JsonProcessingException {
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeObjectField("id", item.getKey());
+        jsonGenerator.writeObjectField("nome", item.getNome());
+        jsonGenerator.writeObjectField("immagine", item.getImmagine());
+        jsonGenerator.writeObjectField("palinsesti", item.getPalinsesti());
+        jsonGenerator.writeEndObject();
     }
-    
-}
 
+}

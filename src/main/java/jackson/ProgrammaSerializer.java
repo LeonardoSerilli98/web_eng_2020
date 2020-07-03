@@ -24,13 +24,14 @@ public class ProgrammaSerializer extends StdSerializer<Programma> {
     @Override
     public void serialize(Programma item, JsonGenerator jsonGenerator, SerializerProvider sp) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeObjectField("id", item.getKey());
+        jsonGenerator.writeNumberField("id", item.getKey());
         jsonGenerator.writeObjectField("nome", item.getNome());
         jsonGenerator.writeObjectField("descrizione", item.getDescrizione());
         jsonGenerator.writeObjectField("isSerie", item.getIsSerie());
         jsonGenerator.writeObjectField("genere", item.getGenere());
         jsonGenerator.writeObjectField("approfondimento", item.getApprofondimento());
         jsonGenerator.writeObjectField("immagine", item.getImmagine());
+        jsonGenerator.writeObjectField("episodi", item.getEpisodi());
         jsonGenerator.writeEndObject();    
     }
     

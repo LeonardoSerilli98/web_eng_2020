@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import models.Canale;
 import models.Fascia;
 import models.Genere;
-import resources.Database;
+import utilities.Database;
+import utilities.SecurityLayer;
 
 /**
  *
@@ -76,11 +77,11 @@ public class TemplateResult {
             List<Genere> generi = (db.getDatalayer()).getGenereDAO().getAll();
             List<Canale> canali = (db.getDatalayer()).getCanaleDAO().getAll();
             List<Fascia> fasce = (db.getDatalayer()).getFasciaDAO().getAll();
-
+                
             default_data_model.put("generi", generi);
             default_data_model.put("canali", canali);
             default_data_model.put("fasce", fasce);
-            
+                  
             return default_data_model;
     }
 
@@ -91,6 +92,9 @@ public class TemplateResult {
         while (attrs.hasMoreElements()) {
             String attrname = (String) attrs.nextElement();
             datamodel.put(attrname, request.getAttribute(attrname));
+        }
+        if(SecurityLayer.checkSession(request)!=null){
+            datamodel.put("auth", "true");
         }
         return datamodel;
     }

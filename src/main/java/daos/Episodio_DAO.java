@@ -20,5 +20,8 @@ public interface Episodio_DAO extends DAO_Interface<Episodio>{
     
     List<Episodio> getEpisodiByProgramma(Programma programma) throws DataException;
     List<Episodio> getEpisodiByStagione(Stagione stagione) throws DataException;
+    public Episodio checkExistence(Episodio e) throws DataException;
+    public Episodio checkCorrectness(int progID, int StagioneNum, int episodioNum) throws DataException;
+
     
 }

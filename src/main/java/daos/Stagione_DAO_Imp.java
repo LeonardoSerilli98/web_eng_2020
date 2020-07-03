@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import models.Programma;
 import models.Stagione;
 import proxys.Stagione_Proxy;
 
@@ -24,7 +25,8 @@ import proxys.Stagione_Proxy;
 public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
     
     private PreparedStatement create, read, update, delete, readAll;
-
+    private PreparedStatement stagioneByProgramma;
+            
     public Stagione_DAO_Imp(DataLayer d) {
         super(d);
     }
@@ -40,7 +42,7 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
             delete = connection.prepareStatement("DELETE FROM Stagione where idStagione=?");
             
             readAll = connection.prepareStatement("SELECT idStagione FROM Stagione");
-
+            stagioneByProgramma = connection.prepareStatement("SELECT * FROM Stagione WHERE programmaID=? AND numero=?");
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
@@ -55,6 +57,7 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
             update.close();
             delete.close();
             readAll.close();
+            stagioneByProgramma.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -157,6 +160,25 @@ public class Stagione_DAO_Imp extends DAO implements Stagione_DAO{
     @Override
     public void delete(Stagione item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Stagione getStagioneByProgramma(Programma p, int num) throws DataException {
+        Stagione s = null;
+        try {
+            
+            stagioneByProgramma.setInt(1, p.getKey());   
+            stagioneByProgramma.setInt(2, num);
+            
+            try(ResultSet rs = stagioneByProgramma.executeQuery()){
+                while (rs.next()) {
+                    s = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+            throw new DataException("Unable to find stagione by programma", ex);
+        }
+        return s;
     }
     
 }

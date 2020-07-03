@@ -1,0 +1,13 @@
+<form class="crud" action="/admin" method="POST" enctype="multipart/form-data">  
+    <h3>Episodio</h3>      
+    <label>titolo: <input type="text" name="titolo" required/></label>
+    <label>num: <input type="number" name="numero" required/></label>
+    <select name="programma">
+        <option value="0">Programma</option>
+        <#list programmi as p>
+        <option value=${p.key}>${p.nome}</option>
+        </#list>
+    </select>
+    <label>Stagione: <input type="number" name="numeroStagione" required/></label>
+    <input type="submit" name="form" value="episodio"/>
+</form>

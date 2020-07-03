@@ -16,10 +16,10 @@ public class EpisodioSerializer extends StdSerializer<Episodio> {
     @Override
     public void serialize(Episodio item, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
-            jsonGenerator.writeObjectField("id", item.getKey());
-            jsonGenerator.writeObjectField("numero", item.getNumero());
-            jsonGenerator.writeObjectField("programma", item.getSerie());
-            jsonGenerator.writeObjectField("stagione", item.getStagione());
+            jsonGenerator.writeNumberField("id", item.getKey());
+            jsonGenerator.writeNumberField("numero", item.getNumero());
+            jsonGenerator.writeObjectField("programma", item.getSerie().getNome());
+            jsonGenerator.writeNumberField("stagione", item.getStagione().getNumero());
         jsonGenerator.writeEndObject();
     }
 }

@@ -6,6 +6,8 @@
 package daos;
 
 import data.DAO_Interface;
+import data.DataException;
+import models.Programma;
 import models.Stagione;
 
 /**
@@ -13,5 +15,6 @@ import models.Stagione;
  * @author leonardo
  */
 public interface Stagione_DAO  extends DAO_Interface<Stagione>{
+    public Stagione getStagioneByProgramma(Programma p, int num) throws DataException;
     
 }

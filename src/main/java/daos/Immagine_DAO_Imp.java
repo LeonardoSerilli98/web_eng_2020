@@ -13,6 +13,7 @@ import data.OptimisticLockException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,7 +28,8 @@ import proxys.Immagine_Proxy;
 public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
     
     private PreparedStatement create, read, update, delete, readAll;
-
+    private PreparedStatement checkExistence;
+    
     public Immagine_DAO_Imp(DataLayer d) {
         super(d);
     }
@@ -37,13 +39,13 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
         try {
             super.init();
 
-            create = connection.prepareStatement("INSERT INTO Immagine (tipo, nome, taglia, stagioneID, programmaID), values(?,?,?,?,?)");
+            create = connection.prepareStatement("INSERT INTO Immagine(tipo, nome, taglia) values(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Immagine WHERE idImmagine=?");
-            update = connection.prepareStatement("UPDATE Immagine SET tipo=?, nome=?, taglia=?, stagioneID=?, programmaID=?, version=? WHERE idImmagine=? and version=?");
+            update = connection.prepareStatement("UPDATE Immagine SET tipo=?, nome=?, taglia=? version=? WHERE idImmagine=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Immagine where idImmagine=?");
             
             readAll = connection.prepareStatement("SELECT idImmagine FROM Immagine");
-            
+            checkExistence = connection.prepareStatement("SELECT * FROM Immagine WHERE nome=?");
         }catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
@@ -58,6 +60,7 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
             update.close();
             delete.close();
             readAll.close();
+            checkExistence.close();
             
         }catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -110,11 +113,9 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
             }else{ 
                 try {                 
                     
-                 update.setString(1, item.getTipo());
-                 update.setString(2, item.getNome());
-                 update.setLong(3, item.getTaglia()); 
-                 update.setInt(4, item.getStagione().getKey());
-                 update.setInt(5, item.getProgramma().getKey());
+                 create.setString(1, item.getTipo());
+                 create.setString(2, item.getNome());
+                 create.setLong(3, item.getTaglia()); 
                     
                     if(create.executeUpdate() == 1){                       
                         ResultSet keys = create.getGeneratedKeys();
@@ -172,8 +173,6 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
              update.setString(1, item.getTipo());
              update.setString(2, item.getNome());
              update.setLong(3, item.getTaglia()); 
-             update.setInt(4, item.getStagione().getKey());
-             update.setInt(5, item.getProgramma().getKey());
              update.setLong(6, versione+1);
              
              update.setInt(7, item.getKey());
@@ -195,6 +194,25 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
     @Override
     public void delete(Immagine item) throws DataException{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Immagine checkExistence(String nome) throws DataException {
+        Immagine r = null;
+        try {
+            
+            checkExistence.setString(1, nome);   
+            
+            try(ResultSet rs = checkExistence.executeQuery()){
+                while (rs.next()) {
+                    r = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+            throw new DataException("Unable to checkExistence of ricerca", ex);
+        }
+        return r;
+        
     }
 
        

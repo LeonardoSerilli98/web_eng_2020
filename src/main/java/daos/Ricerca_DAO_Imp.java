@@ -37,9 +37,9 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
         try {
             super.init();
             
-            create = connection.prepareStatement("INSERT INTO Ricerca(fasciaID, programmaID, genereID, canaleID, inizioMIN, inizioMax, data, titolo) VALUES(?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            create = connection.prepareStatement("INSERT INTO Ricerca(fasciaID, programmaID, genereID, canaleID, inizioMIN, inizioMax, data, titolo) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Ricerca WHERE idRicerca=?");
-            update = connection.prepareStatement("UPDATE Ricerca SET fasciaID=?, programmaID=?, genereID=?, canaleID=?, version=?, inizioMin=?, inizioMax=?, data=?, titolo WHERE idRicerca=? AND version=?");
+            update = connection.prepareStatement("UPDATE Ricerca SET fasciaID=?, programmaID=?, genereID=?, canaleID=?, version=?, inizioMin=?, inizioMax=?, data=?, titolo=? WHERE idRicerca=? AND version=?");
             delete = connection.prepareStatement("DELETE FROM Ricerca where idRicerca=?");
             
             readAll = connection.prepareStatement("SELECT idRicerca FROM Ricerca");
@@ -143,7 +143,7 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
                 create.setTime(5, item.getInizioMin());
                 create.setTime(6, item.getInizioMax());
                 create.setDate(7, item.getData());
-                create.setString(8 , item.getTitlo());
+                create.setString(8 , item.getTitolo());
 
                 if (create.executeUpdate() == 1){
                     ResultSet keys = create.getGeneratedKeys();
@@ -234,7 +234,7 @@ public class Ricerca_DAO_Imp extends DAO implements Ricerca_DAO{
             update.setTime(6,item.getInizioMin());
             update.setTime(7,item.getInizioMax());
             update.setDate(8,item.getData());
-            update.setString(9, item.getTitlo());
+            update.setString(9, item.getTitolo());
 
             update.setInt(10, item.getKey());
             update.setLong(11, versione);

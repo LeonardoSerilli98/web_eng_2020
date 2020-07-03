@@ -14,11 +14,13 @@ import data.OptimisticLockException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Episodio;
+import models.Episodio_Imp;
 import models.Programma;
 import models.Stagione;
 import proxys.Episodio_Proxy;
@@ -30,8 +32,7 @@ import proxys.Episodio_Proxy;
 public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
     
     private PreparedStatement create, read, update, delete, readAll;
-    private PreparedStatement episodioByProgramma;
-    private PreparedStatement episodioByStagione;
+    private PreparedStatement episodioByProgramma, episodioByStagione, checkExistence, checkCorrectness;
     
     
     public Episodio_DAO_Imp(DataLayer d) {
@@ -45,7 +46,7 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
         
         try {
             
-            create = connection.prepareStatement("INSERT INTO Episodio (titolo, numero, programmaID, stagioneID) VALUES(?, ?,?,?)");
+            create = connection.prepareStatement("INSERT INTO Episodio (titolo, numero, programmaID, stagioneID) VALUES(?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Episodio WHERE idEpisodio=?");
             update = connection.prepareStatement("UPDATE Episodio SET titolo=?, numero=?, programmaID=?, stagioneID=?, version=? WHERE idEpisodio=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Episodio WHERE idEpisodio=?");
@@ -54,7 +55,8 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
 
             episodioByProgramma = connection.prepareStatement("SELECT * FROM Episodio WHERE programmaID=?");
             episodioByStagione = connection.prepareStatement("SELECT * FROM Episodio WHERE stagioneID=?");
-            
+            checkExistence = connection.prepareStatement("SELECT * FROM Episodio WHERE titolo=? AND stagioneID=? AND numero=? AND programmaID=?");
+            checkCorrectness = connection .prepareStatement("SELECT e.idEpisodio, e.numero, e.programmaID, e.StagioneID, e.version, e.titolo FROM Episodio as e INNER JOIN Stagione as s WHERE e.numero=? AND e.programmaID=? AND s.numero=?");
         } catch (SQLException ex) {
             throw new DataException("Errore di inizializzazione per 'GuidaTV Data Layer'", ex);
         }
@@ -73,6 +75,7 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
             
             episodioByProgramma.close();
             episodioByStagione.close();
+            checkCorrectness.close();
             
         } catch (SQLException ex) {
             Logger.getLogger(Episodio_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
@@ -126,10 +129,10 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
             }else{ 
                 try {                 
                     
-                    update.setString(1, item.getTitolo());
-                    update.setInt(2, item.getNumero());
-                    update.setInt(3, item.getSerie().getKey()); 
-                    update.setInt(4, item.getStagione().getKey());
+                    create.setString(1, item.getTitolo());
+                    create.setInt(2, item.getNumero());
+                    create.setInt(3, item.getSerie().getKey()); 
+                    create.setInt(4, item.getStagione().getKey());
                     
                     if(create.executeUpdate() == 1){                       
                         ResultSet keys = create.getGeneratedKeys();
@@ -239,6 +242,46 @@ public class Episodio_DAO_Imp extends DAO implements Episodio_DAO {
             throw new DataException("Impossibile ottenere canali by stagione", ex);
         }
         return result;
+    }
+
+    @Override
+    public Episodio checkExistence(Episodio e) throws DataException {
+        Episodio r = null;
+        try {
+            
+            checkExistence.setInt(2, e.getStagione().getKey());   
+            checkExistence.setInt(3, e.getNumero());
+            checkExistence.setString(1, e.getTitolo());   
+            checkExistence.setInt(4, e.getSerie().getKey());   
+            
+            try(ResultSet rs = checkExistence.executeQuery()){
+                while (rs.next()) {
+                    r = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+            throw new DataException("Unable to checkExistence of Episodio", ex);
+        }
+        return r;
+    }
+
+    @Override
+    public Episodio checkCorrectness(int progID, int stagionNum, int episodioNum) throws DataException {
+        Episodio e = null;
+        try {
+            
+            checkCorrectness.setInt(1, episodioNum);   
+            checkCorrectness.setInt(2, progID);
+            checkCorrectness.setInt(3, stagionNum);
+            try(ResultSet rs = checkCorrectness.executeQuery()){
+                while (rs.next()) {
+                    e = makeObj(rs);
+                }
+            }                     
+        } catch (SQLException ex) {
+            throw new DataException("Unable to check Correctness of Episodio", ex);
+        }
+        return e;
     }
     
     

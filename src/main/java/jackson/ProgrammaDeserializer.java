@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
+import java.util.List;
 import models.Genere;
 import models.Immagine;
 import models.Programma;
@@ -51,6 +52,9 @@ public class ProgrammaDeserializer extends JsonDeserializer<Programma> {
         }
         if (node.has("immagine")) {
             item.setImmagine(jsonParser.getCodec().treeToValue(node.get("immagine"), Immagine.class));
+        }
+        if (node.has("episodi")) {
+            item.setEpisodi(jsonParser.getCodec().treeToValue(node.get("episodi"), List.class));
         }
 
         return item;

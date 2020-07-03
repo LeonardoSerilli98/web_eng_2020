@@ -95,8 +95,8 @@ public class Ricerca_Imp extends DataItemImpl<Integer>implements Ricerca{
     }
 
     @Override
-    public String getTitlo() {
-        return this.getTitlo();
+    public String getTitolo() {
+        return this.titolo;
     }
 
     @Override

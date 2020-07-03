@@ -6,6 +6,7 @@
 package daos;
 
 import data.DAO_Interface;
+import data.DataException;
 import models.Immagine;
 
 /**
@@ -13,6 +14,8 @@ import models.Immagine;
  * @author leonardo
  */
 public interface Immagine_DAO extends DAO_Interface<Immagine>{
+    public Immagine checkExistence(String nome) throws DataException;
+    
     
     
 }

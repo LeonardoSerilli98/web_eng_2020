@@ -10,6 +10,7 @@ import data.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,7 +37,7 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
         try {
             super.init();
             
-            create = connection.prepareStatement("INSERT INTO Programma(nome, descrizione, isSerie, approfondimento, genereID) VALUES(?,?,?,?,?)");
+            create = connection.prepareStatement("INSERT INTO Programma(nome, descrizione, isSerie, approfondimento, genereID) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Programma WHERE idProgramma=?");
             update = connection.prepareStatement("UPDATE Programma SET nome=?, descrizione=?, isSerie=?, approfondimento=?, genereID=?, version=? WHERE idProgramma=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Programma where idProgramma=?");
@@ -193,7 +194,7 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
     }
 
     @Override
-    public Programma getProgrammaByTitolo(String titolo) throws DataException {
+    public Programma checkExistence(String titolo) throws DataException {
         Programma p = null;
         
         

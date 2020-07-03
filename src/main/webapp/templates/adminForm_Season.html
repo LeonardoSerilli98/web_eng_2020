@@ -1,0 +1,12 @@
+<form class="crud" action="/admin" method="POST" enctype="multipart/form-data">  
+    <h3>Stagione</h3>
+    <select name="programma">
+        <option value="0">Programma</option>
+        <#list programmi as p>
+        <option value="${p.key}">${p.nome}</option>
+        </#list>
+    </select>
+    <label>num: <input type="number" name="numero"/></label>
+    <#include "adminImgUploaderForm.html">
+    <input type="submit" name="form" value="stagione"/>
+</form>

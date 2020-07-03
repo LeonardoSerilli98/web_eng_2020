@@ -23,5 +23,6 @@ public interface Palinsesto_DAO extends DAO_Interface<Palinsesto>{
     public List<Palinsesto> getPalinsestiByCanale(Canale canale, String data) throws DataException ;
     public List<Palinsesto> getPalinsestiByProgramma(Programma programma) throws DataException ;
     public List<Palinsesto> ricerca(Ricerca r) throws DataException ;
+    public Palinsesto checkExistence(Palinsesto p) throws DataException;
 
 }

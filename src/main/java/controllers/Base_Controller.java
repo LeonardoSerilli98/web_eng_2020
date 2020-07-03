@@ -26,31 +26,29 @@ import javax.sql.DataSource;
  */
 public abstract class Base_Controller extends HttpServlet {
 
-    
     protected abstract void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 
-    
     private void processBaseRequest(HttpServletRequest request, HttpServletResponse response) {
 
         try {
-            
+
             InitialContext ctx = new InitialContext();
             DataSource datasrc = (DataSource) ctx.lookup(getServletContext().getInitParameter("data.source"));
             Connection connection = datasrc.getConnection();
-            
-            try (GuidaTV_DataLayer datalayer = new GuidaTV_DataLayer(datasrc)) {
+
+            try ( GuidaTV_DataLayer datalayer = new GuidaTV_DataLayer(datasrc)) {
                 datalayer.init();
                 request.setAttribute("datalayer", datalayer);
                 processRequest(request, response);
-            
+
             } catch (Exception ex) {
                 Logger.getLogger(Base_Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         } catch (NamingException | SQLException ex) {
             Logger.getLogger(Base_Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-    
+
     }
 
     @Override

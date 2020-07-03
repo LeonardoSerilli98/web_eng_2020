@@ -36,7 +36,7 @@ public interface Ricerca extends DataItem<Integer>{
     public Date getData();
     public void setData(Date data);
     
-    public String getTitlo();
+    public String getTitolo();
     public void setTitolo(String titolo);
     
 }

@@ -2,57 +2,78 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>intitolami</title>       
+        <title>intitolami</title>  
+        <link rel="stylesheet" href="style/style.css" type="text/css"/> 
     </head>
     <body>
         
-        <div>
-            <a href="/login">login</a>
-            <a href="/logout">lgout</a>
-            <a href="/profilo">profile</a>
-
+        <div class="outline-header"> 
+            <div>
+                <#if auth??>
+                    <a href="/logout">logout</a>
+                    <#else>
+                    <a href="/login">login | signUp</a>
+                </#if>
+            </div>
+            <div>                
+                <#if auth??><a href="/profilo">profile</a></#if>
+                <a href="/home">home</a>
+            </div>
         </div>
         
-        <div>
-        <form name ="searchForm" action="/ricerca" method="GET" style="width: 350px; display:flex; flex-direction: column;">
-            
-            <label>inizioMin <input type="time" name="inizioMin"/></label>
-            <label>inizioMax <input type="time" name="inizioMax"/></label>
-            <label>titolo <input type="text" name="titolo"/></label>
-            <label>data <input type="date" name="data"/></label>
-            
-
-            <select name="canale">
-                <option value="0">Canali</option>
-                <#list canali as c>
-                    <option value=${c.key}>${c.nome}</option>
-                </#list>
-            </select>
-            
-            <select name="genere">
-                <option value="0">Generi</option>
-                <#list generi as g>
-                    <option value=${g.key}>${g.nome}</option>
-                </#list>
-            </select>
-          
-                
-            <select name="fascia">
-                <option value="0">Fasce</option>
-                <#list fasce as f>
-                    <option value=${f.key}>${f.fascia}</option>
-                </#list>
-            </select>
-            
-            <label>salva ricerca <input type="checkbox" name="salvaRicerca" value="1"/></label> 
-            <input type="submit"/>
-        </form>
-            
+        <div class="search">
+            <form class="searchForm" action="/ricerca" method="GET">
+                <div>
+                    <label>inizio minimo<input type="time" name="inizioMin"/></label>
+                </div>
+                <div>
+                    <label>inizio massimo <input type="time" name="inizioMax"/></label>
+                </div>
+                <div>
+                    <label>titolo <input type="text" name="titolo"/></label>
+                </div>
+                <div>
+                    <input type="date" name="data"/>
+                </div>
+                <div>        
+                    <select name="canale">
+                        <option value="0">Canali</option>
+                        <#list canali as c>
+                            <option value=${c.key}>${c.nome}</option>
+                        </#list>
+                    </select>
+                </div>
+                <div>        
+                    <select name="genere">
+                        <option value="0">Generi</option>
+                        <#list generi as g>
+                            <option value=${g.key}>${g.nome}</option>
+                        </#list>
+                    </select>
+                </div>
+                <div>
+                    <select name="fascia">
+                        <option value="0">Fasce</option>
+                        <#list fasce as f>
+                            <option value=${f.key}>${f.fascia}</option>
+                        </#list>
+                    </select>
+                </div>                
+                <#if auth??>
+                    <div>
+                        <label>salva ricerca <input type="checkbox" name="salvaRicerca" value="1"/></label>
+                    </div> 
+                </#if>
+                <div>
+                    <input type="submit"/>
+                </div>
+            </form>
         </div>
         
-        <div>
+        <div class="content-tpl">
             <#include content_tpl>
         </div>
+        
             
     </body>
 </html>

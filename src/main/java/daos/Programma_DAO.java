@@ -15,7 +15,7 @@ import models.Programma;
  */
 public interface Programma_DAO  extends DAO_Interface<Programma>{
     
-    public Programma getProgrammaByTitolo(String titolo) throws DataException;
+    public Programma checkExistence(String titolo) throws DataException;
     
     
     

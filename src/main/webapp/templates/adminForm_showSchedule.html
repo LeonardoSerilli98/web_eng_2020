@@ -1,0 +1,30 @@
+<form class="crud" action="/admin" method="POST" enctype="multipart/form-data">  
+    <h3>Palinsesto</h3>
+    <label>inizio <input type="time" name="oraInizio"/></label>
+    <label>fine <input type="time" name="oraFine"/></label>  
+    <label>data <input type="date" name="data"/></label>
+    <select name="fascia">
+        <option value="0">Fasce</option>
+        <#list fasce as f>
+        <option value=${f.key}>${f.fascia}</option>
+        </#list>
+    </select>
+    <select name="canale">
+        <option value="0">Canali</option>
+        <#list canali as c>
+        <option value=${c.key}>${c.nome}</option>
+        </#list>
+    </select>
+    
+   <select name="programma">
+        <option value="0">Programma</option>
+        <#list programmi as p>
+        <option value=${p.key}>${p.nome}</option>
+        </#list>
+    </select>
+    
+    <label>numero episodio: <input type="number" name="numeroEpisodio"/></label>
+    <label>numero stagione: <input type="number" name="numeroStagione"/></label>
+
+    <input type="submit" name="form" value="palinsesto"/>   
+</form>

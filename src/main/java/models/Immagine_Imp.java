@@ -16,8 +16,6 @@ public class Immagine_Imp extends DataItemImpl<Integer>implements Immagine{
     private String nome;
     private String tipo;
     private long taglia;
-    private Stagione stagione;
-    private Programma programma;
     
     public Immagine_Imp(){
         
@@ -25,8 +23,6 @@ public class Immagine_Imp extends DataItemImpl<Integer>implements Immagine{
         nome = "";
         tipo = "";
         taglia = 0;
-        stagione = null;
-        programma = null;
         
     }
    
@@ -53,26 +49,6 @@ public class Immagine_Imp extends DataItemImpl<Integer>implements Immagine{
 
     public void setTaglia(long taglia) {
         this.taglia = taglia;
-    }
-
-    @Override
-    public Stagione getStagione() {
-        return stagione;
-    }
-
-    @Override
-    public void setStagione(Stagione stgn) {
-        this.stagione = stgn;
-    }
-
-    @Override
-    public Programma getProgramma() {
-        return this.programma;
-    }
-
-    @Override
-    public void setProgramma(Programma prgrm) {
-        this.programma = prgrm;
     }
     
 }

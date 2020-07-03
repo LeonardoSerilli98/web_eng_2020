@@ -1,4 +1,5 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resultsHandler/FailureResult.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/utilities/Database.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Palinsesto_DAO_Imp.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Ricerca.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Ricerca_DAO.java
@@ -25,7 +26,6 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Programma_DAO_Imp.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/GuidaTV_DataLayer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/ProgrammaSerializer.java
-/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/deleteME/bruciami.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/CanaleDeserializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/OptimisticLockException.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Programma_Imp.java
@@ -54,7 +54,6 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/PalinsestoRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Palinsesto_DAO.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Autenticazione_Controller.java
-/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/Database.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/CanaleRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/DataCache.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/authResources/JWTHelpers.java
@@ -73,6 +72,7 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Programma.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/Data_ItemProxy.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Palinsesto.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/BackEnd_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Preferenza_Imp.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/ProgrammaRes.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/authResources/Logged.java
