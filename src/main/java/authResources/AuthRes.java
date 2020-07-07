@@ -53,24 +53,21 @@ import utilities.MsgSerializer;
 @Path("auth")
 public class AuthRes {
 
-    private static Database db = new Database();
-
     @POST
     @Produces("application/json")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response doLogin(@Context UriInfo uriinfo,
-            @FormParam("email") String email,
-            @FormParam("password") String password) {
+    @Consumes("application/json")
+    public Response doLogin(@Context UriInfo uriinfo, HashMap<String, String> input) {
 
         try {
-
+            String email = input.get("email");
+            String password = input.get("password");
             int auth = autenticazione(email, password);
 
             if (auth == 0) {
 
                 String authToken = registraToken(uriinfo, email);
 
-                Cookie cookie = new Cookie("jwt", authToken + ";max-age=900;HttpOnly=true", "/", "localhost");
+                Cookie cookie = new Cookie("jwt", authToken + ";max-age=900;HttpOnly=true;SameSite=Strict", "/", "localhost");
 
                 String msg = MsgSerializer.serialize("logged succesfully");
 
@@ -85,9 +82,9 @@ public class AuthRes {
 
             return Response.status(Response.Status.UNAUTHORIZED).build();
 
-        } catch (JsonProcessingException ex) {
+        } catch (JsonProcessingException | DataException ex) {
 
-            Logger.getLogger(AuthRes.class.getName()).log(Level.SEVERE, null, ex);
+            return Response.noContent().status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -108,7 +105,7 @@ public class AuthRes {
             }
 
             revokeToken(toCheck);
-            Cookie cookie = new Cookie("jwt", "expired;max-age=0;HttpOnly=true", "/", "localhost");
+            Cookie cookie = new Cookie("jwt", "expired;max-age=0;HttpOnly=true;SameSite=Strict", "/", "localhost");
 
             return Response.ok("logout succed")
                     .cookie(new NewCookie(cookie))
@@ -124,6 +121,7 @@ public class AuthRes {
     public Response refreshToken(ContainerRequestContext requestContext) {
 
         String token = null;
+        Utente u = null;
 
         if (requestContext.getCookies().containsKey("jwt")) {
             token = requestContext.getCookies().get("jwt").getValue();
@@ -133,24 +131,30 @@ public class AuthRes {
             try {
                 Key key = JWTHelpers.getInstance().getJwtKey();
                 Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+                u = Database.getDatalayer().getUtenteDAO().getUtenteByToken(token);
+                if (u == null) {
+                    return Response.status(Response.Status.UNAUTHORIZED).build();
+                }
             } catch (ExpiredJwtException e) {
                 System.out.println("#### expired token: " + token);
             } catch (MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException e) {
                 System.out.println("#### invalid token: " + token);
                 return Response.status(Response.Status.UNAUTHORIZED).build();
+            } catch (DataException ex) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
         }
 
-        //vedi se c'è un token associato all'utente, in caso ok
         try {
-            Cookie cookie = new Cookie("jwt", "expired;max-age=900;HttpOnly=true", "/", "localhost");
+            Cookie cookie = new Cookie("jwt", "expired;max-age=900;HttpOnly=true;SameSite=Strict", "/", "localhost");
+            NewCookie newCookie = new NewCookie(cookie);
 
-            return Response.ok("refresh succed")
-                    .cookie(new NewCookie(cookie))
+            return Response.ok(MsgSerializer.serialize("refresh succed"))
+                    .cookie(newCookie)
                     .build();
 
-        } catch (IllegalArgumentException e) {
-            return Response.serverError().build();
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
     }
@@ -158,7 +162,7 @@ public class AuthRes {
     private int autenticazione(String username, String password) {
         try {
 
-            Utente u = (db.getDatalayer()).getUtenteDAO().checkUtente(username, password);
+            Utente u = (Database.getDatalayer()).getUtenteDAO().checkUtente(username, password);
             if (u != null) {
                 return 0;
             }
@@ -170,7 +174,7 @@ public class AuthRes {
         return 1;
     }
 
-    private String registraToken(UriInfo context, String username) {
+    private String registraToken(UriInfo context, String username) throws DataException {
         Key key = JWTHelpers.getInstance().getJwtKey();
         Date date = Date.from(LocalDateTime.now().plusMinutes(180L).atZone(ZoneId.systemDefault()).toInstant());
 
@@ -181,6 +185,9 @@ public class AuthRes {
                 .signWith(key)
                 .setExpiration(date)
                 .compact();
+        Utente u = Database.getDatalayer().getUtenteDAO().getUtenteByUsername(username);
+        u.setToken(token);
+        Database.getDatalayer().getUtenteDAO().update(u);
 
         return token;
     }

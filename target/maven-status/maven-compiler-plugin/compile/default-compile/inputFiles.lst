@@ -12,6 +12,8 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/DAO.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/ProgrammaDeserializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/GenereSerializer.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/restClient/RestclientAuth.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/utilities/BackgroundJobManager.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/DataException.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/jackson/GenereDeserializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/models/Stagione.java
@@ -46,6 +48,7 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/utilities/MsgSerializer.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Ricerca_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Programma_Controller.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/restClient/RestChannels.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Base_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/proxys/Preferenza_Proxy.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Genere_DAO.java
@@ -55,6 +58,8 @@
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/daos/Palinsesto_DAO.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/controllers/Autenticazione_Controller.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/resources/CanaleRes.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/restClient/PageBuilder.java
+/home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/utilities/SomeDailyJob.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/data/DataCache.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/authResources/JWTHelpers.java
 /home/leonardo/NetBeansProjects/web_eng_2020/src/main/java/proxys/Episodio_Proxy.java

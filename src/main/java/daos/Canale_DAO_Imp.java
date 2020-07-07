@@ -54,7 +54,7 @@ public class Canale_DAO_Imp extends DAO implements Canale_DAO{
             
             readAll = connection.prepareStatement("SELECT idCanale FROM Canale");            
             
-            canaleByPreferenza = connection.prepareStatement("SELECT canaleID FROM Preferenza WHERE idPreferenze=?");
+            canaleByPreferenza = connection.prepareStatement("SELECT phc.canaleID FROM Preferenza_has_Canale as phc INNER JOIN Preferenza as p WHERE p.idPreferenza=phc.preferenzaID AND p.idPreferenza=?");
             checkExistence = connection.prepareStatement("SELECT * FROM Canale WHERE nome=?");
             
         } catch (SQLException ex) {

@@ -60,6 +60,14 @@
             <!-- <file-size-threshold>1048576</file-size-threshold> max size of files to hold in memory (without writing to temporary disk file) (DEF: 0) -->
         </multipart-config>
     </servlet>
+    <servlet>
+        <servlet-name>RestclientServlet</servlet-name>
+        <servlet-class>restClient.RestclientAuth</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RestChannels</servlet-name>
+        <servlet-class>restClient.RestChannels</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>servletEsempio</servlet-name>
         <url-pattern>/servletEsempio</url-pattern>
@@ -94,6 +102,14 @@
     <servlet-mapping>
         <servlet-name>BackEndController</servlet-name>
         <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RestclientServlet</servlet-name>
+        <url-pattern>/restAuth</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RestChannels</servlet-name>
+        <url-pattern>/restchannels</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

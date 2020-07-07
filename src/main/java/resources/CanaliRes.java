@@ -20,6 +20,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -52,7 +53,7 @@ public class CanaliRes {
                         .path(c.getKey().toString())
                         .build();
 
-                e.put("canale", c);
+                //e.put("canale", c);
                 e.put("url", uri.toString());
                 l.add(e);
             }
@@ -71,8 +72,21 @@ public class CanaliRes {
     @Logged
     @POST
     @Consumes("application/json")
-    public Response Store(@Context UriInfo uriinfo, Canale item) {
+    public Response Store(@Context UriInfo uriinfo, 
+            Canale item,
+            @Context ContainerRequestContext crc) {
 
+        String username = crc.getProperty("user").toString();
+        try {
+            if (!(Database.getDatalayer().getUtenteDAO().isAdmin(username))) {
+
+                return Response.noContent().status(Response.Status.UNAUTHORIZED).build();
+
+            }
+        } catch (DataException ex) {
+            return Response.noContent().status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        int id = 0;
         try {
             Canale existC = Database.getDatalayer().getCanaleDAO().checkExistence(item.getNome());
             Immagine existI = Database.getDatalayer().getImmagineDAO().checkExistence(item.getImmagine().getNome());
@@ -88,14 +102,16 @@ public class CanaliRes {
 
             item.setImmagine(existI);
             Database.getDatalayer().getCanaleDAO().create(item);
-
+            id = Database.getDatalayer().getCanaleDAO().checkExistence(item.getNome()).getKey();
         } catch (DataException ex) {
 
             Response.noContent().status(Response.Status.BAD_REQUEST).build();
 
         }
+        String uri = uriinfo.getBaseUriBuilder().path(getClass()).build().toString();
+        return Response.ok(MsgSerializer.serialize(item.getNome(), uri + "/" + id)).status(Response.Status.CREATED).build();
 
-        return Response.noContent().status(Response.Status.CREATED).build();
+        
     }
 
     @Path("{id: [0-9]+}")

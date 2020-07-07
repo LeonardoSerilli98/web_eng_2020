@@ -1,7 +1,20 @@
-<div>
+<div class="searchRes">
     <#list risultati as p>
-        <h1>${p.canale.nome}</h1>
-        <h3>${p.programma.nome}</h3>
-        <h5>${p.inizio}</h5>
+    <div class="searchPalinsesto">
+        <div>
+            <div class="imgSearch">
+                <img src="../images/${p.programma.immagine.nome}" alt="{p.programma.nome}" >
+            </div>
+            <div class="infoProgSearch">
+                <div><strong>Canale: </strong><a href="/canale?id=${p.canale.key}">${p.canale.nome}</a></div>
+                <div><strong>Programma: </strong><a href="/programma?id=${p.programma.key}">${p.programma.nome}</a></div>
+                <div><strong>ora Inizio: </strong>${p.inizio}</div>
+                <#if p.programma.isSerie==true>
+                <div><strong>episodio </strong>${p.episodio.numero}x${p.episodio.stagione.numero}</div>
+                </#if>
+            </div>
+        </div>
+    </div>
+
     </#list>
 </div>

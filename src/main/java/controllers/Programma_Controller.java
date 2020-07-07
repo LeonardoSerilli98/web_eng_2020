@@ -41,7 +41,7 @@ public class Programma_Controller extends Base_Controller {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             Programma programma =  ((GuidaTV_DataLayer)request.getAttribute("datalayer")).getProgrammaDAO().read(id);
-            System.out.println(programma.getNome());
+            System.out.println(programma.getDescrizione());
             List<Palinsesto> palinsesti = ((GuidaTV_DataLayer)request.getAttribute("datalayer")).getPalinsestoDAO().getPalinsestiByProgramma(programma);
             request.setAttribute("programma", programma);
             request.setAttribute("palinsesti", palinsesti);

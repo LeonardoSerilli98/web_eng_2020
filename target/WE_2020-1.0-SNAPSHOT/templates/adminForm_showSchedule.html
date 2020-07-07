@@ -1,30 +1,39 @@
 <form class="crud" action="/admin" method="POST" enctype="multipart/form-data">  
-    <h3>Palinsesto</h3>
-    <label>inizio <input type="time" name="oraInizio"/></label>
-    <label>fine <input type="time" name="oraFine"/></label>  
-    <label>data <input type="date" name="data"/></label>
-    <select name="fascia">
-        <option value="0">Fasce</option>
-        <#list fasce as f>
-        <option value=${f.key}>${f.fascia}</option>
-        </#list>
-    </select>
-    <select name="canale">
-        <option value="0">Canali</option>
-        <#list canali as c>
-        <option value=${c.key}>${c.nome}</option>
-        </#list>
-    </select>
-    
-   <select name="programma">
-        <option value="0">Programma</option>
-        <#list programmi as p>
-        <option value=${p.key}>${p.nome}</option>
-        </#list>
-    </select>
-    
-    <label>numero episodio: <input type="number" name="numeroEpisodio"/></label>
-    <label>numero stagione: <input type="number" name="numeroStagione"/></label>
+    <div><h3>Palinsesto</h3></div>
+    <div><label for="oraInizioPal">inizio </label> <input id="oraInizioPal" type="time" name="oraInizio"/></div>
+    <div><label for="oraFInePal">fine </label> <input id="oraFInePal" type="time" name="oraFine"/></div>  
+    <div> <label for="dataPal">data </label> <input id="dataPal" type="date" name="data"/></div>
+    <div> 
+        <label for="fasciaPal">Fasce </label>
+        <select id="fasciaPal" name="fascia">
+            <option value="0">nessun fascia</option>
+            <#list fasce as f>
+            <option value=${f.key}>${f.fascia}</option>
+            </#list>
+        </select>
+    </div>
+    <div>
+        <label for="canalePal">Canali </label>
+        <select id="canalePal" name="canale">
+            <option value="0">nessun canale</option>
+            <#list canali as c>
+            <option value=${c.key}>${c.nome}</option>
+            </#list>
+        </select>
+    </div>
+
+    <div>
+        <label for="programmaPal">Programma </label>
+        <select id="programmaPal" name="programma">
+            <option value="0">nessun programma</option>
+            <#list programmi as p>
+            <option value=${p.key}>${p.nome}</option>
+            </#list>
+        </select>
+    </div>
+
+    <div> <label for="numeroEpisodioPal">numero episodio: </label> <input id="numeroEpisodioPal" type="number" name="numeroEpisodio"/></div>
+    <div> <label for="numeroStagionePal">numero stagione: </label> <input id="numeroStagionePal" type="number" name="numeroStagione"/></div>
 
     <input type="submit" name="form" value="palinsesto"/>   
 </form>

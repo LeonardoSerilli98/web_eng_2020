@@ -1,10 +1,46 @@
+<div class="canaleHeader">   
+    <h1>${programma.nome}</h1>
+</div>
 
-            <h1>${programma.nome}</h1>
+<div class="infoProg">
+    
+    <div id="imgProg">
+        <img src="../images/${programma.immagine.nome}" alt="{programma.nome}" width="500" height="600">
+    </div>
+    <div>
+        <div id="prog">
+            <div>
+                <strong>Genere:</strong> 
+                ${programma.genere.nome}
+
+            </div>
+            <#if programma.descrizione??>
+            <div>
+                <strong>Descrizione</strong> 
+                ${programma.descrizione}
+            </div>
+            </#if>
+            <#if programma.approfondimento??>
+            <div>
+                <strong>Approfondimento:</strong>
+                <a href="${programma.approfondimento}" >${programma.approfondimento}</a>
+            </div>
+            </#if> 
+        </div>
+        <#if programma.isSerie == true>
+        <div id="palinsestiProgramma">
             <#list palinsesti as pal>
-                <h6>ora inizio ${pal.inizio}</h6>
-                <h6>ora fine ${pal.fine}</h6>
-                <h6>stagione ${pal.episodio.stagione.numero}</h6>
-                <h6>episodio ${pal.episodio.numero}</h6>
-                <h6>________________________</h6>
+            <div class="singolo_palinsestoProgramma">
+                <div><strong>data:</strong> ${pal.data}</div>
+                <div><strong>ora inizio:</strong> ${pal.inizio}</div>
+                <div><strong>ora fine:</strong> ${pal.fine}</div>
+                <div><strong>episodio:</strong> ${pal.episodio.numero}x${pal.episodio.stagione.numero}</div>
+            </div>
             </#list>
-            
+        </div>
+        </#if>
+    </div>
+</div>
+
+
+

@@ -1,18 +1,64 @@
 
-        <div>${canale.nome}</div>
-        <#list canale.palinsesti as p>
-            <h1>${p.programma.nome}</h1>
-            <h1>${p.data}</h1>
 
-            <#list p.programma.episodi as e>
-                <h1>${e.numero} e ${e.stagione.numero} </h1>
-            </#list>
-        </#list>
-        
+<div class="singleChannel_container">
+    <div class="canaleHeader"><h1>${canale.nome}</h1></div>
+    <div id="searchBycanale">
         <form action="/canale">
-            <input type="text" name="id" value="5"/>
+            <label for="canale"> canale: </label>
+            <select name="id">
+                <option value="0">nessun canale</option>
+                <#list canali as c>
+                <option value=${c.key}>${c.nome}</option>
+                </#list>
+            </select>
+
             <input type="date" name="data"/>
             <input type="submit" value="Submit"/>
         </form>
-            
-           
+
+    </div>
+    <div class="palinsesti">
+        <#list canale.palinsesti as p>
+
+        <div class="palinsestoCanale">
+            <div>
+                <img  class="imageCanale" src="../images/${p.programma.immagine.nome}" alt="{p.programma.nome}">
+            </div>
+
+            <div class="progInfo_canale">
+                <div>
+                    <strong>Programma: </strong>
+                    <a href="/programma?id=${p.programma.key}">${p.programma.nome}
+                    </a>
+                </div>
+                <div>
+                    <strong>data: </strong>
+                    ${p.data}
+                </div>
+                <div>
+                    <strong>fine: </strong> 
+                    ${p.inizio}
+                </div>
+                <div>
+                    <strong>inizio:</strong> 
+                    ${p.fine}
+                </div>
+                <div>
+                    <strong>Genere: </strong>
+                    ${p.programma.genere.nome}
+                </div>
+
+                <#if p.programma.isSerie??> 
+                <div>
+                    <strong>episodio:</strong> 
+                    ${p.episodio.numero}x${p.episodio.stagione.numero}
+                </div>
+                </#if>
+
+
+            </div>
+        </div>
+        </#list>
+    </div>
+</div>
+

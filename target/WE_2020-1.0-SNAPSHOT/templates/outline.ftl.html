@@ -1,18 +1,28 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html>
+
 <html>
-    <head>
-        <title>intitolami</title>  
+    <head lang="it">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+        <title>Guida TV</title>  
         <link rel="stylesheet" href="style/style.css" type="text/css"/> 
+        <link rel="stylesheet" href="style/home.css" type="text/css"/> 
+        <link rel="stylesheet" href="style/admin.css" type="text/css"/> 
+        <link rel="stylesheet" href="style/auth.css" type="text/css"/> 
+        <link rel="stylesheet" href="style/channel.css" type="text/css"/> 
+        <link rel="stylesheet" href="style/profile.css" type="text/css"/> 
+        <link rel="stylesheet" href="style/program.css" type="text/css"/> 
+        <link rel="stylesheet" href="style/search.css" type="text/css"/> 
     </head>
     <body>
-        
+
         <div class="outline-header"> 
             <div>
                 <#if auth??>
-                    <a href="/logout">logout</a>
-                    <#else>
-                    <a href="/login">login | signUp</a>
+                <a href="/logout">logout</a>
+                <#else>
+                <a href="/login">login | signUp</a>
                 </#if>
             </div>
             <div>                
@@ -20,60 +30,64 @@
                 <a href="/home">home</a>
             </div>
         </div>
-        
+
         <div class="search">
             <form class="searchForm" action="/ricerca" method="GET">
                 <div>
-                    <label>inizio minimo<input type="time" name="inizioMin"/></label>
+                    <label for="inizioMin">inizio minimo </label><input id="inizioMin" type="time" name="inizioMin"/>
                 </div>
                 <div>
-                    <label>inizio massimo <input type="time" name="inizioMax"/></label>
+                    <label for="inizioMax">inizio massimo </label> <input id="inizioMax" type="time" name="inizioMax"/>
                 </div>
                 <div>
-                    <label>titolo <input type="text" name="titolo"/></label>
+                    <label for="titolo">titolo </label> <input id="titolo" type="text" name="titolo"/>
                 </div>
                 <div>
-                    <input type="date" name="data"/>
+                    <label for="data">data </label>
+                    <input id="data" type="date" name="data"/>
                 </div>
                 <div>        
-                    <select name="canale">
-                        <option value="0">Canali</option>
+                    <label for="canale"> canale: </label>
+                    <select id="canale" name="canale">
+                        <option value="0">nessun canale</option>
                         <#list canali as c>
-                            <option value=${c.key}>${c.nome}</option>
+                        <option value=${c.key}>${c.nome}</option>
                         </#list>
                     </select>
                 </div>
                 <div>        
-                    <select name="genere">
-                        <option value="0">Generi</option>
+                    <label for="genere"> genere: </label>
+                    <select id="genere" name="genere">
+                        <option value="0">nessun genere</option>
                         <#list generi as g>
-                            <option value=${g.key}>${g.nome}</option>
+                        <option value=${g.key}>${g.nome}</option>
                         </#list>
                     </select>
                 </div>
                 <div>
-                    <select name="fascia">
-                        <option value="0">Fasce</option>
+                    <label for="canale"> fascia: </label>
+                    <select id="fascia" name="fascia">
+                        <option value="0">nessuna fascia</option>
                         <#list fasce as f>
-                            <option value=${f.key}>${f.fascia}</option>
+                        <option value=${f.key}>${f.fascia}</option>
                         </#list>
                     </select>
                 </div>                
                 <#if auth??>
-                    <div>
-                        <label>salva ricerca <input type="checkbox" name="salvaRicerca" value="1"/></label>
-                    </div> 
+                <div>
+                    <label for="salvaRicerca">salva ricerca </label><input id="salvaRicerca" type="checkbox" name="salvaRicerca" value="1"/>
+                </div> 
                 </#if>
                 <div>
                     <input type="submit"/>
                 </div>
             </form>
         </div>
-        
+
         <div class="content-tpl">
             <#include content_tpl>
         </div>
-        
-            
+
+
     </body>
 </html>

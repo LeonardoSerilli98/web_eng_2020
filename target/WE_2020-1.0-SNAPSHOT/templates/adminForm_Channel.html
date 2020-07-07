@@ -1,6 +1,6 @@
 <form class="crud" action="/admin" method="POST" enctype="multipart/form-data">  
-    <h3> Canale </h3>
-    <label>Nome: <input type="text" name="nome" required/></label>
+    <div><h3> Canale </h3></div>
+    <div><label for="nomechannel">Nome: </label> <input id="nomechannel" type="text" name="nome" required/></div>
     <#include "adminImgUploaderForm.html">
-    <input type="submit" name="form" value="canale" required/>
+    <input type="submit" name="form" value="canale"/>
 </form>

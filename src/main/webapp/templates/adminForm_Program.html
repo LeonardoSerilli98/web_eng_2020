@@ -1,15 +1,18 @@
 <form class="crud" action="/admin" method="POST" enctype="multipart/form-data">  
-    <h3> Programma </h3>
-    <label>Nome: <input type="text" name="nome"/></label>
-    <label>Descrizione: <input type="text" name="descrizione"/></label>
-    <label>Approfondimento: <input type="text" name="aprofondimento"/></label>               
-    <select name="genere">
-        <option value="0">Generi</option>
+    <div><h3> Programma </h3></div>
+    <div><label for="nomeProgramma">Nome: </label><input id="nomeProgramma" type="text" name="nome"/></div>
+    <div><label for="descrizione">Descrizione: </label><input id="descrizione" type="text" name="descrizione"/></div>
+    <div><label for="aprofondimento">Approfondimento: </label><input id="aprofondimento" type="text" name="aprofondimento"/></div>           
+    <div>
+        <label for="genereProgramma">Generi </label>
+        <select id="genereProgramma" name="genere">
+        <option value="0">nessun genere</option>
         <#list generi as g>
         <option value=${g.key}>${g.nome}</option>
         </#list>
     </select>
-    <label> Serie? <input type="checkbox" name="isSerie" value="1"/></label>
+    </div>
+    <div><label for="isSerie"> Serie?</label> <input id="isSerie" type="checkbox" name="isSerie" value="1"/></div>
     <#include "adminImgUploaderForm.html">
     <input type="submit" name="form" value="programma"/>
 </form>

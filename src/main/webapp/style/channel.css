@@ -1,0 +1,75 @@
+
+.singleChannel_container{
+    max-height: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.palinsestoCanale > div {
+    max-width: 200px;
+    max-height: 130px;
+    padding: 5px;
+
+}
+.palinsestoCanale{
+    display: flex;
+    flex-direction: row;
+    max-width: 500px;
+    margin: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #baffff;
+
+}
+.palinsesti{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #82b3c9;
+    margin: 15px;
+    border-radius: 8px;
+
+}
+@media screen and (max-width: 900px){
+
+    .palinsestoCanale{
+        display: flex;
+        flex-direction: column;
+        max-width: 200px;
+        margin: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #baffff;
+
+    }
+}
+.progInfo_canale{
+    display: flex;
+    flex-direction: column;
+}
+.imageCanale{
+    width: 100%;
+}
+
+.canaleHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #4bcbcc;
+    border-radius: 8px;
+    margin: 10px;
+    width: 100%;
+}
+
+#searchBycanale{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    min-width: 25%;
+    background-color: #baffff;
+    padding: 10px;
+}

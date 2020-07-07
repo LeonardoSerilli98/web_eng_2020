@@ -41,7 +41,7 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
 
             create = connection.prepareStatement("INSERT INTO Immagine(tipo, nome, taglia) values(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             read = connection.prepareStatement("SELECT * FROM Immagine WHERE idImmagine=?");
-            update = connection.prepareStatement("UPDATE Immagine SET tipo=?, nome=?, taglia=? version=? WHERE idImmagine=? and version=?");
+            update = connection.prepareStatement("UPDATE Immagine SET tipo=?, nome=?, taglia=?, version=? WHERE idImmagine=? AND version=?");
             delete = connection.prepareStatement("DELETE FROM Immagine where idImmagine=?");
             
             readAll = connection.prepareStatement("SELECT idImmagine FROM Immagine");
@@ -173,10 +173,10 @@ public class Immagine_DAO_Imp extends DAO implements Immagine_DAO{
              update.setString(1, item.getTipo());
              update.setString(2, item.getNome());
              update.setLong(3, item.getTaglia()); 
-             update.setLong(6, versione+1);
+             update.setLong(4, versione+1);
              
-             update.setInt(7, item.getKey());
-             update.setLong(8, versione);
+             update.setInt(5, item.getKey());
+             update.setLong(6, versione);
              
              if(update.executeUpdate() == 0){
                  throw new OptimisticLockException(item);

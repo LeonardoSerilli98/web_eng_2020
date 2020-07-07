@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Canale;
+import models.Fascia;
 import models.Palinsesto;
 import models.Programma;
 import models.Ricerca;
@@ -40,7 +41,7 @@ import proxys.Palinsesto_Proxy;
 public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO {
 
     private PreparedStatement create, read, update, delete, readAll;
-    private PreparedStatement palinsestiByCanale, palinsestiByProgramma, ricerca, checkExistence;
+    private PreparedStatement palinsestiByCanale, palinsestiByProgramma, ricerca, ricercaWithPagina, checkExistence, getPalinsestiByCanaleAndFascia;
 
     public Palinsesto_DAO_Imp(DataLayer d) {
         super(d);
@@ -56,13 +57,14 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO {
             update = connection.prepareStatement("UPDATE Palinsesto SET inizio=?, fine=?, data=?, programmaID=?, episodioID=?, fasciaID=?, canaleID=?, versione=? WHERE idPalinsesto=? and version=?");
             delete = connection.prepareStatement("DELETE FROM Palinsesto where idPalinsesto=?");
 
-            readAll = connection.prepareStatement("SELECT idPalinsesto FROM Palinsesto");
+            readAll = connection.prepareStatement("SELECT idPalinsesto FROM Palinsesto ORDER BY data ASC, inizio ASC");
 
-            palinsestiByCanale = connection.prepareStatement("SELECT * FROM Palinsesto WHERE canaleID=? AND data=?");
-            palinsestiByProgramma = connection.prepareStatement("SELECT * FROM Palinsesto WHERE programmaID=?");
-            ricerca = connection.prepareStatement("SELECT * FROM Palinsesto WHERE data=? UNION SELECT * FROM Palinsesto WHERE inizio>=? UNION SELECT * FROM Palinsesto WHERE inizio<=? UNION SELECT * FROM Palinsesto WHERE canaleID=? UNION SELECT * FROM Palinsesto WHERE fasciaID=? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.nome=? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.genereID=?");
+            palinsestiByCanale = connection.prepareStatement("SELECT * FROM Palinsesto WHERE canaleID=? AND data=? ORDER BY data ASC, inizio ASC");
+            palinsestiByProgramma = connection.prepareStatement("SELECT * FROM Palinsesto WHERE programmaID=? ORDER BY data ASC, inizio ASC");
+            ricerca = connection.prepareStatement("SELECT * FROM Palinsesto WHERE data=? UNION SELECT * FROM Palinsesto WHERE inizio>=? UNION SELECT * FROM Palinsesto WHERE inizio<=? UNION SELECT * FROM Palinsesto WHERE canaleID=? UNION SELECT * FROM Palinsesto WHERE fasciaID=? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.nome LIKE ? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.genereID=?  ORDER BY data ASC, inizio ASC ");
             checkExistence = connection.prepareCall("SELECT * from Palinsesto WHERE inizio=? AND fine=? AND data=? AND programmaID=? AND episodioID=? AND fasciaID=? AND canaleID=? AND version=? ");
-
+            getPalinsestiByCanaleAndFascia = connection.prepareStatement("SELECT * FROM Palinsesto WHERE canaleID=? AND fasciaID=? and data=? ORDER BY data ASC, inizio DESC");
+            ricercaWithPagina = connection.prepareStatement("SELECT * FROM Palinsesto WHERE data=? UNION SELECT * FROM Palinsesto WHERE inizio>=? UNION SELECT * FROM Palinsesto WHERE inizio<=? UNION SELECT * FROM Palinsesto WHERE canaleID=? UNION SELECT * FROM Palinsesto WHERE fasciaID=? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.nome=? UNION SELECT pa.idPalinsesto, pa.inizio, pa.fine, pa.data, pa.programmaID, pa.episodioID, pa.fasciaID, pa.canaleID, pa.version FROM Palinsesto AS pa INNER JOIN Programma AS pr ON pr.idProgramma = pa.programmaID WHERE pr.genereID=?  ORDER BY data ASC, inizio ASC  LIMIT ?,?");
         } catch (SQLException ex) {
             throw new DataException("Errore d'inizializzazione Data Layer", ex);
         }
@@ -81,6 +83,8 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO {
             palinsestiByProgramma.close();
             ricerca.close();
             checkExistence.close();
+            getPalinsestiByCanaleAndFascia.close();
+            ricercaWithPagina.close();
 
         } catch (SQLException ex) {
             throw new DataException("Errore di chiusura Data Layer", ex);
@@ -222,7 +226,15 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO {
 
     @Override
     public void delete(Palinsesto item) throws DataException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (item == null) {
+            return;
+        }
+        try {
+            delete.setInt(1, item.getKey());
+            delete.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataException("Unable to delete ricerca", ex);
+        }
     }
 
     /**
@@ -315,7 +327,7 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO {
                 ricerca.setInt(5, r.getFascia().getKey());
             }
 
-            ricerca.setString(6, r.getTitolo());
+            ricerca.setString(6, "%"+r.getTitolo()+"%");
 
             if (r.getGenere() == null || r.getGenere().getKey() == 0) {
                 ricerca.setNull(7, java.sql.Types.INTEGER);
@@ -346,16 +358,96 @@ public class Palinsesto_DAO_Imp extends DAO implements Palinsesto_DAO {
             checkExistence.setInt(6, item.getFascia().getKey());
             checkExistence.setInt(7, item.getCanale().getKey());
             checkExistence.setLong(8, item.getVersion());
-            
-            try(ResultSet rs = checkExistence.executeQuery()){
+
+            try ( ResultSet rs = checkExistence.executeQuery()) {
                 while (rs.next()) {
                     p = makeObj(rs);
                 }
-            }     
+            }
         } catch (SQLException ex) {
             Logger.getLogger(Palinsesto_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
         }
         return p;
     }
+
+    @Override
+    public List<Palinsesto> getPalinsestiByCanale(Canale canale, Fascia fascia) throws DataException {
+
+        List<Palinsesto> result = new ArrayList();
+        
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        String today = sdf.format(java.util.Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+
+
+        if (fascia == null) {
+            return getPalinsestiByCanale(canale);
+        }
+
+        try {
+
+            getPalinsestiByCanaleAndFascia.setInt(1, canale.getKey());
+            getPalinsestiByCanaleAndFascia.setInt(2, fascia.getKey());
+            getPalinsestiByCanaleAndFascia.setDate(3, Date.valueOf(today));
+            try ( ResultSet rs = palinsestiByCanale.executeQuery()) {
+                while (rs.next()) {
+                    result.add(makeObj(rs));
+                }
+
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Impossibile ottenere Palinsesti by Canale", ex);
+        }
+        return result;
+    }
+
+
+    @Override
+    public List<Palinsesto> ricerca(Ricerca r, int pagina) throws DataException {
+
+        List<Palinsesto> result = new ArrayList();
+
+        try {
+            ricercaWithPagina.setDate(1, r.getData());
+            ricercaWithPagina.setTime(2, r.getInizioMin());
+            ricercaWithPagina.setTime(3, r.getInizioMax());
+
+            if (r.getCanale() == null || r.getCanale().getKey() == 0) {
+                ricercaWithPagina.setNull(4, java.sql.Types.INTEGER);
+            } else {
+                ricercaWithPagina.setInt(4, r.getCanale().getKey());
+            }
+
+            if (r.getFascia() == null || r.getFascia().getKey() == 0) {
+                ricercaWithPagina.setNull(5, java.sql.Types.INTEGER);
+            } else {
+                ricercaWithPagina.setInt(5, r.getFascia().getKey());
+            }
+
+            ricercaWithPagina.setString(6, r.getTitolo());
+
+            if (r.getGenere() == null || r.getGenere().getKey() == 0) {
+                ricercaWithPagina.setNull(7, java.sql.Types.INTEGER);
+            } else {
+                ricercaWithPagina.setInt(7, r.getGenere().getKey());
+            }
+            ricercaWithPagina.setInt(8, 5*pagina);
+            ricercaWithPagina.setInt(9, 5*pagina+5);
+            try ( ResultSet rs = ricercaWithPagina.executeQuery()) {
+                while (rs.next()) {
+                    result.add(makeObj(rs));
+                }
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Palinsesto_DAO_Imp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
+    }
+
+
+
+
+
 
 }

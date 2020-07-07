@@ -1,27 +1,27 @@
 <div class="homeI-table">
     <div class="gridHomeI">
-      <div class="cell grid-header">Canale</div>
-      <div class="cell grid-header">Programma</div>
-      <div class="cell grid-header">episodio/stagione</div>
-      <div class="cell grid-header">genere</div>
-      <div class="cell grid-header">inizio</div>
-      <div class="cell grid-header">fine</div>
+        <div class="cell1 grid-header"><strong>Canale</strong></div>
+      <div class="cell1 grid-header"><strong>Programma</strong></div>
+      <div class="cell1 grid-header"><strong>episodio/stagione</strong></div>
+      <div class="cell1 grid-header"><strong>genere</strong></div>
+      <div class="cell1 grid-header"><strong>inizio</strong></div>
+      <div class="cell1 grid-header"><strong>fine</strong></div>
     </div> 
 
     <#list canali as c>
         <div class="gridHomeI">    
-            <div class="cell"><a href="/canale?id=${c.key}">${c.nome}</a></div> 
+            <div class="cell1"><a href="/canale?id=${c.key}">${c.nome}</a></div> 
             <#list c.palinsesti as p>
                 <#if (p.inizio?string.iso?time.iso lte .now?time?string.iso?time.iso)&&(p.fine?string.iso?time.iso gte .now?time?string.iso?time.iso)>        
-                <div class="cell"><a href="/canale?id=${p.programma.key}">${p.programma.nome}</a></div>
-                    <div class="cell">
+                <div class="cell1"><a href="/programma?id=${p.programma.key}">${p.programma.nome}</a></div>
+                    <div class="cell1">
                         <#if p.episodio??>
                             ${p.episodio.numero}x${p.episodio.stagione.numero} 
                         </#if>  
                     </div>
-                    <div class="cell">${p.programma.genere.nome}</div>
-                    <div class="cell">${p.inizio}</div>
-                    <div class="cell">${p.fine}</div>
+                    <div class="cell1">${p.programma.genere.nome}</div>
+                    <div class="cell1">${p.inizio}</div>
+                    <div class="cell1">${p.fine}</div>
                 </#if>
             </#list>
         </div>     

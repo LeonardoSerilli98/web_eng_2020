@@ -183,6 +183,7 @@ public class Programma_DAO_Imp extends DAO implements Programma_DAO{
             }
 
             item.setVersion(versione + 1);
+            
         } catch (SQLException ex) {
             throw new DataException("Unable to update programma", ex);
         }

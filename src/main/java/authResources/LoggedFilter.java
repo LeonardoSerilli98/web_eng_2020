@@ -1,5 +1,6 @@
 package authResources;
 
+import data.DataException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+import models.Utente;
+import utilities.Database;
 
 /**
  *
@@ -21,49 +24,56 @@ import javax.ws.rs.ext.Provider;
 @Logged
 @Priority(Priorities.AUTHENTICATION)
 public class LoggedFilter implements ContainerRequestFilter {
-    
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        
+
         String token = null;
-        
+
         if (requestContext.getCookies().containsKey("jwt")) {
             token = requestContext.getCookies().get("jwt").getValue();
         }
-        
+
         if (token != null && !token.isEmpty()) {
-            
-            String user = validateToken(requestContext,token);
-            
-            if(user!=null && !"".equals(user)){
+
+            String user = validateToken(requestContext, token);
+
+            if (user != null && !"".equals(user)) {
                 // per usare i parametri inseriti nel contesto in un metodo, basta inserire tra i 
                 //parametri '@Context ContainerRequestContext crc ' e fare 'crc.getProperty"token/user")'
                 requestContext.setProperty("token", token);
-                requestContext.setProperty("user", user);                
-            }else{
+                requestContext.setProperty("user", user);
+            } else {
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
-        }else{
+        } else {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
-       
-        
-        
+
     }
 
     private String validateToken(ContainerRequestContext requestContext, String token) {
-        try{
+        try {
             Key key = JWTHelpers.getInstance().getJwtKey();
-            Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();                                                                                                                                                                                                                   
+            Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
             System.out.println("#### valid token: " + token);
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("#### invalid token: " + token);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             return "";
-        }    
+        }
+
+        try {
+            Utente u = Database.getDatalayer().getUtenteDAO().getUtenteByToken(token);
+            if (u==null) {
+                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+            }
+            return u.getEmail();
+        } catch (DataException ex) {
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+        }
         
-        //controllo se coincide con quello sul db
-        //se il token è valido prendiamo l'utente associato al token dal db
-        return "pippo";
+        return "";
+
     }
 }

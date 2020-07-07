@@ -1,22 +1,46 @@
 <div class="container">
     <#if msg??>
-            <h1>${msg}</h1>
-            <a href="/home"> Home </a>   
+    <h1>${msg}</h1>
+    <a href="/home"> Home </a>   
 
     <#else>  
-        <div class="authForm-container">
+    <div>
+        <div>
+            <div class="authHeader">
+                <h4>Login</h4>
+            </div>
             <form class="authForm" action="/login" method="post">
-                <label>email: <input type="email" name="email"/></label>
-                <label>password: <input type="password" name="password"/></label>
+                <div>
+                    <label for="email">email:</label> 
+                    <input id="email" type="email" name="email"/>
+                </div>
+                <div>
+                    <label for="password">password: </label>
+                    <input id="password" type="password" name="password"/>
+                </div>
                 <input type="submit"/>
             </form>
-
+        </div>
+        <div>
+            <div class="authHeader">
+                <h4>Registrazione</h4>
+            </div>
             <form class="authForm" action="/signUp" method="POST">
-                <label>email: <input type="email" name="email"/></label>
-                <label>password: <input type="password" name="password"/></label>
-                <label>Confirm password: <input type="password" name="ConfirmPassword"/></label>
+                <div>
+                    <label for="email1">email:</label> 
+                    <input id="email1" type="email" name="email"/>
+                </div>
+                <div>
+                    <label for="password1">password: </label>
+                    <input id="password1" type="password" name="password"/>
+                </div>
+                <div>
+                    <label for="confirmPassword">Confirm:</label>
+                    <input id="confirmPasswordPassword" type="password" name="confirmPassword"/>
+                </div>
                 <input type="submit"/>
             </form>
-        </div>    
+        </div>
+    </div>    
     </#if>
 </div>

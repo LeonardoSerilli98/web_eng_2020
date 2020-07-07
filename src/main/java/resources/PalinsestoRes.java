@@ -38,7 +38,6 @@ public class PalinsestoRes {
     }
 
     @GET
-    @Consumes("application/json")
     @Produces("application/json")
     public Response getPalinsestoByCanale(@Context UriInfo uriinfo, @QueryParam("data") String data, @PathParam("id") String idCanale) {
         int id = SecurityLayer.checkNumeric(idCanale);

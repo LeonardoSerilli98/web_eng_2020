@@ -1,0 +1,59 @@
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    background-color: #e6ffff;
+}
+
+#getCanali{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #baffff;
+    
+}
+#canali{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+#canali > div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #0088a3;
+    margin: 10px;
+    width: 300px;
+    border-radius: 4px;
+}
+
+#canali > div > div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #baffff;
+    margin: 3px;
+    
+    width: 150px;
+    border-radius: 4px;
+}
+
+#login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #0088a3;
+    margin: 10px;
+    height: 100px;
+    width: 300px;
+    justify-content: space-around;
+    border-radius: 4px;
+}
+
+#login > label{
+    display: flex;
+    flex-direction: column;
+    width: 200px;    
+    justify-content: space-between;
+}
