@@ -57,10 +57,10 @@ public class AuthRes {
     @Produces("application/json")
     @Consumes("application/json")
     public Response doLogin(@Context UriInfo uriinfo, HashMap<String, String> input) {
-
+AHAHAHAHAHAHASDOIUHASDHASIDOOIH
         try {
             String email = input.get("email");
-            String password = input.get("password");
+            String password = input.get("password")MAMMAMEA;
             int auth = autenticazione(email, password);
 
             if (auth == 0) {

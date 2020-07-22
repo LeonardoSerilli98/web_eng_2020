@@ -25,7 +25,7 @@ public class Immagine_Proxy extends Immagine_Imp implements Data_ItemProxy{
     protected DataLayer dataLayer;
     protected boolean dirty;
         
-    public Immagine_Proxy(DataLayer d) {aggiunto su master
+    public Immagine_Proxy(DataLayer d) {
         super();
         
         this.dataLayer = d;

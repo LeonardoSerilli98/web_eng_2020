@@ -38,7 +38,7 @@ public class Autenticazione_Controller extends Base_Controller {
             throws ServletException, TemplateManagerException {      
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("authentication.html", request, response);
-    }
+    }dasdasdasdasdahioasdaoih
     
     private boolean action_login(HttpServletRequest request, HttpServletResponse response) 
         throws ServletException, TemplateManagerException {      
