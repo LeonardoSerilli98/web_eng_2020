@@ -18,7 +18,7 @@ public class JWTHelpers {
     private static JWTHelpers instance = null;
     private SecretKey jwtKey = null;
 
-    private JWTHelpers() {
+    private JWTHelpers() {ashidoasdoiashdashdioasdaoih
         KeyGenerator keyGenerator;
         try {
             keyGenerator = KeyGenerator.getInstance("HmacSha256");
