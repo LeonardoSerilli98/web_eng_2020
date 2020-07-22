@@ -24,7 +24,7 @@ public class Canale_Proxy extends Canale_Imp implements Data_ItemProxy {
         
     protected DataLayer dataLayer;
     protected boolean dirty;
-    
+    aggiunto su master
     protected int immagine_key;
     
     public Canale_Proxy(DataLayer d) {
