@@ -29,7 +29,7 @@ public class Immagine_Proxy extends Immagine_Imp implements Data_ItemProxy{
         super();
         
         this.dataLayer = d;
-        this.dirty = false;
+        this.dirty = false;jjjjjjjj
         
     }
     
